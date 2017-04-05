@@ -7,12 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.example.admin.myapplication.R;
-import com.example.admin.myapplication.model.container.Groups;
-import com.example.admin.myapplication.model.entities.GroceryList;
+import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.model.entities.Group;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by admin on 04/04/2017.
@@ -26,7 +22,7 @@ public class GroupTableAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return Groups.size();
+        return GroupsDB.getInstance().groupsNum();
     }
 
     public Object getItem(int position) {
@@ -43,7 +39,7 @@ public class GroupTableAdapter extends BaseAdapter {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.group_table_cell, parent, false);
 
-        Group currentGroup = Groups.get(position);
+        Group currentGroup = GroupsDB.getInstance().getGroup(position);
 
         // Get the Title TextView, and set its text.
         TextView listTitle = (TextView)view.findViewById(R.id.listTitle);

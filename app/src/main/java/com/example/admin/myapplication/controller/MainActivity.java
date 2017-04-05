@@ -6,12 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Window;
 
 import com.example.admin.myapplication.R;
+import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.database.remote.RemoteDatabaseManager;
-import com.example.admin.myapplication.model.container.Groups;
-import com.example.admin.myapplication.model.entities.Group;
 
 public class MainActivity extends FragmentActivity {
     private static final String TAG = "MainActivity";
@@ -65,19 +63,17 @@ public class MainActivity extends FragmentActivity {
         actionBar.addTab(actionBar.newTab().setText("Lists").setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText("Profile").setTabListener(tabListener));
 
-        // TODO: This should happen after login.
+        // TODO: This should happen after login, and needs to be UserGroupsDB.
         // Create a handler and observe groups.
         ObjectReceivedHandler groupReceivedHandler = new ObjectReceivedHandler() {
             @Override
-            public void onObjectReceived(Object group) {
-                Groups.add((Group) group);
-            }
+            public void onObjectReceived(Object group) {}
 
             @Override
-            public void removeAllObjects() { Groups.clear(); }
+            public void removeAllObjects() {}
         };
 
-        RemoteDatabaseManager.getInstance().observeGroupsAddition(groupReceivedHandler);
+        GroupsDB.getInstance().observeGroupsAddition(groupReceivedHandler);
     }
 
     @Override

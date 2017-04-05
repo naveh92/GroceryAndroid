@@ -42,7 +42,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        // TODO: Enum.values.size();
+        // TODO: Enum.values.groupsNum();
         return 3;
     }
 

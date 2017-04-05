@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
-import com.example.admin.myapplication.model.container.Groups;
+import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.model.entities.GroceryList;
 
 import java.util.ArrayList;
@@ -51,7 +51,7 @@ public class GroceryListTableAdapter extends BaseAdapter {
         listTitle.setText(list.getTitle());
 
         // Get this lists group title
-        String groupTitle = Groups.title(list.getGroupKey());
+        String groupTitle = GroupsDB.getInstance().title(list.getGroupKey());
 
         // Get the GroupName TextView, and set its text.
         TextView groupName = (TextView)view.findViewById(R.id.groupName);

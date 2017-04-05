@@ -75,7 +75,7 @@ public class RequestsDB {
         Map<String, Object> postValues = new HashMap<>();
         postValues.put("purchased", newValue.toString());
         // TODO: FIRDataetfgnmooer
-//        postValues.put("lastUpdated", now);
+//        postValues.put("lastUpdated", new Date());
 
         // Set the values
         requestsRef.child(requestKey).updateChildren(postValues);

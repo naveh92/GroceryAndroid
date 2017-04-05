@@ -10,7 +10,7 @@ import android.widget.GridView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
-import com.example.admin.myapplication.controller.database.remote.RemoteDatabaseManager;
+import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.model.entities.Group;
 
 /**
@@ -42,7 +42,7 @@ public class GroupFragment extends Fragment {
             public void removeAllObjects() {}
         };
 
-        RemoteDatabaseManager.getInstance().observeGroupsAddition(groupReceivedHandler);
+        GroupsDB.getInstance().observeGroupsAddition(groupReceivedHandler);
 
         return view;
     }

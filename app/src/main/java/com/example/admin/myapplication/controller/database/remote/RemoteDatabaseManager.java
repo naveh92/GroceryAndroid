@@ -77,43 +77,4 @@ public class RemoteDatabaseManager {
         // Set the values
         listsRef.child(key).setValue(postValues);
     }
-
-    // --------------
-    //     Groups
-    // --------------
-    public void observeGroupsAddition(final ObjectReceivedHandler handler) {
-        // Read from the database
-        groupsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                handler.removeAllObjects();
-
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Map<String, Object> values = ((Map<String, Object>)child.getValue());
-
-                    String groupKey = child.getKey();
-                    String title = (String) values.get("title");
-
-                    handler.onObjectReceived(new Group(groupKey, title));
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read groups value.", error.toException());
-            }
-        });
-    }
-
-    public void addNewGroup(Group group) {
-        // Generate a key for the new group
-        String key = groupsRef.push().getKey();
-        Map<String, Object> postValues = group.toMap();
-
-        // Set the values
-        groupsRef.child(key).setValue(postValues);
-    }
 }

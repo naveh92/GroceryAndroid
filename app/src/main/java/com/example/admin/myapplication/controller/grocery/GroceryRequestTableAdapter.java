@@ -10,8 +10,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
-import com.example.admin.myapplication.model.container.Groups;
-import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.GroceryRequest;
 
 import java.util.ArrayList;
