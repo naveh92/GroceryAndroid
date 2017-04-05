@@ -1,7 +1,6 @@
 package com.example.admin.myapplication.controller.database.remote;
 
 import android.util.Log;
-
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
@@ -25,7 +24,6 @@ public class RemoteDatabaseManager {
     private DatabaseReference groupsRef; private static final String GROUPS_NODE_URL = "groups";
 
     private RemoteDatabaseManager() {
-        // Write a message to the database
         database = FirebaseDatabase.getInstance();
 
         listsRef = database.getReference(LISTS_NODE_URL);
@@ -71,7 +69,7 @@ public class RemoteDatabaseManager {
         });
     }
 
-    private void addNewList(GroceryList list) {
+    public void addNewList(GroceryList list) {
         // Generate a key for the new list
         String key = listsRef.push().getKey();
         Map<String, Object> postValues = list.toMap();
@@ -110,7 +108,7 @@ public class RemoteDatabaseManager {
         });
     }
 
-    private void addNewGroup(Group group) {
+    public void addNewGroup(Group group) {
         // Generate a key for the new group
         String key = groupsRef.push().getKey();
         Map<String, Object> postValues = group.toMap();

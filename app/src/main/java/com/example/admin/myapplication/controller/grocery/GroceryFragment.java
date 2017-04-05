@@ -1,5 +1,6 @@
 package com.example.admin.myapplication.controller.grocery;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,7 +20,7 @@ public class GroceryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.lists_view, container, false);
+        View view = inflater.inflate(R.layout.table_view, container, false);
 
         GridView gridview = (GridView) view.findViewById(R.id.gridview);
         final GroceryListTableAdapter adapter = new GroceryListTableAdapter(getActivity());
@@ -27,7 +28,14 @@ public class GroceryFragment extends Fragment {
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                // TODO: Open activity for the list that was clicked. need to show all requests in it.
+                // Open an activity for the list that was clicked. need to show all requests in it.
+                Intent intent = new Intent(getActivity(), GroceryRequestsTableActivity.class);
+
+                GroceryList list = adapter.getList(position);
+                intent.putExtra("listKey", list.getKey()); // Add the listKey for the next activity.
+                intent.putExtra("listTitle", list.getTitle()); // Add the listTitle for the next activity.
+
+                startActivity(intent);
             }
         });
 
@@ -46,11 +54,5 @@ public class GroceryFragment extends Fragment {
         RemoteDatabaseManager.getInstance().observeListsAddition(listReceivedHandler);
 
         return view;
-    }
-
-
-
-    private static void refreshView() {
-
     }
 }

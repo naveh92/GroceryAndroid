@@ -23,6 +23,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             case (0):
             {
                 return new GroupFragment();
+//                return new GroceryFragment();
             }
             case (1):
             {

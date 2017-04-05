@@ -11,7 +11,6 @@ import android.widget.GridView;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.database.remote.RemoteDatabaseManager;
-import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
 
 /**
@@ -21,7 +20,7 @@ public class GroupFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.lists_view, container, false);
+        View view = inflater.inflate(R.layout.table_view, container, false);
 
         GridView gridview = (GridView) view.findViewById(R.id.gridview);
         final GroupTableAdapter adapter = new GroupTableAdapter(getActivity());

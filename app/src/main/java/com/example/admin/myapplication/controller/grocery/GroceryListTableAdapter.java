@@ -68,4 +68,8 @@ public class GroceryListTableAdapter extends BaseAdapter {
     public void removeAllLists() {
         groceryLists.clear();
     }
+
+    public GroceryList getList(int position) {
+        return groceryLists.get(position);
+    }
 }
