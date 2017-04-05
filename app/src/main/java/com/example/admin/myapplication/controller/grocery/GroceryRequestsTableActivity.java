@@ -1,21 +1,24 @@
 package com.example.admin.myapplication.controller.grocery;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
+import com.example.admin.myapplication.controller.TableView;
 import com.example.admin.myapplication.controller.database.remote.RequestsDB;
 import com.example.admin.myapplication.model.entities.GroceryRequest;
 
 /**
  * Created by admin on 05/04/2017.
  */
-public class GroceryRequestsTableActivity extends Activity {
+public class GroceryRequestsTableActivity extends Activity implements TableView {
     private RequestsDB db;
 
     @Override
@@ -58,5 +61,30 @@ public class GroceryRequestsTableActivity extends Activity {
         // Create a new RequestsDB specific to this GroceryList.
         db = new RequestsDB(listKey);
         db.observeRequestsAddition(requestReceivedHandler);
+    }
+
+    protected void add(View view) {
+        this.add();
+    }
+
+    @Override
+    public void add() {
+        // Open a dialog.
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.new_request_dialog);
+        dialog.setTitle("New Request");
+
+        ImageButton dialogButton = (ImageButton) dialog.findViewById(R.id.confirm);
+        // if button is clicked, close the custom dialog
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+                // TODO: db.addNewRequest();
+            }
+        });
+
+        dialog.show();
     }
 }

@@ -10,13 +10,14 @@ import android.widget.GridView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
+import com.example.admin.myapplication.controller.TableView;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.model.entities.Group;
 
 /**
  * Created by admin on 04/04/2017.
  */
-public class GroupFragment extends Fragment {
+public class GroupFragment extends Fragment implements TableView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -45,5 +46,10 @@ public class GroupFragment extends Fragment {
         GroupsDB.getInstance().observeGroupsAddition(groupReceivedHandler);
 
         return view;
+    }
+
+    @Override
+    public void add() {
+
     }
 }

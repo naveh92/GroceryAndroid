@@ -3,13 +3,14 @@ package com.example.admin.myapplication.controller;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.View;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
-import com.example.admin.myapplication.controller.database.remote.RemoteDatabaseManager;
 
 public class MainActivity extends FragmentActivity {
     private static final String TAG = "MainActivity";
@@ -74,6 +75,14 @@ public class MainActivity extends FragmentActivity {
         };
 
         GroupsDB.getInstance().observeGroupsAddition(groupReceivedHandler);
+    }
+
+    protected void add(View view) {
+        Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
+
+        if (fragment instanceof TableView) {
+            ((TableView) fragment).add();
+        }
     }
 
     @Override

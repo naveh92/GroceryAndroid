@@ -18,4 +18,14 @@
         android:background="#55e5e5e5"
         android:layout_alignParentEnd="true" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageButton"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/add"
+        android:onClick="add"
+        android:background="@null" />
+
 </RelativeLayout>
