@@ -1,7 +1,3 @@
 <resources>
-    <string name="app_name">My Application</string>
-    <string name="activity2_label">Activity 2</string>
-    <string name="activity2_description">This is Activity 2</string>
-    <string name="activity3_label">Activity 3</string>
-    <string name="activity3_description">This is Activity 3</string>
+    <string name="app_name">Grocery</string>
 </resources>

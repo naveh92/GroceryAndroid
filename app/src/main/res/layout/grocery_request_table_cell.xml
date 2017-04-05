@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:background="#000000"
+    android:padding="5dp"
+    android:weightSum="1" >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/user"
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/userName"
+        android:layout_alignParentStart="true"
+        android:scaleType="fitStart"
+        android:layout_toStartOf="@+id/itemName"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -12,7 +26,9 @@
         android:text="itemName"
         android:id="@+id/itemName"
         android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -22,5 +38,9 @@
         android:id="@+id/userName"
         android:textColor="#999999"
         android:layout_gravity="right"
-        android:gravity="left" />
-</LinearLayout>
+        android:gravity="left"
+        android:layout_below="@+id/itemName"
+        android:layout_alignParentEnd="true"
+        />
+
+</RelativeLayout>
