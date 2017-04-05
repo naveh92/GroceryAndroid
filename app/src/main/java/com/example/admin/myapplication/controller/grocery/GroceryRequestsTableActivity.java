@@ -74,8 +74,10 @@ public class GroceryRequestsTableActivity extends Activity implements TableView 
         dialog.setContentView(R.layout.new_request_dialog);
         dialog.setTitle("New Request");
 
+        // TODO: Get the EditText, focus on it, and when clicked, get its text.
         ImageButton dialogButton = (ImageButton) dialog.findViewById(R.id.confirm);
-        // if button is clicked, close the custom dialog
+
+        // If button is clicked, close the custom dialog
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
