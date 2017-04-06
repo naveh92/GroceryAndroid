@@ -25,7 +25,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:src="@drawable/add"
-        android:onClick="add"
+        android:onClick="newObjectDialog"
         android:background="@null" />
 
 </RelativeLayout>

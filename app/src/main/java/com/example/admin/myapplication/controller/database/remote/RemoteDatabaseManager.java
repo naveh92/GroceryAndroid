@@ -74,6 +74,8 @@ public class RemoteDatabaseManager {
         String key = listsRef.push().getKey();
         Map<String, Object> postValues = list.toMap();
 
+        // TODO: lastUpdated
+
         // Set the values
         listsRef.child(key).setValue(postValues);
     }

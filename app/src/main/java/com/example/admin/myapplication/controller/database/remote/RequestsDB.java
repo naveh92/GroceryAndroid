@@ -59,10 +59,12 @@ public class RequestsDB {
         });
     }
 
-    public void addNewRequest(GroceryRequest request, String userId) {
+    public void addNewRequest(GroceryRequest request) {
         // Generate a key for the new list
         String key = requestsRef.push().getKey();
-        Map<String, Object> postValues = request.toMap(userId);
+        Map<String, Object> postValues = request.toMap();
+        // TODO: FIRDataetfgnmooer
+//        postValues.put("lastUpdated", new Date());
 
         // Set the values
         requestsRef.child(key).setValue(postValues);

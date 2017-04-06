@@ -2,10 +2,12 @@ package com.example.admin.myapplication.controller.grocery;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 
@@ -63,27 +65,36 @@ public class GroceryRequestsTableActivity extends Activity implements TableView 
         db.observeRequestsAddition(requestReceivedHandler);
     }
 
-    protected void add(View view) {
-        this.add();
+    protected void newObjectDialog(View view) {
+        this.newObjectDialog(this);
     }
 
     @Override
-    public void add() {
+    public void newObjectDialog(Context context) {
         // Open a dialog.
-        final Dialog dialog = new Dialog(this);
+        final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.new_request_dialog);
         dialog.setTitle("New Request");
 
-        // TODO: Get the EditText, focus on it, and when clicked, get its text.
-        ImageButton dialogButton = (ImageButton) dialog.findViewById(R.id.confirm);
+        // Get the EditText and focus on it.
+        final EditText itemNameText = (EditText) dialog.findViewById(R.id.itemNameText);
+        itemNameText.requestFocus();
+
+        ImageButton confirmButton = (ImageButton) dialog.findViewById(R.id.confirm);
 
         // If button is clicked, close the custom dialog
-        dialogButton.setOnClickListener(new View.OnClickListener() {
+        confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
 
-                // TODO: db.addNewRequest();
+                String itemName = itemNameText.getText().toString();
+
+                // Add the new request to the database.
+                // TODO: Get from Auth
+                String userKey = "IBln4QIZm0TCveScQERgOcm0vBe2";
+                GroceryRequest newRequest = new GroceryRequest(itemName, userKey);
+                db.addNewRequest(newRequest);
             }
         });
 

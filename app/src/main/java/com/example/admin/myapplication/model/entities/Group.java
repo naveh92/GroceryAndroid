@@ -27,6 +27,11 @@ public class Group {
         this.title = title;
     }
 
+    @Override
+    public String toString() {
+        return title;
+    }
+
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();

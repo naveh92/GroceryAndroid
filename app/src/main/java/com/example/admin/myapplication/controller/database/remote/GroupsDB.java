@@ -11,6 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ public class GroupsDB {
     private static GroupsDB instance;
     private static final String GROUPS_NODE_URL = "groups";
     private DatabaseReference groupsRef;
+    private List<String> allGroupsTitles;
 
     private GroupsDB() {
         groupsRef = FirebaseDatabase.getInstance().getReference().child(GROUPS_NODE_URL);
@@ -71,6 +73,7 @@ public class GroupsDB {
 
         // TODO:
 //        new UserGroupsDB(userKey).addGroupToUser(key);
+        // TODO: GroupMembersDB?
     }
 
     public void deleteGroup(String key) {
@@ -130,5 +133,10 @@ public class GroupsDB {
 
         // TODO: strings.xml
         return "N/A";
+    }
+
+    public List<Group> getAllGroups() {
+        // Create a read-only copy of the list of groups.
+        return Collections.unmodifiableList(groups);
     }
 }

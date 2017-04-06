@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controller.grocery.GroceryRequestsTableActivity" >
+     >
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -11,9 +11,9 @@
         android:id="@+id/confirm"
         android:src="@drawable/v"
         android:background="@null"
-        android:layout_below="@+id/itemNameText"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
+        android:layout_below="@+id/spinner"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp" />
 
 
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Item Name:"
+        android:text="List Title:"
         android:id="@+id/textView"
         android:layout_marginTop="30dp"
         android:layout_alignParentStart="true"
@@ -30,11 +30,34 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/itemNameText"
+        android:id="@+id/listTitleText"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_alignBottom="@+id/textView"
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/textView" />
+
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner"
+        android:layout_marginTop="40dp"
+        android:spinnerMode="dropdown"
+        android:layout_below="@+id/listTitleText"
+        android:layout_marginLeft="0dp"
+        android:layout_alignEnd="@+id/listTitleText"
+        android:layout_toEndOf="@+id/textView3"
+        android:layout_alignStart="@+id/listTitleText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Group:"
+        android:id="@+id/textView3"
+        android:layout_marginLeft="0dp"
+        android:layout_alignBottom="@+id/spinner"
+        android:layout_alignStart="@+id/textView"
+        android:layout_marginTop="0dp" />
 
 </RelativeLayout>

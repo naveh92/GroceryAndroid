@@ -77,11 +77,11 @@ public class MainActivity extends FragmentActivity {
         GroupsDB.getInstance().observeGroupsAddition(groupReceivedHandler);
     }
 
-    protected void add(View view) {
+    protected void newObjectDialog(View view) {
         Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
 
         if (fragment instanceof TableView) {
-            ((TableView) fragment).add();
+            ((TableView) fragment).newObjectDialog(this);
         }
     }
 

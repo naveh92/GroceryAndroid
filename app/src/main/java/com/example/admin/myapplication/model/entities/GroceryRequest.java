@@ -37,11 +37,11 @@ public class GroceryRequest {
     }
 
     @Exclude
-    public Map<String, Object> toMap(String userKey) {
+    public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("key", key);
         result.put("itemName", itemName);
-        result.put("purchased", purchased);
+        result.put("purchased", purchased.toString());
         result.put("userId", userKey);
 
         return result;

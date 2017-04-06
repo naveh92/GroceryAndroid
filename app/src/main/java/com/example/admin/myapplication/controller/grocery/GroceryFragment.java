@@ -1,5 +1,7 @@
 package com.example.admin.myapplication.controller.grocery;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,12 +9,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.Spinner;
+
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableView;
+import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.database.remote.RemoteDatabaseManager;
 import com.example.admin.myapplication.model.entities.GroceryList;
+import com.example.admin.myapplication.model.entities.Group;
 
 /**
  * Created by admin on 04/04/2017.
@@ -58,7 +66,40 @@ public class GroceryFragment extends Fragment implements TableView {
     }
 
     @Override
-    public void add() {
+    public void newObjectDialog(Context context) {
+        // Open a dialog.
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.new_list_dialog);
+        dialog.setTitle("New Grocery List");
 
+        // Get the EditText and focus on it.
+        final EditText listTitleText = (EditText) dialog.findViewById(R.id.listTitleText);
+        listTitleText.requestFocus();
+
+        final Spinner groupComboBox = (Spinner) dialog.findViewById(R.id.spinner);
+        // TODO: This should be UserGroupsDB.
+        GroupComboBoxAdapter adapter = new GroupComboBoxAdapter(context, android.R.layout.simple_spinner_item, GroupsDB.getInstance().getAllGroups());
+        groupComboBox.setAdapter(adapter);
+
+        ImageButton confirmButton = (ImageButton) dialog.findViewById(R.id.confirm);
+
+        // If button is clicked, close the custom dialog
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+
+                // Get the user input.
+                String listTitle = listTitleText.getText().toString();
+                String groupKey = ((Group)groupComboBox.getSelectedItem()).getKey();
+
+                // Add the new list to the database.
+                GroceryList newList = new GroceryList("", groupKey, listTitle);
+                RemoteDatabaseManager.getInstance().addNewList(newList);
+            }
+        });
+
+        dialog.show();
     }
+
 }

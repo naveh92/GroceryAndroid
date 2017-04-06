@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".controller.grocery.GroceryRequestsTableActivity" >
+     >
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -11,7 +11,7 @@
         android:id="@+id/confirm"
         android:src="@drawable/v"
         android:background="@null"
-        android:layout_below="@+id/itemNameText"
+        android:layout_below="@+id/groupTitleText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="10dp" />
@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Item Name:"
+        android:text="Group Name:"
         android:id="@+id/textView"
         android:layout_marginTop="30dp"
         android:layout_alignParentStart="true"
@@ -30,7 +30,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/itemNameText"
+        android:id="@+id/groupTitleText"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_alignBottom="@+id/textView"
