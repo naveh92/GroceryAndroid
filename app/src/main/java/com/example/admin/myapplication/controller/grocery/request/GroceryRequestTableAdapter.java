@@ -6,15 +6,11 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
-import com.example.admin.myapplication.controller.database.remote.UsersDB;
+import com.example.admin.myapplication.controller.ImageCellBaseAdapter;
 import com.example.admin.myapplication.model.entities.GroceryRequest;
-import com.example.admin.myapplication.model.entities.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +18,7 @@ import java.util.List;
 /**
  * Created by admin on 05/04/2017.
  */
-public class GroceryRequestTableAdapter extends BaseAdapter {
+public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
     private static List<GroceryRequest> groceryRequests = new ArrayList<>();
     private Context mContext;
 
@@ -42,6 +38,9 @@ public class GroceryRequestTableAdapter extends BaseAdapter {
         return 0;
     }
 
+    @Override
+    protected Context getContext() { return mContext; }
+
     // Create a new cell for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         // Get the LayoutInflater from the Context.
@@ -53,9 +52,8 @@ public class GroceryRequestTableAdapter extends BaseAdapter {
 
         // Initialize the views
         initItemNameTextView(request, (TextView)view.findViewById(R.id.itemName));
-        initUserNameTextView(request.getUserKey(), (TextView)view.findViewById(R.id.userName));
-        // TODO: Get the user Image from Storage.
-//        initUserImage(request.getUserKey(), (ImageView)view.findViewById(R.id.userImage));
+        super.initUserNameTextView(request.getUserKey(), (TextView)view.findViewById(R.id.userName));
+        super.initUserImageView(request.getUserKey(), view);
 
         return view;
     }
@@ -74,24 +72,6 @@ public class GroceryRequestTableAdapter extends BaseAdapter {
             itemNameTV.setPaintFlags(0);
             itemNameTV.setTextColor(Color.WHITE);
         }
-    }
-
-    private void initUserNameTextView(String userKey, final TextView userNameTV) {
-        // Retrieve the user object from the DB.
-        ObjectReceivedHandler receivedUserHandler = new ObjectReceivedHandler() {
-            @Override
-            public void onObjectReceived(Object obj) {
-                // Get the userName TextView, and set its text.
-                String userName = ((User)obj).getName();
-                userNameTV.setText(userName);
-            }
-
-            @Override
-            public void removeAllObjects() {}
-        };
-
-        // Retrieve the user object from the DB.
-        UsersDB.getInstance().findUserByKey(userKey, receivedUserHandler);
     }
 
     public void onRequestReceived(GroceryRequest request) {

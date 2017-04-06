@@ -47,12 +47,6 @@ public class UsersDB {
                     User user = mapToUser(userKey, (Map<String, Object>)dataSnapshot.getValue());
                     userCache.put(userKey, user);
                     handler.onObjectReceived(user);
-
-//                for (DataSnapshot child : dataSnapshot.getChildren()) {
-//                    Group group = mapToGroup(child.getKey(), ((Map<String, Object>)child.getValue()));
-//
-//                    groups.add(group);
-//                }
                 }
 
                 @Override

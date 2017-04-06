@@ -29,6 +29,9 @@ dependencies {
 
     // Firebase realtime database
     compile 'com.google.firebase:firebase-database:10.2.1'
+
+    // Firebase cloud storage
+    compile 'com.google.firebase:firebase-storage:10.2.1'
 }
 
 // For Firebase
