@@ -16,7 +16,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".controller.grocery.GroceryRequestsTableActivity" >
+        <activity android:name=".controller.grocery.request.GroceryRequestsTableActivity" >
         </activity>
 
     </application>

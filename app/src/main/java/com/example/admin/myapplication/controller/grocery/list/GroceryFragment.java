@@ -1,4 +1,4 @@
-package com.example.admin.myapplication.controller.grocery;
+package com.example.admin.myapplication.controller.grocery.list;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -18,6 +18,8 @@ import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableViewFragment;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.database.remote.RemoteDatabaseManager;
+import com.example.admin.myapplication.controller.grocery.request.GroceryRequestsTableActivity;
+import com.example.admin.myapplication.controller.grocery.request.GroupComboBoxAdapter;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
 

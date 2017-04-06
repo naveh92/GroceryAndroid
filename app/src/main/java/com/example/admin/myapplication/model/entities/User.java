@@ -1,36 +1,43 @@
 package com.example.admin.myapplication.model.entities;
 
+/**
+ * Created by admin on 04/04/2017.
+ */
+
 import com.google.firebase.database.Exclude;
+
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Created by admin on 04/04/2017.
  */
-public class GroceryList {
+public class User {
     private String key;
-    private String groupKey;
-    private String title;
+    private String facebookId;
+    private String name;
 
     public String getKey() {
         return key;
     }
-    public String getGroupKey() { return groupKey; }
-    public String getTitle() {
-        return title;
+    public String getFacebookId() {
+        return facebookId;
+    }
+    public String getName() {
+        return name;
     }
 
-    public GroceryList(String key, String groupKey, String title) {
+    public User(String key, String facebookId, String name) {
         this.key = key;
-        this.groupKey = groupKey;
-        this.title = title;
+        this.facebookId = facebookId;
+        this.name = name;
     }
 
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("groupKey", groupKey);
-        result.put("title", title);
+        result.put("facebookId", facebookId);
+        result.put("name", name);
 
         return result;
     }

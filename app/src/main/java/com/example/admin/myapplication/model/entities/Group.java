@@ -35,7 +35,6 @@ public class Group {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("key", key);
         result.put("title", title);
 
         return result;

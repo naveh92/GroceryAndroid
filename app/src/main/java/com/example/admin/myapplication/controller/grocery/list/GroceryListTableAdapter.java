@@ -1,4 +1,4 @@
-package com.example.admin.myapplication.controller.grocery;
+package com.example.admin.myapplication.controller.grocery.list;
 
 import android.content.Context;
 import android.view.LayoutInflater;
