@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.admin.myapplication.controller.grocery.list.GroceryFragment;
 import com.example.admin.myapplication.controller.group.GroupFragment;
+import com.example.admin.myapplication.controller.profile.ProfileFragment;
 
 /**
  * Created by admin on 04/04/2017.
@@ -30,7 +31,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
             }
             case (2):
             {
-                return new GroceryFragment();
+                return new ProfileFragment();
             }
             default:
             {

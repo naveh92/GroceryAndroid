@@ -13,5 +13,6 @@
         android:text="GroupTitle"
         android:id="@+id/listTitle"
         android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:singleLine="true" />
 </LinearLayout>

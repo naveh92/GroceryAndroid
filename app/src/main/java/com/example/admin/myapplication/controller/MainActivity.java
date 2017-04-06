@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
+import com.example.admin.myapplication.controller.profile.ProfileFragment;
 
 public class MainActivity extends FragmentActivity {
     private static final String TAG = "MainActivity";
@@ -82,6 +83,14 @@ public class MainActivity extends FragmentActivity {
 
         if (fragment instanceof TableViewFragment) {
             ((TableViewFragment) fragment).newObjectDialog(this);
+        }
+    }
+
+    protected void changeImageDialog(View view) {
+        Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
+
+        if (fragment instanceof ProfileFragment) {
+            ((ProfileFragment)fragment).changeImageDialog(this);
         }
     }
 
