@@ -27,6 +27,8 @@ import com.example.admin.myapplication.model.entities.Group;
  * Created by admin on 04/04/2017.
  */
 public class GroceryFragment extends TableViewFragment {
+    private static GroceryListTableAdapter adapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -36,7 +38,7 @@ public class GroceryFragment extends TableViewFragment {
         addNewButton = (ImageButton) view.findViewById(R.id.add_new_object_button);
 
         GridView gridview = (GridView) view.findViewById(R.id.gridview);
-        final GroceryListTableAdapter adapter = new GroceryListTableAdapter(getActivity());
+        adapter = new GroceryListTableAdapter(getActivity());
         gridview.setAdapter(adapter);
 
         // Register the animations when gridview is touched.
@@ -107,5 +109,14 @@ public class GroceryFragment extends TableViewFragment {
         });
 
         dialog.show();
+    }
+
+    public void deleteList(int position) {
+        GroceryList list = adapter.getList(position);
+
+        if (list != null) {
+            String listKey = list.getKey();
+            RemoteDatabaseManager.getInstance().deleteList(listKey);
+        }
     }
 }

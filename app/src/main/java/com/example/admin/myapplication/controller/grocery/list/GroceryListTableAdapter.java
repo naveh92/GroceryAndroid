@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
@@ -56,6 +57,10 @@ public class GroceryListTableAdapter extends BaseAdapter {
         // Get the GroupName TextView, and set its text.
         TextView groupName = (TextView)view.findViewById(R.id.groupName);
         groupName.setText(groupTitle);
+
+        // Get the PopupMenu button and set its id to the position.
+        ImageButton popupButton = (ImageButton)view.findViewById(R.id.popup);
+        popupButton.setId(position);
 
         return view;
     }

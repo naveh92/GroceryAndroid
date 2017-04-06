@@ -66,6 +66,7 @@ public class ProfileFragment extends Fragment {
     }
 
     public void changeImageDialog(Context context) {
+        // TODO:
 //        // Open a dialog.
 //        final Dialog dialog = new Dialog(context);
 //        dialog.setContentView(R.layout.new_group_dialog);

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    android:padding="5dp" >
+    android:padding="5dp"
+    android:clickable="true" >
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,4 +29,18 @@
         android:layout_below="@+id/listTitle"
         android:layout_alignParentStart="true"
         android:singleLine="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/popup"
+        android:onClick="showListPopup"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/groupName"
+        android:layout_margin="10dp"
+        android:background="@null"
+        android:src="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha" />
 </RelativeLayout>

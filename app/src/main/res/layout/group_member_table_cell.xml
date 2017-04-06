@@ -12,36 +12,23 @@
         android:id="@+id/userImageView"
         android:src="@drawable/user"
         android:layout_alignParentTop="true"
-        android:layout_alignBottom="@+id/userName"
         android:layout_alignParentStart="true"
         android:scaleType="fitXY"
         android:layout_toStartOf="@+id/itemName"
         android:visibility="invisible"
-        android:layout_alignEnd="@+id/pleaseWait" />
+        android:layout_alignEnd="@+id/pleaseWait"
+        android:layout_alignBottom="@+id/pleaseWait" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text=""
-        android:id="@+id/itemName"
+        android:id="@+id/userName"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:singleLine="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text=""
-        android:id="@+id/userName"
-        android:textColor="#999999"
-        android:layout_gravity="right"
-        android:gravity="left"
-        android:layout_below="@+id/itemName"
-        android:layout_alignParentEnd="true"
         android:singleLine="true" />
 
     <ProgressBar
@@ -50,7 +37,6 @@
         android:id="@+id/pleaseWait"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:indeterminate="false"
-        android:layout_alignBottom="@+id/userName" />
+        android:indeterminate="false" />
 
 </RelativeLayout>

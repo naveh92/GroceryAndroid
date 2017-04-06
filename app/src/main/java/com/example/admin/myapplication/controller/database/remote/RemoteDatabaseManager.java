@@ -21,13 +21,11 @@ public class RemoteDatabaseManager {
 
     // TODO: Every ref should have its own DB manager. (ListsDB, GroupsDB, etc..)
     private DatabaseReference listsRef; private static final String LISTS_NODE_URL = "grocery-lists";
-    private DatabaseReference groupsRef; private static final String GROUPS_NODE_URL = "groups";
 
     private RemoteDatabaseManager() {
         database = FirebaseDatabase.getInstance();
 
         listsRef = database.getReference(LISTS_NODE_URL);
-        groupsRef = database.getReference(GROUPS_NODE_URL);
     }
 
     public static RemoteDatabaseManager getInstance() {
@@ -78,5 +76,11 @@ public class RemoteDatabaseManager {
 
         // Set the values
         listsRef.child(key).setValue(postValues);
+    }
+
+    public void deleteList(String listKey) {
+        listsRef.child(listKey).removeValue();
+
+        // TODO: Update in localDB as well
     }
 }

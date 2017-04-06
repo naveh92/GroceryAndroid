@@ -7,10 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
+import com.example.admin.myapplication.controller.grocery.list.GroceryFragment;
 import com.example.admin.myapplication.controller.profile.ProfileFragment;
 
 public class MainActivity extends FragmentActivity {
@@ -94,39 +98,29 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    @Override
-    protected void onStart() {
-        Log.d(TAG, "onStart called");
-        super.onStart();
-    }
+    protected void showListPopup(View v) {
+        // Get the position of the list that has been clicked.
+        final int position = v.getId();
 
-    @Override
-    protected void onRestart() {
-        Log.d(TAG, "onRestart called");
-        super.onRestart();
-    }
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.list_options, popup.getMenu());
 
-    @Override
-    protected void onResume() {
-        Log.d(TAG, "onResume called");
-        super.onResume();
-    }
+        // Registering popup with OnMenuItemClickListener
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                // TODO: Enum?
+                if (item.getOrder() == 0) {
+                    Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
 
-    @Override
-    protected void onPause() {
-        Log.d(TAG, "onPause called");
-        super.onPause();
-    }
+                    if (fragment instanceof GroceryFragment) {
+                        ((GroceryFragment) fragment).deleteList(position);
+                    }
+                }
+                return true;
+            }
+        });
 
-    @Override
-    protected void onStop() {
-        Log.d(TAG, "onStop called");
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        Log.d(TAG, "onDestroy called");
-        super.onDestroy();
+        popup.show();
     }
 }

@@ -19,6 +19,9 @@
         <activity android:name=".controller.grocery.request.GroceryRequestsTableActivity" >
         </activity>
 
+        <activity android:name=".controller.group.members.GroupMembersTableActivity" >
+        </activity>
+
     </application>
 
 </manifest>

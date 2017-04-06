@@ -22,6 +22,8 @@ import com.example.admin.myapplication.model.entities.GroceryRequest;
 public class GroceryRequestsTableActivity extends TableViewActivity {
     private RequestsDB db;
 
+    // TODO: REMOVE OBSERVERS ON onDestroy(). also in GroupMembers and any other activity.
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

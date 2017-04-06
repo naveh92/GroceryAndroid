@@ -23,7 +23,6 @@ public class GroupsDB {
     private static GroupsDB instance;
     private static final String GROUPS_NODE_URL = "groups";
     private DatabaseReference groupsRef;
-    private List<String> allGroupsTitles;
 
     private GroupsDB() {
         groupsRef = FirebaseDatabase.getInstance().getReference().child(GROUPS_NODE_URL);

@@ -44,9 +44,11 @@ public class UsersDB {
             usersRef.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    User user = mapToUser(userKey, (Map<String, Object>)dataSnapshot.getValue());
-                    userCache.put(userKey, user);
-                    handler.onObjectReceived(user);
+                    if (dataSnapshot.exists()) {
+                        User user = mapToUser(userKey, (Map<String, Object>) dataSnapshot.getValue());
+                        userCache.put(userKey, user);
+                        handler.onObjectReceived(user);
+                    }
                 }
 
                 @Override
@@ -61,16 +63,26 @@ public class UsersDB {
         }
     }
 
-//    func findUserByFacebookId(facebookId: String, whenFinished: @escaping (_: User) -> Void) {
-//        databaseRef.child(rootNode).queryOrdered(byChild: "facebookId").queryEqual(toValue: facebookId).observeSingleEvent(
-//                of: FIRDataEventType.value, with: {(snapshot) in
-//            if !(snapshot.value is NSNull) {
-//                let userSnapshot = (snapshot.value as! Dictionary<String, Any>).first!
-//                        let user = self.extractUser(key: userSnapshot.key as NSString, values: userSnapshot.value as! Dictionary<String, Any>)
-//                whenFinished(user)
-//            }
-//        })
-//    }
+    public void findUserByFacebookId(final String facebookId, final ObjectReceivedHandler handler) {
+        usersRef.orderByChild("facebookId").equalTo(facebookId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Extract the User object
+                    User user = mapToUser(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue());
+// TODO:                   let userSnapshot = (snapshot.value as! Dictionary<String, Any>).first!
+                    handler.onObjectReceived(user);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read user for facebookId: " + facebookId, error.toException());
+            }
+        });
+    }
+
 
     public void addNewUser(User user) {
         // TODO: In iphone app we already have the key? WUT

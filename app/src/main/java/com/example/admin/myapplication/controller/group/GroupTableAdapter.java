@@ -14,7 +14,6 @@ import com.example.admin.myapplication.model.entities.Group;
  * Created by admin on 04/04/2017.
  */
 public class GroupTableAdapter extends BaseAdapter {
-//    private static List<Group> groups = new ArrayList<>();
     private Context mContext;
 
     public GroupTableAdapter(Context c) {
@@ -26,7 +25,7 @@ public class GroupTableAdapter extends BaseAdapter {
     }
 
     public Object getItem(int position) {
-        return null;
+        return GroupsDB.getInstance().getGroup(position);
     }
 
     public long getItemId(int position) {

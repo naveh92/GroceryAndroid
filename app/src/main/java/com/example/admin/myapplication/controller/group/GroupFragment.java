@@ -2,6 +2,7 @@ package com.example.admin.myapplication.controller.group;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableViewFragment;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
+import com.example.admin.myapplication.controller.group.members.GroupMembersTableActivity;
 import com.example.admin.myapplication.model.entities.Group;
 
 /**
@@ -38,7 +40,14 @@ public class GroupFragment extends TableViewFragment {
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                // TODO: Open activity for the group that was clicked. need to show all members in it.
+                // Open an activity for the group that was clicked - show all members in it.
+                Intent intent = new Intent(getActivity(), GroupMembersTableActivity.class);
+
+                Group group = (Group) adapter.getItem(position);
+                intent.putExtra("groupKey", group.getKey()); // Add the groupKey for the next activity.
+                intent.putExtra("groupTitle", group.getTitle()); // Add the groupTitle for the next activity.
+
+                startActivity(intent);
             }
         });
 
