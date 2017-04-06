@@ -3,7 +3,6 @@ package com.example.admin.myapplication.controller.group;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,29 +10,31 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
-import com.example.admin.myapplication.controller.TableView;
+import com.example.admin.myapplication.controller.TableViewFragment;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
-import com.example.admin.myapplication.controller.database.remote.RemoteDatabaseManager;
-import com.example.admin.myapplication.controller.grocery.GroupComboBoxAdapter;
-import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
 
 /**
  * Created by admin on 04/04/2017.
  */
-public class GroupFragment extends Fragment implements TableView {
+public class GroupFragment extends TableViewFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.table_view, container, false);
 
+        // Save the add button for animations later
+        addNewButton = (ImageButton) view.findViewById(R.id.add_new_object_button);
+
         GridView gridview = (GridView) view.findViewById(R.id.gridview);
         final GroupTableAdapter adapter = new GroupTableAdapter(getActivity());
         gridview.setAdapter(adapter);
+
+        // Register the animations when gridview is touched.
+        super.createHideViewsWhenScroll(gridview);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {

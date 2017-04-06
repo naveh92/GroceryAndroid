@@ -80,8 +80,8 @@ public class MainActivity extends FragmentActivity {
     protected void newObjectDialog(View view) {
         Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
 
-        if (fragment instanceof TableView) {
-            ((TableView) fragment).newObjectDialog(this);
+        if (fragment instanceof TableViewFragment) {
+            ((TableViewFragment) fragment).newObjectDialog(this);
         }
     }
 

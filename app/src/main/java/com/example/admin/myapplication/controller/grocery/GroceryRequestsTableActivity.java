@@ -13,14 +13,14 @@ import android.widget.ImageButton;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
-import com.example.admin.myapplication.controller.TableView;
+import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.database.remote.RequestsDB;
 import com.example.admin.myapplication.model.entities.GroceryRequest;
 
 /**
  * Created by admin on 05/04/2017.
  */
-public class GroceryRequestsTableActivity extends Activity implements TableView {
+public class GroceryRequestsTableActivity extends TableViewActivity {
     private RequestsDB db;
 
     @Override
@@ -36,9 +36,15 @@ public class GroceryRequestsTableActivity extends Activity implements TableView 
         // Set this activity's title.
         setTitle(listTitle);
 
+        // Save the add button for animations later
+        addNewButton = (ImageButton) findViewById(R.id.add_new_object_button);
+
         GridView gridview = (GridView) findViewById(R.id.gridview);
         final GroceryRequestTableAdapter adapter = new GroceryRequestTableAdapter(this);
         gridview.setAdapter(adapter);
+
+        // Register the animations when gridview is touched.
+        super.createHideViewsWhenScroll(gridview);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
