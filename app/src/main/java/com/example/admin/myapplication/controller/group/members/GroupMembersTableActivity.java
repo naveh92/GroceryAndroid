@@ -27,6 +27,7 @@ import com.example.admin.myapplication.model.entities.User;
 public class GroupMembersTableActivity extends TableViewActivity {
     private GroupMembersDB db;
     private String groupKey;
+    private GroupMembersTableAdapter groupMembersAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +46,8 @@ public class GroupMembersTableActivity extends TableViewActivity {
         addNewButton = (ImageButton) findViewById(R.id.add_new_object_button);
 
         GridView gridview = (GridView) findViewById(R.id.gridview);
-        final GroupMembersTableAdapter adapter = new GroupMembersTableAdapter(this);
-        gridview.setAdapter(adapter);
+        groupMembersAdapter = new GroupMembersTableAdapter(this);
+        gridview.setAdapter(groupMembersAdapter);
 
         // Register the animations when gridview is touched.
         super.createHideViewsWhenScroll(gridview);
@@ -54,12 +55,12 @@ public class GroupMembersTableActivity extends TableViewActivity {
         ObjectReceivedHandler memberReceivedHandler = new ObjectReceivedHandler() {
             @Override
             public void onObjectReceived(Object member) {
-                adapter.onMemberReceived((User) member);
+                groupMembersAdapter.onMemberReceived((User) member);
             }
 
             @Override
             public void removeAllObjects() {
-                adapter.removeAllMembers();
+                groupMembersAdapter.removeAllMembers();
             }
         };
 
@@ -123,15 +124,15 @@ public class GroupMembersTableActivity extends TableViewActivity {
         dialog.setTitle("Add a member");
 
         GridView gridview = (GridView) dialog.findViewById(R.id.gridview);
-        final GroupMembersTableAdapter adapter = new GroupMembersTableAdapter(this);
-        gridview.setAdapter(adapter);
+        final GroupMembersTableAdapter newMembersAdapter = new GroupMembersTableAdapter(this);
+        gridview.setAdapter(newMembersAdapter);
 
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                     dialog.dismiss();
 
                     // Get the selected user
-                    User user = (User) adapter.getItem(position);
+                    User user = (User) newMembersAdapter.getItem(position);
 
                     // Add the member to the group.
                     db.addMember(user.getKey());
@@ -145,12 +146,12 @@ public class GroupMembersTableActivity extends TableViewActivity {
             @Override
             public void onObjectReceived(Object obj) {
                 User user = (User) obj;
-                adapter.onMemberReceived(user);
+                newMembersAdapter.onMemberReceived(user);
             }
 
             @Override
             public void removeAllObjects() {
-                adapter.removeAllMembers();
+                newMembersAdapter.removeAllMembers();
             }
         };
 
@@ -177,8 +178,7 @@ public class GroupMembersTableActivity extends TableViewActivity {
         };
 
         // Retrieve relevant users from Facebook
-        new FacebookFriendsFinder().find(adapter.getAllMembers(), facebookFriendHandler, whenFinished);
-        db.observeGroupMembers(facebookFriendHandler);
+        new FacebookFriendsFinder().find(groupMembersAdapter.getAllMembers(), facebookFriendHandler, whenFinished);
 
         dialog.show();
     }
