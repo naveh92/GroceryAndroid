@@ -62,7 +62,7 @@ public class GroupsDB {
         });
     }
 
-    public void addNewGroup(Group group, String userKey) {
+    public String addNewGroup(Group group, String userKey) {
         // Generate a key for the new group
         String key = groupsRef.push().getKey();
         Map<String, Object> postValues = group.toMap();
@@ -73,6 +73,8 @@ public class GroupsDB {
         // TODO:
 //        new UserGroupsDB(userKey).addGroupToUser(key);
         // TODO: GroupMembersDB?
+
+        return key;
     }
 
     public void deleteGroup(String key) {

@@ -125,7 +125,7 @@ public class GroupMembersDB {
                     handler.onObjectReceived(0);
                 }
                 else {
-                    handler.onObjectReceived(dataSnapshot.getChildrenCount());
+                    handler.onObjectReceived(((Long)dataSnapshot.getChildrenCount()).intValue());
                 }
             }
 

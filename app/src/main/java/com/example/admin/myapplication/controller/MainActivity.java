@@ -109,15 +109,27 @@ public class MainActivity extends FragmentActivity {
         // Registering popup with OnMenuItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-                // TODO: Enum?
-                if (item.getOrder() == 0) {
-                    Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
+                switch (item.getItemId()) {
+                    // action with ID action_refresh was selected
+                    case R.id.action_delete_list:
+                    {
+                        Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
 
-                    if (fragment instanceof GroceryFragment) {
-                        ((GroceryFragment) fragment).deleteList(position);
+                        if (fragment instanceof GroceryFragment) {
+                            ((GroceryFragment) fragment).deleteList(position);
+                        }
+
+                        break;
                     }
+
+                    default:
+                        break;
                 }
+
                 return true;
+
+
+
             }
         });
 

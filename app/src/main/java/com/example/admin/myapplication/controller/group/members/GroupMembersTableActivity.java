@@ -1,9 +1,14 @@
 package com.example.admin.myapplication.controller.group.members;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -60,6 +65,49 @@ public class GroupMembersTableActivity extends TableViewActivity {
         // Create a new GroupMembersDB specific to this Group.
         db = new GroupMembersDB(groupKey);
         db.observeGroupMembers(memberReceivedHandler);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.group_action_bar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // action with ID action_refresh was selected
+            case R.id.action_leave: {
+                // TODO: Strings.xml
+                // Show confirmation Dialog
+                new AlertDialog.Builder(this).setTitle("Leave group")
+                        .setMessage("Are you sure?\nYou will be able to rejoin only if another member adds you back.")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(R.string.leave, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                // TODO: Get from Auth
+                                String userKey = "IBln4QIZm0TCveScQERgOcm0vBe2";
+
+                                // Remove the user from the group.
+                                db.removeMember(userKey);
+
+                                // TODO: Remove the group from the users list of groups.
+                                // UserGroupsDB.removeGroup(groupKey);
+
+                                // Mock a back press so that we exit this activity and go back to the list of groups.
+                                GroupMembersTableActivity.this.onBackPressed();
+                            }})
+                        .setNegativeButton(R.string.stay, null).show();
+
+                break;
+            }
+
+            default:
+                break;
+        }
+
+        return true;
     }
 
     protected void newObjectDialog(View view) {
