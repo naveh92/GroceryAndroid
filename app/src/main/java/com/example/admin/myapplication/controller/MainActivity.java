@@ -17,7 +17,6 @@ import android.widget.PopupMenu;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
-import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.grocery.list.GroceryFragment;
 import com.example.admin.myapplication.controller.profile.ProfileFragment;
 import com.facebook.login.LoginManager;
@@ -25,8 +24,8 @@ import com.facebook.login.LoginManager;
 public class MainActivity extends FragmentActivity {
     private static final String TAG = "MainActivity";
 
-    TabsPagerAdapter adapter;
-    ViewPager mViewPager;
+    private TabsPagerAdapter adapter;
+    private ViewPager mViewPager;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,18 +72,17 @@ public class MainActivity extends FragmentActivity {
         actionBar.addTab(actionBar.newTab().setText("Groups").setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText("Lists").setTabListener(tabListener));
         actionBar.addTab(actionBar.newTab().setText("Profile").setTabListener(tabListener));
+    }
 
-        // TODO: This should happen after login, and needs to be UserGroupsDB.
-        // Create a handler and observe groups.
-        ObjectReceivedHandler groupReceivedHandler = new ObjectReceivedHandler() {
-            @Override
-            public void onObjectReceived(Object group) {}
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-            @Override
-            public void removeAllObjects() {}
-        };
+        Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
 
-        GroupsDB.getInstance().observeGroupsAddition(groupReceivedHandler);
+        if (fragment instanceof TableViewFragment) {
+            ((TableViewFragment) fragment).refresh();
+        }
     }
 
     protected void newObjectDialog(View view) {

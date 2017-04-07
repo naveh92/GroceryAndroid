@@ -27,7 +27,6 @@ public class GroceryListsByGroupDB {
     }
 
     public void observeLists(final ObjectReceivedHandler listAddedHandler,
-                             final ObjectReceivedHandler listChangedHandler,
                              final ObjectReceivedHandler listRemovedHandler) {
         query.addChildEventListener(new ChildEventListener() {
             @Override
@@ -38,8 +37,9 @@ public class GroceryListsByGroupDB {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                GroceryList modifiedList = mapToGroceryList(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue());
-                listChangedHandler.onObjectReceived(modifiedList);
+                // TODO: Need this?
+//                GroceryList modifiedList = mapToGroceryList(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue());
+//                listChangedHandler.onObjectReceived(modifiedList);
             }
 
             @Override
@@ -63,6 +63,10 @@ public class GroceryListsByGroupDB {
                 return new GroceryList(key, groupKey, title);
             }
         });
+    }
+
+    public String getGroupKey() {
+        return groupKey;
     }
 
     // TODO: ?

@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,16 +23,14 @@ public class UserGroupsDB {
     private static final String GROUPS_NODE_URL = "groups";
     private DatabaseReference userRef;
     private DatabaseReference userGroupsRef;
-    private List<Group> groups = new ArrayList<>();
-    private String userKey;
+    private static List<Group> groups = new ArrayList<>();
 
     public UserGroupsDB(String userKey) {
-        this.userKey = userKey;
         userRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + "/" + userKey);
         userGroupsRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + "/" + userKey + "/" + GROUPS_NODE_URL);
     }
 
-    public void observerUserGroupsAddition(final ObjectReceivedHandler handler) {
+    public void observeUserGroupsAddition(final ObjectReceivedHandler handler) {
         // TODO:
         // Get the last-update time in the local db
         Long localUpdateTime = null; // LastUpdateTable.getLastUpdateDate();
@@ -143,11 +142,13 @@ public class UserGroupsDB {
             @Override
             public void onObjectReceived(Object obj) {
                 Group group = (Group) obj;
-                groups.add(group);
 
-                // Checking index explicitly - For multithreading safety
-                int newGroupIndex = groups.indexOf(group);
-                handler.onObjectReceived(newGroupIndex);
+                // If the group doesn't already exist (Just in case..)
+                if (!groups.contains(group)) {
+                    groups.add(group);
+                }
+
+                handler.onObjectReceived(group);
             }
 
             @Override
@@ -173,10 +174,7 @@ public class UserGroupsDB {
                 // Remove the group from memory
                 Group removedGroup = groups.remove(groupIndex);
 
-                handler.onObjectReceived(groupIndex);
-
-                // TODO: Send the group as well?
-//                whenGroupDeleted(groupIndex, removedGroup)
+                handler.onObjectReceived(removedGroup);
             }
 
             @Override
@@ -221,16 +219,35 @@ public class UserGroupsDB {
 //        userGroupsRef.removeAllObservers()
 //    }
 
-    public int getGroupsCount() {
+    // --------------------
+    // Container functions
+    // --------------------
+    public static int getGroupsCount() {
         return groups.size();
     }
 
-
-    public Group getGroup(int position) {
+    public static Group getGroup(int position) {
         if (position < getGroupsCount()) {
             return groups.get(position);
         }
 
         return null;
+    }
+
+    public static String title(String groupKey) {
+        // TODO: Java8? groups.stream().filter(group -> group.getKey().equals(groupKey)).collect(Collectors.toList())???
+        for (Group group : groups) {
+            if (group.getKey().equals(groupKey)) {
+                return group.getTitle();
+            }
+        }
+
+        // TODO: strings.xml
+        return "N/A";
+    }
+
+    public static List<Group> getAllGroups() {
+        // Create a read-only copy of the list of groups.
+        return Collections.unmodifiableList(groups);
     }
 }

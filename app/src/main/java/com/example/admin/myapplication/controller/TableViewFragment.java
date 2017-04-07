@@ -98,4 +98,6 @@ public abstract class TableViewFragment extends Fragment {
             catch(NullPointerException ex) {}
         }
     }
+
+    protected abstract void refresh();
 }

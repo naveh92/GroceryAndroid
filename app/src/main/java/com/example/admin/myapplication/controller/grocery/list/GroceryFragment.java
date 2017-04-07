@@ -16,8 +16,11 @@ import android.widget.Spinner;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableViewFragment;
+import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.database.remote.RemoteDatabaseManager;
+import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
+import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.grocery.request.GroceryRequestsTableActivity;
 import com.example.admin.myapplication.controller.grocery.request.GroupComboBoxAdapter;
 import com.example.admin.myapplication.model.entities.GroceryList;
@@ -27,6 +30,7 @@ import com.example.admin.myapplication.model.entities.Group;
  * Created by admin on 04/04/2017.
  */
 public class GroceryFragment extends TableViewFragment {
+    private UserGroceryListsDB db;
     private static GroceryListTableAdapter adapter;
 
     @Override
@@ -57,19 +61,7 @@ public class GroceryFragment extends TableViewFragment {
             }
         });
 
-        ObjectReceivedHandler listReceivedHandler = new ObjectReceivedHandler() {
-            @Override
-            public void onObjectReceived(Object list) {
-                adapter.onListReceived((GroceryList) list);
-            }
-
-            @Override
-            public void removeAllObjects() {
-                adapter.removeAllLists();
-            }
-        };
-
-        RemoteDatabaseManager.getInstance().observeListsAddition(listReceivedHandler);
+        fetchLists();
 
         return view;
     }
@@ -86,9 +78,10 @@ public class GroceryFragment extends TableViewFragment {
         listTitleText.requestFocus();
 
         final Spinner groupComboBox = (Spinner) dialog.findViewById(R.id.spinner);
-        // TODO: This should be UserGroupsDB.
-        GroupComboBoxAdapter adapter = new GroupComboBoxAdapter(context, android.R.layout.simple_spinner_item, GroupsDB.getInstance().getAllGroups());
-        groupComboBox.setAdapter(adapter);
+        GroupComboBoxAdapter comboBoxAdapter = new GroupComboBoxAdapter(context,
+                                                                android.R.layout.simple_spinner_item,
+                                                                UserGroupsDB.getAllGroups());
+        groupComboBox.setAdapter(comboBoxAdapter);
 
         ImageButton confirmButton = (ImageButton) dialog.findViewById(R.id.confirm);
 
@@ -111,6 +104,11 @@ public class GroceryFragment extends TableViewFragment {
         dialog.show();
     }
 
+    @Override
+    protected void refresh() {
+        fetchLists();
+    }
+
     public void deleteList(int position) {
         GroceryList list = adapter.getList(position);
 
@@ -118,5 +116,36 @@ public class GroceryFragment extends TableViewFragment {
             String listKey = list.getKey();
             RemoteDatabaseManager.getInstance().deleteList(listKey);
         }
+    }
+
+    private void fetchLists() {
+        ObjectReceivedHandler listReceivedHandler = new ObjectReceivedHandler() {
+            @Override
+            public void onObjectReceived(Object list) {
+                adapter.onListReceived((GroceryList) list);
+            }
+
+            @Override
+            public void removeAllObjects() {
+                adapter.removeAllLists();
+            }
+        };
+
+
+        ObjectReceivedHandler listDeletedHandler = new ObjectReceivedHandler() {
+            @Override
+            public void onObjectReceived(Object list) {
+                adapter.removeList((GroceryList)list);
+            }
+
+            @Override
+            public void removeAllObjects() {}
+        };
+
+        if (db == null) {
+            db = new UserGroceryListsDB(AuthenticationManager.getInstance().getCurrentUserId());
+        }
+
+        db.observeLists(listReceivedHandler, listDeletedHandler);
     }
 }

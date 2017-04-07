@@ -13,11 +13,13 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 
 import com.example.admin.myapplication.R;
+import com.example.admin.myapplication.controller.MainActivity;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableViewFragment;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
+import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.group.members.GroupMembersTableActivity;
 import com.example.admin.myapplication.model.entities.Group;
 
@@ -25,6 +27,9 @@ import com.example.admin.myapplication.model.entities.Group;
  * Created by admin on 04/04/2017.
  */
 public class GroupFragment extends TableViewFragment {
+    private UserGroupsDB db;
+    private GroupTableAdapter adapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -34,7 +39,7 @@ public class GroupFragment extends TableViewFragment {
         addNewButton = (ImageButton) view.findViewById(R.id.add_new_object_button);
 
         GridView gridview = (GridView) view.findViewById(R.id.gridview);
-        final GroupTableAdapter adapter = new GroupTableAdapter(getActivity());
+        adapter = new GroupTableAdapter(getActivity());
         gridview.setAdapter(adapter);
 
         // Register the animations when gridview is touched.
@@ -53,19 +58,27 @@ public class GroupFragment extends TableViewFragment {
             }
         });
 
+        fetchGroups();
+
+        return view;
+    }
+
+    private void fetchGroups() {
         ObjectReceivedHandler groupReceivedHandler = new ObjectReceivedHandler() {
             @Override
             public void onObjectReceived(Object group) {
-                adapter.onGroupReceived((Group) group);
+                // In case this happens on refresh when MainActivity is first created
+                if (adapter != null) {
+                    adapter.onGroupReceived((Group) group);
+                }
             }
 
             @Override
             public void removeAllObjects() {}
         };
 
-        GroupsDB.getInstance().observeGroupsAddition(groupReceivedHandler);
-
-        return view;
+        db = new UserGroupsDB(AuthenticationManager.getInstance().getCurrentUserId());
+        db.observeUserGroupsAddition(groupReceivedHandler);
     }
 
     @Override
@@ -96,18 +109,27 @@ public class GroupFragment extends TableViewFragment {
                 // Get userKey from Auth
                 String userKey = AuthenticationManager.getInstance().getCurrentUserId();
 
-                // TODO: UserGroupsDB? GroupMembersDB?
                 // Add the group
                 String groupKey = GroupsDB.getInstance().addNewGroup(newGroup, userKey);
 
                 // Add the user as a group member
                 new GroupMembersDB(groupKey).addMember(userKey);
 
-                // TODO: Add the group to the users list of groups
-                // UserGroupsDB.add();
+                // Make sure db is not null
+                if (db == null) {
+                    db = new UserGroupsDB(AuthenticationManager.getInstance().getCurrentUserId());
+                }
+
+                // Add the group to the users list of groups
+                db.addGroupToUser(groupKey);
             }
         });
 
         dialog.show();
+    }
+
+    @Override
+    protected void refresh() {
+        fetchGroups();
     }
 }

@@ -35,33 +35,6 @@ public class GroupsDB {
         return instance;
     }
 
-    public void observeGroupsAddition(final ObjectReceivedHandler handler) {
-        // Read from the database
-        groupsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-
-                // Clear the list - we are about to getGroup a new value.
-                groups.clear();
-
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    Group group = mapToGroup(child.getKey(), ((Map<String, Object>)child.getValue()));
-
-                    groups.add(group);
-                    handler.onObjectReceived(group);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read groups value.", error.toException());
-            }
-        });
-    }
-
     public String addNewGroup(Group group, String userKey) {
         // Generate a key for the new group
         String key = groupsRef.push().getKey();
@@ -69,10 +42,6 @@ public class GroupsDB {
 
         // Set the values
         groupsRef.child(key).setValue(postValues);
-
-        // TODO:
-//        new UserGroupsDB(userKey).addGroupToUser(key);
-        // TODO: GroupMembersDB?
 
         return key;
     }
@@ -87,13 +56,9 @@ public class GroupsDB {
         groupsRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    // Extract the object
-                    Group group = mapToGroup(child.getKey(), (Map<String, Object>)child.getValue());
-
-                    groups.add(group);
-                    handler.onObjectReceived(group);
-                }
+                // Extract the object
+                Group group = mapToGroup(dataSnapshot.getKey(), (Map<String, Object>)dataSnapshot.getValue());
+                handler.onObjectReceived(group);
             }
 
             @Override
@@ -109,35 +74,5 @@ public class GroupsDB {
         String title = (String) values.get("title");
 
         return new Group(groupKey, title);
-    }
-
-    // --------------------
-    // Container functions
-    // --------------------
-    private static List<Group> groups = new ArrayList<>();
-
-    public int groupsNum() {
-        return groups.size();
-    }
-
-    public Group getGroup(int position) {
-        return groups.get(position);
-    }
-
-    public String title(String groupKey) {
-        // TODO: Java8? groups.stream().filter(group -> group.getKey().equals(groupKey)).collect(Collectors.toList())???
-        for (Group group : groups) {
-            if (group.getKey().equals(groupKey)) {
-                return group.getTitle();
-            }
-        }
-
-        // TODO: strings.xml
-        return "N/A";
-    }
-
-    public List<Group> getAllGroups() {
-        // Create a read-only copy of the list of groups.
-        return Collections.unmodifiableList(groups);
     }
 }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
+import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.model.entities.GroceryList;
 
 import java.util.ArrayList;
@@ -52,7 +53,7 @@ public class GroceryListTableAdapter extends BaseAdapter {
         listTitle.setText(list.getTitle());
 
         // Get this lists group title
-        String groupTitle = GroupsDB.getInstance().title(list.getGroupKey());
+        String groupTitle = UserGroupsDB.title(list.getGroupKey());
 
         // Get the GroupName TextView, and set its text.
         TextView groupName = (TextView)view.findViewById(R.id.groupName);
@@ -76,5 +77,9 @@ public class GroceryListTableAdapter extends BaseAdapter {
 
     public GroceryList getList(int position) {
         return groceryLists.get(position);
+    }
+
+    public void removeList(GroceryList list) {
+        groceryLists.remove(list);
     }
 }

@@ -1,7 +1,6 @@
 package com.example.admin.myapplication.controller.authentication;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;

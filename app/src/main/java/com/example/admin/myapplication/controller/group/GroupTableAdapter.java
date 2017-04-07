@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
+import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.model.entities.Group;
 
 /**
@@ -21,11 +22,11 @@ public class GroupTableAdapter extends BaseAdapter {
     }
 
     public int getCount() {
-        return GroupsDB.getInstance().groupsNum();
+        return UserGroupsDB.getGroupsCount();
     }
 
     public Object getItem(int position) {
-        return GroupsDB.getInstance().getGroup(position);
+        return UserGroupsDB.getGroup(position);
     }
 
     public long getItemId(int position) {
@@ -38,7 +39,7 @@ public class GroupTableAdapter extends BaseAdapter {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.group_table_cell, parent, false);
 
-        Group currentGroup = GroupsDB.getInstance().getGroup(position);
+        Group currentGroup = UserGroupsDB.getGroup(position);
 
         // Get the Title TextView, and set its text.
         TextView listTitle = (TextView)view.findViewById(R.id.listTitle);

@@ -19,6 +19,7 @@ import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
+import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.model.entities.User;
 
 /**
@@ -94,8 +95,8 @@ public class GroupMembersTableActivity extends TableViewActivity {
                                 // Remove the user from the group.
                                 db.removeMember(userKey);
 
-                                // TODO: Remove the group from the users list of groups.
-                                // UserGroupsDB.removeGroup(groupKey);
+                                // Remove the group from the users list of groups.
+                                new UserGroupsDB(AuthenticationManager.getInstance().getCurrentUserId()).removeGroupFromUser(groupKey);
 
                                 // Mock a back press so that we exit this activity and go back to the list of groups.
                                 GroupMembersTableActivity.this.onBackPressed();
@@ -137,8 +138,8 @@ public class GroupMembersTableActivity extends TableViewActivity {
                     // Add the member to the group.
                     db.addMember(user.getKey());
 
-                    // TODO: Register the group in the member's  list of group.
-//                new UserGroupsDB(user.getKey()).addGroup(groupKey);
+                    // Add the group to the users list of groups
+                    new UserGroupsDB(user.getKey()).addGroupToUser(groupKey);
             }
         });
 
