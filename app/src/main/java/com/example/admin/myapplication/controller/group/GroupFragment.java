@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableViewFragment;
+import com.example.admin.myapplication.controller.database.remote.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.group.members.GroupMembersTableActivity;
@@ -92,8 +93,8 @@ public class GroupFragment extends TableViewFragment {
                 // Add the new group to the database.
                 Group newGroup = new Group("", groupTitle);
 
-                // TODO: Get from Auth
-                String userKey = "IBln4QIZm0TCveScQERgOcm0vBe2";
+                // Get userKey from Auth
+                String userKey = AuthenticationManager.getCurrentUserId();
 
                 // TODO: UserGroupsDB? GroupMembersDB?
                 // Add the group

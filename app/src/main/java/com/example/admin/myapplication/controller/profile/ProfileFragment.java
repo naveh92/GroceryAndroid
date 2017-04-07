@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
+import com.example.admin.myapplication.controller.database.remote.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
 import com.example.admin.myapplication.model.entities.User;
@@ -26,8 +27,8 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.profile_view, container, false);
 
-        // TODO: Get the userKey from Auth
-        String userKey = "IBln4QIZm0TCveScQERgOcm0vBe2";
+        // Get userKey from Auth
+        String userKey = AuthenticationManager.getCurrentUserId();
 
         initUsernameTextView(userKey, (TextView) view.findViewById(R.id.userNameTV));
         initImageView(userKey, (ImageView) view.findViewById(R.id.imageView));
@@ -90,8 +91,8 @@ public class ProfileFragment extends Fragment {
 //                // Add the new group to the database.
 //                Group newGroup = new Group("", groupTitle);
 //
-//                // TODO: Get from Auth
-//                String userKey = "IBln4QIZm0TCveScQERgOcm0vBe2";
+//        // Get userKey from Auth
+//        String userKey = AuthenticationManager.getCurrentUserId();
 //
 //                // TODO: UserGroupsDB? GroupMembersDB?
 //                GroupsDB.getInstance().addNewGroup(newGroup, userKey);
