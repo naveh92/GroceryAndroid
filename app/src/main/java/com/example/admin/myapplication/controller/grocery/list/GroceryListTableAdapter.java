@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
@@ -59,7 +59,7 @@ public class GroceryListTableAdapter extends BaseAdapter {
         groupName.setText(groupTitle);
 
         // Get the PopupMenu button and set its id to the position.
-        ImageButton popupButton = (ImageButton)view.findViewById(R.id.popup);
+        ImageView popupButton = (ImageView)view.findViewById(R.id.popupBtn);
         popupButton.setId(position);
 
         return view;

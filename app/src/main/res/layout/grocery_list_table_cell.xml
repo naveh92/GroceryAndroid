@@ -4,43 +4,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    android:padding="5dp"
-    android:clickable="true" >
+    android:padding="5dp" >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="ListTitle"
+        android:text="listTitle"
         android:id="@+id/listTitle"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:singleLine="true" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="groupName"
+        android:text="groupTitle"
         android:id="@+id/groupName"
-        android:textColor="#999999"
+        android:fontFamily="sans-serif-light"
         android:layout_below="@+id/listTitle"
-        android:layout_alignParentStart="true"
-        android:singleLine="true" />
+        android:layout_alignParentStart="true" />
 
-    <ImageButton
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/popup"
-        android:onClick="showListPopup"
-        android:layout_alignParentEnd="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        android:layout_alignParentTop="true"
+        android:id="@+id/popupBtn"
+        android:src="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
         android:layout_alignBottom="@+id/groupName"
-        android:layout_margin="10dp"
-        android:background="@null"
-        android:src="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/listTitle"
+        android:layout_marginRight="10dp"
+        android:clickable="true"
+        android:onClick="showListPopup" />
+
 </RelativeLayout>
