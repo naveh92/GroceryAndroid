@@ -1,7 +1,9 @@
 package com.example.admin.myapplication.controller;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -128,11 +130,21 @@ public class MainActivity extends FragmentActivity {
                     // action with ID action_refresh was selected
                     case R.id.action_delete_list:
                     {
-                        Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
+                        // TODO: Strings.xml
+                        // Show confirmation Dialog
+                        new AlertDialog.Builder(MainActivity.this).setTitle("Delete grocery list?")
+                                .setMessage("Are you sure?")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        // Get the current fragment
+                                        Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
 
-                        if (fragment instanceof GroceryFragment) {
-                            ((GroceryFragment) fragment).deleteList(position);
-                        }
+                                        if (fragment instanceof GroceryFragment) {
+                                            ((GroceryFragment) fragment).deleteList(position);
+                                        }
+                                    }})
+                                .setNegativeButton(android.R.string.no, null).show();
 
                         break;
                     }
