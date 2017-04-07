@@ -1,6 +1,5 @@
 package com.example.admin.myapplication.controller.profile;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -13,7 +12,7 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
-import com.example.admin.myapplication.controller.database.remote.AuthenticationManager;
+import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
 import com.example.admin.myapplication.model.entities.User;
@@ -22,13 +21,15 @@ import com.example.admin.myapplication.model.entities.User;
  * Created by admin on 06/04/2017.
  */
 public class ProfileFragment extends Fragment {
+    private static final String TAG = "ProfileFragment";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.profile_view, container, false);
 
         // Get userKey from Auth
-        String userKey = AuthenticationManager.getCurrentUserId();
+        String userKey = AuthenticationManager.getInstance().getCurrentUserId();
 
         initUsernameTextView(userKey, (TextView) view.findViewById(R.id.userNameTV));
         initImageView(userKey, (ImageView) view.findViewById(R.id.imageView));

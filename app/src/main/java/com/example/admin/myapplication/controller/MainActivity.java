@@ -2,6 +2,7 @@ package com.example.admin.myapplication.controller;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -13,9 +14,11 @@ import android.view.View;
 import android.widget.PopupMenu;
 
 import com.example.admin.myapplication.R;
+import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.grocery.list.GroceryFragment;
 import com.example.admin.myapplication.controller.profile.ProfileFragment;
+import com.facebook.login.LoginManager;
 
 public class MainActivity extends FragmentActivity {
     private static final String TAG = "MainActivity";
@@ -96,6 +99,18 @@ public class MainActivity extends FragmentActivity {
         if (fragment instanceof ProfileFragment) {
             ((ProfileFragment)fragment).changeImageDialog(this);
         }
+    }
+
+    protected void logout(View view) {
+        LoginManager.getInstance().logOut();
+        AuthenticationManager.getInstance().logOut();
+
+        // Once we logged-out, go back to LoginActivity.
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+
+        // Finish this activity.
+        finish();
     }
 
     protected void showListPopup(View v) {

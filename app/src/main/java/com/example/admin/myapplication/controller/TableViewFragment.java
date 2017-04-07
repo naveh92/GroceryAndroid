@@ -69,27 +69,33 @@ public abstract class TableViewFragment extends Fragment {
 
     private void showViews() {
         if (!showingViews) {
-            getActivity().runOnUiThread(new Runnable() {
+            try {
+                getActivity().runOnUiThread(new Runnable() {
 
-                @Override
-                public void run() {
-                    addNewButton.animate().translationY(0).setInterpolator(new DecelerateInterpolator(DECELERATE_FACTOR)).start();
-                    showingViews = true;
-                }
-            });
+                    @Override
+                    public void run() {
+                        addNewButton.animate().translationY(0).setInterpolator(new DecelerateInterpolator(DECELERATE_FACTOR)).start();
+                        showingViews = true;
+                    }
+                });
+            }
+            catch(NullPointerException ex) {}
         }
     }
 
     private void hideViews() {
         if (showingViews) {
-            getActivity().runOnUiThread(new Runnable() {
+            try {
+                getActivity().runOnUiThread(new Runnable() {
 
-                @Override
-                public void run() {
-                    addNewButton.animate().translationY(addNewButton.getHeight() + addNewButton.getY()).setInterpolator(new AccelerateInterpolator(ACCELERATE_FACTOR)).start();
-                    showingViews = false;
-                }
-            });
+                    @Override
+                    public void run() {
+                        addNewButton.animate().translationY(addNewButton.getHeight() + addNewButton.getY()).setInterpolator(new AccelerateInterpolator(ACCELERATE_FACTOR)).start();
+                        showingViews = false;
+                    }
+                });
+            }
+            catch(NullPointerException ex) {}
         }
     }
 }

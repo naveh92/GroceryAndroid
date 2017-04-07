@@ -20,15 +20,15 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/imageView"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/userNameTV"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/user" />
+        android:src="@drawable/user"
+        android:layout_above="@+id/logout" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -41,16 +41,32 @@
         android:layout_alignTop="@+id/imageView"
         android:layout_alignEnd="@+id/imageView" />
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/button_facebook_login"
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="75dp"
-        android:layout_marginLeft="75dp"
-        android:layout_marginBottom="30dp"
+        android:id="@+id/logout"
+        android:onClick="logout"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginLeft="75dp"
+        android:layout_marginRight="75dp"
+        android:layout_marginBottom="20dp"
+        android:background="@null"
+        android:src="@drawable/logout"
+        android:scaleType="fitCenter" />
+
+
+    <!--        <com.facebook.login.widget.LoginButton
+                android:id="@+id/button_facebook_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="75dp"
+                android:layout_marginLeft="75dp"
+                android:layout_marginBottom="30dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerHorizontal="true" />-->
 
 </RelativeLayout>

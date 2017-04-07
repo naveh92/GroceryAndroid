@@ -13,7 +13,7 @@ import android.widget.ImageButton;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableViewActivity;
-import com.example.admin.myapplication.controller.database.remote.AuthenticationManager;
+import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.RequestsDB;
 import com.example.admin.myapplication.model.entities.GroceryRequest;
 
@@ -99,7 +99,7 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
                 String itemName = itemNameText.getText().toString();
 
                 // Get userKey from Auth
-                String userKey = AuthenticationManager.getCurrentUserId();
+                String userKey = AuthenticationManager.getInstance().getCurrentUserId();
 
                 // Add the new request to the database.
                 GroceryRequest newRequest = new GroceryRequest(itemName, userKey);

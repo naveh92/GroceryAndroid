@@ -17,7 +17,7 @@ import android.widget.ImageButton;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableViewActivity;
-import com.example.admin.myapplication.controller.database.remote.AuthenticationManager;
+import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
 import com.example.admin.myapplication.model.entities.User;
 
@@ -88,7 +88,7 @@ public class GroupMembersTableActivity extends TableViewActivity {
                         .setPositiveButton(R.string.leave, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 // Get userKey from Auth
-                                String userKey = AuthenticationManager.getCurrentUserId();
+                                String userKey = AuthenticationManager.getInstance().getCurrentUserId();
 
                                 // Remove the user from the group.
                                 db.removeMember(userKey);
