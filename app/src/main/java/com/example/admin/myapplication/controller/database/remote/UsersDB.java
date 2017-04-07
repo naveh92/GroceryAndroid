@@ -68,10 +68,17 @@ public class UsersDB {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // Extract the User object
-                    User user = mapToUser(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue());
-// TODO:                   let userSnapshot = (snapshot.value as! Dictionary<String, Any>).first!
-                    handler.onObjectReceived(user);
+                    // Go over all the users that we received (Supposedly only 1 user).
+                    for (Map.Entry<String, Map<String, Object>> entry : ((Map<String, Map<String, Object>>)dataSnapshot.getValue()).entrySet()) {
+                        String userKey = entry.getKey();
+                        Map<String, Object> userValue = entry.getValue();
+
+                        // Extract the User object
+                        User user = mapToUser(userKey, userValue);
+                        handler.onObjectReceived(user);
+
+                        break;
+                    }
                 }
             }
 

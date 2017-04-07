@@ -154,8 +154,30 @@ public class GroupMembersTableActivity extends TableViewActivity {
             }
         };
 
+        ObjectReceivedHandler whenFinished = new ObjectReceivedHandler() {
+            @Override
+            public void onObjectReceived(Object obj) {
+                Boolean noFriendsToAdd = (Boolean) obj;
+
+                if (noFriendsToAdd) {
+                    // TODO: Strings.xml
+                    // Show alert dialog
+                    new AlertDialog.Builder(GroupMembersTableActivity.this).setTitle("Sorry!")
+                            .setMessage("There are no more members to add to this group.")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    dialog.dismiss();
+                                }}).show();
+                }
+            }
+
+            @Override
+            public void removeAllObjects() {}
+        };
+
         // Retrieve relevant users from Facebook
-//        FacebookFriendsFinder
+        new FacebookFriendsFinder().find(adapter.getAllMembers(), facebookFriendHandler, whenFinished);
         db.observeGroupMembers(facebookFriendHandler);
 
         dialog.show();

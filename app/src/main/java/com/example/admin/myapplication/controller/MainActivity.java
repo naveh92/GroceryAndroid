@@ -107,6 +107,9 @@ public class MainActivity extends FragmentActivity {
         LoginManager.getInstance().logOut();
         AuthenticationManager.getInstance().logOut();
 
+        // Clear the access token cache.
+        AuthenticationManager.getInstance().clearAccessToken();
+
         // Once we logged-out, go back to LoginActivity.
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);

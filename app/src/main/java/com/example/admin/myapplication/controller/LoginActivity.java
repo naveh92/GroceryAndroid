@@ -9,9 +9,11 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -52,6 +54,9 @@ public class LoginActivity extends Activity {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged: signed_in:" + user.getUid());
                     updateUI(user);
+
+                    // Set the access token.
+                    AuthenticationManager.getInstance().setAccessToken(AccessToken.getCurrentAccessToken());
 
                     // Once we logged-in, move on to the main activity.
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);

@@ -14,6 +14,7 @@ import com.example.admin.myapplication.model.entities.GroceryRequest;
 import com.example.admin.myapplication.model.entities.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -69,5 +70,10 @@ public class GroupMembersTableAdapter extends ImageCellBaseAdapter {
 
     public void removeAllMembers() {
         members.clear();
+    }
+
+    public List<User> getAllMembers() {
+        // Create an unmodifiable copy of the members.
+        return Collections.unmodifiableList(members);
     }
 }
