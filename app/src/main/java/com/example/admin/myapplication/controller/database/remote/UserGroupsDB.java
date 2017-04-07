@@ -144,7 +144,7 @@ public class UserGroupsDB {
                 Group group = (Group) obj;
 
                 // If the group doesn't already exist (Just in case..)
-                if (!groups.contains(group)) {
+                if (!containsGroup(group)) {
                     groups.add(group);
                 }
 
@@ -159,6 +159,17 @@ public class UserGroupsDB {
         GroupsDB.getInstance().findGroupByKey(groupKey, receivedGroupHandler);
     }
 
+    private Boolean containsGroup(Group group) {
+        // TODO: Synchronized
+        for (Group g : groups) {
+            if (g.getKey().equals(group.getKey())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void observeUserGroupsDeletion(final ObjectReceivedHandler handler) {
         userGroupsRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -169,12 +180,14 @@ public class UserGroupsDB {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                int groupIndex = getGroupIndexByKey(dataSnapshot.getKey());
+                Integer groupIndex = getGroupIndexByKey(dataSnapshot.getKey());
 
-                // Remove the group from memory
-                Group removedGroup = groups.remove(groupIndex);
+                if (groupIndex != null) {
+                    // Remove the group from memory
+                    Group removedGroup = groups.remove(groupIndex.intValue());
 
-                handler.onObjectReceived(removedGroup);
+                    handler.onObjectReceived(removedGroup);
+                }
             }
 
             @Override
@@ -243,7 +256,7 @@ public class UserGroupsDB {
         }
 
         // TODO: strings.xml
-        return "N/A";
+        return "";
     }
 
     public static List<Group> getAllGroups() {

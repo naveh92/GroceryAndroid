@@ -20,6 +20,8 @@ public class UserGroceryListsDB {
     }
 
     public void observeLists(final ObjectReceivedHandler listAdded, final ObjectReceivedHandler listDeleted) {
+        listAdded.removeAllObjects();
+
         final ObjectReceivedHandler privateListAdded = new ObjectReceivedHandler() {
             @Override
             public void onObjectReceived(Object obj) {
@@ -27,7 +29,7 @@ public class UserGroceryListsDB {
 
                 synchronized (lists) {
                     // Make sure the list doesn't already exist. (Just in case..)
-                    if (!lists.contains(addedList)) {
+                    if (!containsList(addedList)) {
                         lists.add(addedList);
                     }
                 }
@@ -94,7 +96,19 @@ public class UserGroceryListsDB {
         groupsDB.observeUserGroupsDeletion(groupDeleted);
     }
 
-    private boolean containsListDb(String groupKey) {
+    private Boolean containsList(GroceryList list) {
+        synchronized (lists) {
+            for (GroceryList l : lists) {
+                if (l.getKey().equals(list.getKey())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private Boolean containsListDb(String groupKey) {
         for (GroceryListsByGroupDB db : listsDbs) {
             if (db.getGroupKey().equals(groupKey)) {
                 return true;
@@ -111,14 +125,17 @@ public class UserGroceryListsDB {
             for (GroceryList list : lists) {
                 if (list.getGroupKey().equals(groupKey)) {
                     listsToRemove.add(list);
-
-                    // Notify the callback for every list removed.
-                    listRemovedHandler.onObjectReceived(list);
                 }
             }
+            // TODO: Close the synchronized here?
 
-            // Remove all the lists we found
-            lists.removeAll(listsToRemove);
+            for (GroceryList list : listsToRemove) {
+                // Remove all the lists we found
+                lists.removeAll(listsToRemove);
+
+                // Notify the callback for every list removed.
+                listRemovedHandler.onObjectReceived(list);
+            }
         }
     }
 
@@ -139,9 +156,16 @@ public class UserGroceryListsDB {
 //
 
     public int getListsCount() {
-        return lists.size();
+        int count;
+
+        synchronized (lists) {
+            count = lists.size();
+        }
+
+        return count;
     }
 
+    // TODO:
     public Boolean doesUserHaveGroup() {
         return UserGroupsDB.getGroupsCount() > 0;
     }
