@@ -16,13 +16,15 @@ import com.example.admin.myapplication.model.entities.Group;
  */
 public class GroupTableAdapter extends BaseAdapter {
     private Context mContext;
+    private UserGroupsDB db;
 
-    public GroupTableAdapter(Context c) {
+    public GroupTableAdapter(Context c, UserGroupsDB db) {
         mContext = c;
+        this.db = db;
     }
 
     public int getCount() {
-        return UserGroupsDB.getGroupsCount();
+        return db.getGroupsCount();
     }
 
     public Object getItem(int position) {
@@ -39,16 +41,16 @@ public class GroupTableAdapter extends BaseAdapter {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.group_table_cell, parent, false);
 
-        Group currentGroup = UserGroupsDB.getGroup(position);
+        Group currentGroup = db.getGroup(position);
 
         // Get the Title TextView, and set its text.
-        TextView listTitle = (TextView)view.findViewById(R.id.listTitle);
-        listTitle.setText(currentGroup.getTitle());
+        TextView groupTitle = (TextView)view.findViewById(R.id.groupTitle);
+        groupTitle.setText(currentGroup.getTitle());
 
         return view;
     }
 
-    public void onGroupReceived(Group group) {
+    public void onGroupReceived() {
         notifyDataSetChanged();
     }
 }

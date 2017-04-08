@@ -180,7 +180,7 @@ public class UserGroceryListsDB {
 
     // TODO:
     public Boolean doesUserHaveGroup() {
-        return UserGroupsDB.getGroupsCount() > 0;
+        return groupsDB.getGroupsCount() > 0;
     }
 
     public GroceryList getGroceryList(int position) {
@@ -195,5 +195,9 @@ public class UserGroceryListsDB {
 
     public void removeList(GroceryList list) {
         lists.remove(list);
+    }
+
+    public List<Group> getAllGroups() {
+        return groupsDB.getAllGroups();
     }
 }

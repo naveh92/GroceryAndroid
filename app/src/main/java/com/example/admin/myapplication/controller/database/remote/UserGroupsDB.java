@@ -23,7 +23,7 @@ public class UserGroupsDB {
     private static final String GROUPS_NODE_URL = "groups";
     private DatabaseReference userRef;
     private DatabaseReference userGroupsRef;
-    private static List<Group> groups = new ArrayList<>();
+    private List<Group> groups = new ArrayList<>();
 
     public UserGroupsDB(String userKey) {
         userRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + "/" + userKey);
@@ -233,11 +233,11 @@ public class UserGroupsDB {
     // --------------------
     // Container functions
     // --------------------
-    public static int getGroupsCount() {
+    public int getGroupsCount() {
         return groups.size();
     }
 
-    public static Group getGroup(int position) {
+    public Group getGroup(int position) {
         if (position < getGroupsCount()) {
             return groups.get(position);
         }
@@ -245,7 +245,7 @@ public class UserGroupsDB {
         return null;
     }
 
-    public static List<Group> getAllGroups() {
+    public List<Group> getAllGroups() {
         // Create a read-only copy of the list of groups.
         return Collections.unmodifiableList(groups);
     }

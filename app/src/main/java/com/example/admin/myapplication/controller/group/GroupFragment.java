@@ -38,8 +38,12 @@ public class GroupFragment extends TableViewFragment {
         // Save the add button for animations later
         addNewButton = (ImageButton) view.findViewById(R.id.add_new_object_button);
 
+        if (db == null) {
+            db = new UserGroupsDB(AuthenticationManager.getInstance().getCurrentUserId());
+        }
+
         GridView gridview = (GridView) view.findViewById(R.id.gridview);
-        adapter = new GroupTableAdapter(getActivity());
+        adapter = new GroupTableAdapter(getActivity(), db);
         gridview.setAdapter(adapter);
 
         // Register the animations when gridview is touched.
@@ -50,7 +54,7 @@ public class GroupFragment extends TableViewFragment {
                 // Open an activity for the group that was clicked - show all members in it.
                 Intent intent = new Intent(getActivity(), GroupMembersTableActivity.class);
 
-                Group group = UserGroupsDB.getGroup(position);
+                Group group = db.getGroup(position);
                 intent.putExtra("groupKey", group.getKey()); // Add the groupKey for the next activity.
                 intent.putExtra("groupTitle", group.getTitle()); // Add the groupTitle for the next activity.
 
@@ -69,7 +73,7 @@ public class GroupFragment extends TableViewFragment {
             public void onGroupReceived(Group group) {
                 // In case this happens on refresh when MainActivity is first created
                 if (adapter != null) {
-                    adapter.onGroupReceived(group);
+                    adapter.onGroupReceived();
                 }
             }
 

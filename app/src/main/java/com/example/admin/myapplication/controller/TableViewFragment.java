@@ -19,9 +19,9 @@ public abstract class TableViewFragment extends Fragment {
     protected ImageButton addNewButton;
     private static long lastTouchTime = 0;
     private static boolean startedThread = false;
-    private static final long delay = 1000;
-    private static final int ACCELERATE_FACTOR = 4;
-    private static final int DECELERATE_FACTOR = 2;
+    private static final long delay = 400;
+    private static final int ACCELERATE_FACTOR = 5;
+    private static final int DECELERATE_FACTOR = 5;
 
     protected void createHideViewsWhenScroll(GridView gridView) {
         gridView.setOnTouchListener(new View.OnTouchListener() {

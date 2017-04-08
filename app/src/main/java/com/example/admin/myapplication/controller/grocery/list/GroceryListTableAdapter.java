@@ -79,16 +79,4 @@ public class GroceryListTableAdapter extends BaseAdapter {
 
         return view;
     }
-
-    public void onListReceived(GroceryList list) {
-        notifyDataSetChanged();
-    }
-
-    public void removeAllLists() {
-        notifyDataSetChanged();
-    }
-
-    public void removeList(GroceryList list) {
-        notifyDataSetChanged();
-    }
 }

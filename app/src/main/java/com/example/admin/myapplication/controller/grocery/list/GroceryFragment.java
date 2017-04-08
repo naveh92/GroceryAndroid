@@ -84,7 +84,7 @@ public class GroceryFragment extends TableViewFragment {
         final Spinner groupComboBox = (Spinner) dialog.findViewById(R.id.spinner);
         GroupComboBoxAdapter comboBoxAdapter = new GroupComboBoxAdapter(context,
                                                                 android.R.layout.simple_spinner_item,
-                                                                UserGroupsDB.getAllGroups());
+                                                                db.getAllGroups());
         groupComboBox.setAdapter(comboBoxAdapter);
 
         ImageButton confirmButton = (ImageButton) dialog.findViewById(R.id.confirm);
@@ -136,26 +136,20 @@ public class GroceryFragment extends TableViewFragment {
         ListReceivedHandler listReceivedHandler = new ListReceivedHandler() {
             @Override
             public void onListReceived(GroceryList list) {
-                if (adapter != null) {
-                    adapter.onListReceived(list);
-                }
+                notifyDataSetChanged();
             }
 
             @Override
             public void removeAllLists() {
-                // TODO: Delete this?
-                if (adapter != null) {
-                    adapter.removeAllLists();
-                }
+                // TODO: Delete this? Check if it is even being called..
+                notifyDataSetChanged();
             }
         };
 
         ListReceivedHandler groupListDeletedHandler = new ListReceivedHandler() {
             @Override
             public void onListReceived(GroceryList list) {
-                if (adapter != null) {
-                    adapter.removeList(list);
-                }
+                notifyDataSetChanged();
             }
 
             @Override

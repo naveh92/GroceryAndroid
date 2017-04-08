@@ -9,7 +9,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="listTitle"
         android:id="@+id/listTitle"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_alignParentTop="true"
@@ -19,7 +18,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="groupTitle"
         android:id="@+id/groupName"
         android:fontFamily="sans-serif-light"
         android:layout_below="@+id/listTitle"
