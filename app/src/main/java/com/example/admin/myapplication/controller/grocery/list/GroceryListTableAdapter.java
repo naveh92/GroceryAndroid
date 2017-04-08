@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
+import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.model.entities.GroceryList;
 
@@ -21,15 +22,16 @@ import java.util.List;
  * Created by admin on 04/04/2017.
  */
 public class GroceryListTableAdapter extends BaseAdapter {
-    private List<GroceryList> groceryLists = new ArrayList<>();
     private Context mContext;
+    UserGroceryListsDB db;
 
-    public GroceryListTableAdapter(Context c) {
+    public GroceryListTableAdapter(Context c, UserGroceryListsDB db) {
         mContext = c;
+        this.db = db;
     }
 
     public int getCount() {
-        return groceryLists.size();
+        return db.getListsCount();
     }
 
     public Object getItem(int position) {
@@ -47,11 +49,12 @@ public class GroceryListTableAdapter extends BaseAdapter {
         View view = inflater.inflate(R.layout.grocery_list_table_cell, parent, false);
 
         // Get the relevant grocery-list
-        GroceryList list = groceryLists.get(position);
+        GroceryList list = db.getGroceryList(position);
+        String listTitle = list.getTitle();
 
         // Get the Title TextView, and set its text.
-        TextView listTitle = (TextView)view.findViewById(R.id.listTitle);
-        listTitle.setText(list.getTitle());
+        TextView listTitleTV = (TextView)view.findViewById(R.id.listTitle);
+        listTitleTV.setText(listTitle);
 
         // Get this lists group title
         String groupTitle = UserGroupsDB.title(list.getGroupKey());
@@ -68,25 +71,27 @@ public class GroceryListTableAdapter extends BaseAdapter {
     }
 
     public void onListReceived(GroceryList list) {
-        // Make sure the list doesn't already exist. (Just in case...)
-        if (!groceryLists.contains(list)) {
-            groceryLists.add(list);
-            Collections.sort(groceryLists);
-            notifyDataSetChanged();
-        }
+//        // Make sure the list doesn't already exist. (Just in case...)
+//        if (!groceryLists.contains(list)) {
+//            groceryLists.add(list);
+//            Collections.sort(groceryLists);
+//            notifyDataSetChanged();
+//        }
+
+        notifyDataSetChanged();
     }
 
     public void removeAllLists() {
-        groceryLists.clear();
-    }
-
-    public GroceryList getList(int position) {
-        return groceryLists.get(position);
+        // TODO
+//        groceryLists.clear();
+        notifyDataSetChanged();
     }
 
     public void removeList(GroceryList list) {
-        groceryLists.remove(list);
-        Collections.sort(groceryLists);
+//        groceryLists.remove(list);
+//        Collections.sort(groceryLists);
+//        notifyDataSetChanged();
+
         notifyDataSetChanged();
     }
 }

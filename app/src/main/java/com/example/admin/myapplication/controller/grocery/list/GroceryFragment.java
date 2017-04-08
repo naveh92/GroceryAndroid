@@ -30,7 +30,7 @@ import com.example.admin.myapplication.model.entities.Group;
  * Created by admin on 04/04/2017.
  */
 public class GroceryFragment extends TableViewFragment {
-    private UserGroceryListsDB db;
+    private static UserGroceryListsDB db;
     private GroceryListTableAdapter adapter;
 
     @Override
@@ -38,11 +38,15 @@ public class GroceryFragment extends TableViewFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.table_view, container, false);
 
+        if (db == null) {
+            db = new UserGroceryListsDB(AuthenticationManager.getInstance().getCurrentUserId());
+        }
+
         // Save the add button for animations later
         addNewButton = (ImageButton) view.findViewById(R.id.add_new_object_button);
 
         GridView gridview = (GridView) view.findViewById(R.id.gridview);
-        adapter = new GroceryListTableAdapter(getActivity());
+        adapter = new GroceryListTableAdapter(getActivity(), db);
         gridview.setAdapter(adapter);
 
         // Register the animations when gridview is touched.
@@ -53,7 +57,7 @@ public class GroceryFragment extends TableViewFragment {
                 // Open an activity for the list that was clicked. need to show all requests in it.
                 Intent intent = new Intent(getActivity(), GroceryRequestsTableActivity.class);
 
-                GroceryList list = adapter.getList(position);
+                GroceryList list = db.getGroceryList(position);
                 intent.putExtra("listKey", list.getKey()); // Add the listKey for the next activity.
                 intent.putExtra("listTitle", list.getTitle()); // Add the listTitle for the next activity.
 
@@ -118,19 +122,15 @@ public class GroceryFragment extends TableViewFragment {
     }
 
     public void deleteList(int position) {
-        if (adapter != null) {
-            GroceryList list = adapter.getList(position);
+        GroceryList list = db.getGroceryList(position);
 
-            if (list != null) {
-                String listKey = list.getKey();
-                ListsDB.getInstance().deleteList(listKey);
-
-                // TODO: Here?
-//                refresh();
-            }
+        if (list != null) {
+            String listKey = list.getKey();
+            ListsDB.getInstance().deleteList(listKey);
         }
 
-        refresh();
+        notifyDataSetChanged();
+//        refresh();
     }
 
     private void fetchLists() {
@@ -144,27 +144,45 @@ public class GroceryFragment extends TableViewFragment {
 
             @Override
             public void removeAllLists() {
+                // TODO: Delete this?
                 if (adapter != null) {
                     adapter.removeAllLists();
                 }
             }
         };
 
-
-        ListReceivedHandler listDeletedHandler = new ListReceivedHandler() {
+        ListReceivedHandler groupListDeletedHandler = new ListReceivedHandler() {
             @Override
             public void onListReceived(GroceryList list) {
-                adapter.removeList(list);
+                if (adapter != null) {
+                    adapter.removeList(list);
+                }
             }
 
             @Override
             public void removeAllLists() {}
         };
 
+//        ListReceivedHandler listDeletedHandler = new ListReceivedHandler() {
+//            @Override
+//            public void onListReceived(GroceryList list) {
+//                if (db != null) {
+//                    db.removeList(list);
+//
+//                    notifyDataSetChanged();
+//                }
+//            }
+//
+//            @Override
+//            public void removeAllLists() {}
+//        };
+
         if (db == null) {
             db = new UserGroceryListsDB(AuthenticationManager.getInstance().getCurrentUserId());
         }
 
-        db.observeLists(listReceivedHandler, listDeletedHandler);
+        db.observeLists(listReceivedHandler, groupListDeletedHandler);
+
+//        ListsDB.getInstance().observeListsDeletion(listDeletedHandler);
     }
 }

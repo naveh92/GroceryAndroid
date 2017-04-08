@@ -21,8 +21,6 @@ public class UserGroceryListsDB {
     }
 
     public void observeLists(final ListReceivedHandler listAdded, final ListReceivedHandler listDeleted) {
-        listAdded.removeAllLists();
-
         final ListReceivedHandler privateListAdded = new ListReceivedHandler() {
             @Override
             public void onListReceived(GroceryList addedList) {
@@ -44,9 +42,7 @@ public class UserGroceryListsDB {
         final ListReceivedHandler privateListDeleted = new ListReceivedHandler() {
             @Override
             public void onListReceived(GroceryList deletedList) {
-                synchronized (lists) {
-                    lists.remove(deletedList);
-                }
+                removeListByKey(deletedList.getKey());
 
                 // After removing from our private collection, notify the original callback
                 listDeleted.onListReceived(deletedList);
@@ -54,6 +50,24 @@ public class UserGroceryListsDB {
 
             @Override
             public void removeAllLists() {}
+
+            private void removeListByKey(String listKey) {
+                GroceryList listToDelete = null;
+
+                synchronized (lists) {
+                    // Find the list to delete
+                    for (GroceryList list : lists) {
+                        if (list.getKey().equals(listKey)) {
+                            listToDelete = list;
+                        }
+                    }
+
+                    if (listToDelete != null) {
+                        // Delete the list
+                        lists.remove(listToDelete);
+                    }
+                }
+            }
         };
 
         GroupReceivedHandler groupAdded = new GroupReceivedHandler() {
@@ -174,5 +188,9 @@ public class UserGroceryListsDB {
         }
 
         return null;
+    }
+
+    public void removeList(GroceryList list) {
+        lists.remove(list);
     }
 }
