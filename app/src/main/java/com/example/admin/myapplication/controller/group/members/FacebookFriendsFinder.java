@@ -2,9 +2,10 @@ package com.example.admin.myapplication.controller.group.members;
 
 import android.os.Bundle;
 
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
+import com.example.admin.myapplication.controller.handlers.BooleanReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 public class FacebookFriendsFinder {
 
-    public void find(final List<User> currentMembers, final ObjectReceivedHandler memberReceived, final ObjectReceivedHandler whenFinishedHandler) {
+    public void find(final List<User> currentMembers, final UserReceivedHandler memberReceived, final BooleanReceivedHandler whenFinishedHandler) {
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id, name");
 
@@ -28,7 +29,7 @@ public class FacebookFriendsFinder {
                                                 "/me/friends", parameters, null, new GraphRequest.Callback() {
             @Override
             public void onCompleted(GraphResponse response) {
-                memberReceived.removeAllObjects();
+                memberReceived.removeAllUsers();
 
                 Boolean noFriendsToAdd = true;
                 // TODO: Switch case on success code?
@@ -64,7 +65,7 @@ public class FacebookFriendsFinder {
 
                 // Notify the caller whether there are friends to add
                 // (If there are, the caller should be waiting..)
-                whenFinishedHandler.onObjectReceived(noFriendsToAdd);
+                whenFinishedHandler.onBooleanReceived(noFriendsToAdd);
             }
         });
 

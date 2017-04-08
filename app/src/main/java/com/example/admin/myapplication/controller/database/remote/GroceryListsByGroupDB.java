@@ -2,7 +2,7 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.util.Log;
 
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.ListReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -26,13 +26,13 @@ public class GroceryListsByGroupDB {
         query = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL).orderByChild("groupKey").equalTo(groupKey);
     }
 
-    public void observeLists(final ObjectReceivedHandler listAddedHandler,
-                             final ObjectReceivedHandler listRemovedHandler) {
+    public void observeLists(final ListReceivedHandler listAddedHandler,
+                             final ListReceivedHandler listRemovedHandler) {
         query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 GroceryList addedList = mapToGroceryList(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue());
-                listAddedHandler.onObjectReceived(addedList);
+                listAddedHandler.onListReceived(addedList);
             }
 
             @Override
@@ -45,7 +45,7 @@ public class GroceryListsByGroupDB {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 GroceryList removedList = mapToGroceryList(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue());
-                listRemovedHandler.onObjectReceived(removedList);
+                listRemovedHandler.onListReceived(removedList);
             }
 
             @Override

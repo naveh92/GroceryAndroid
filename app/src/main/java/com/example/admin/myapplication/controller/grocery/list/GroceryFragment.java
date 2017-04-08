@@ -14,15 +14,14 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import com.example.admin.myapplication.R;
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableViewFragment;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
-import com.example.admin.myapplication.controller.database.remote.GroupsDB;
-import com.example.admin.myapplication.controller.database.remote.RemoteDatabaseManager;
+import com.example.admin.myapplication.controller.database.remote.ListsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.grocery.request.GroceryRequestsTableActivity;
 import com.example.admin.myapplication.controller.grocery.request.GroupComboBoxAdapter;
+import com.example.admin.myapplication.controller.handlers.ListReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
 
@@ -97,7 +96,7 @@ public class GroceryFragment extends TableViewFragment {
 
                 // Add the new list to the database.
                 GroceryList newList = new GroceryList("", groupKey, listTitle);
-                RemoteDatabaseManager.getInstance().addNewList(newList);
+                ListsDB.getInstance().addNewList(newList);
             }
         });
 
@@ -114,32 +113,32 @@ public class GroceryFragment extends TableViewFragment {
 
         if (list != null) {
             String listKey = list.getKey();
-            RemoteDatabaseManager.getInstance().deleteList(listKey);
+            ListsDB.getInstance().deleteList(listKey);
         }
     }
 
     private void fetchLists() {
-        ObjectReceivedHandler listReceivedHandler = new ObjectReceivedHandler() {
+        ListReceivedHandler listReceivedHandler = new ListReceivedHandler() {
             @Override
-            public void onObjectReceived(Object list) {
-                adapter.onListReceived((GroceryList) list);
+            public void onListReceived(GroceryList list) {
+                adapter.onListReceived(list);
             }
 
             @Override
-            public void removeAllObjects() {
+            public void removeAllLists() {
                 adapter.removeAllLists();
             }
         };
 
 
-        ObjectReceivedHandler listDeletedHandler = new ObjectReceivedHandler() {
+        ListReceivedHandler listDeletedHandler = new ListReceivedHandler() {
             @Override
-            public void onObjectReceived(Object list) {
-                adapter.removeList((GroceryList)list);
+            public void onListReceived(GroceryList list) {
+                adapter.removeList(list);
             }
 
             @Override
-            public void removeAllObjects() {}
+            public void removeAllLists() {}
         };
 
         if (db == null) {

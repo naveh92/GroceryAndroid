@@ -11,10 +11,10 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 
 import com.example.admin.myapplication.R;
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.RequestsDB;
+import com.example.admin.myapplication.controller.handlers.RequestReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryRequest;
 
 /**
@@ -56,14 +56,14 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
             }
         });
 
-        ObjectReceivedHandler requestReceivedHandler = new ObjectReceivedHandler() {
+        RequestReceivedHandler requestReceivedHandler = new RequestReceivedHandler() {
             @Override
-            public void onObjectReceived(Object request) {
-                adapter.onRequestReceived((GroceryRequest) request);
+            public void onRequestReceived(GroceryRequest request) {
+                adapter.onRequestReceived(request);
             }
 
             @Override
-            public void removeAllObjects() {
+            public void removeAllRequests() {
                 adapter.removeAllRequests();
             }
         };

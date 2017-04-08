@@ -15,11 +15,12 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 
 import com.example.admin.myapplication.R;
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
+import com.example.admin.myapplication.controller.handlers.BooleanReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 
 /**
@@ -53,14 +54,14 @@ public class GroupMembersTableActivity extends TableViewActivity {
         // Register the animations when gridview is touched.
         super.createHideViewsWhenScroll(gridview);
 
-        ObjectReceivedHandler memberReceivedHandler = new ObjectReceivedHandler() {
+        UserReceivedHandler memberReceivedHandler = new UserReceivedHandler() {
             @Override
-            public void onObjectReceived(Object member) {
-                groupMembersAdapter.onMemberReceived((User) member);
+            public void onUserReceived(User member) {
+                groupMembersAdapter.onMemberReceived(member);
             }
 
             @Override
-            public void removeAllObjects() {
+            public void removeAllUsers() {
                 groupMembersAdapter.removeAllMembers();
             }
         };
@@ -143,23 +144,22 @@ public class GroupMembersTableActivity extends TableViewActivity {
             }
         });
 
-        ObjectReceivedHandler facebookFriendHandler = new ObjectReceivedHandler() {
+        UserReceivedHandler facebookFriendHandler = new UserReceivedHandler() {
             @Override
-            public void onObjectReceived(Object obj) {
-                User user = (User) obj;
+            public void onUserReceived(User user) {
                 newMembersAdapter.onMemberReceived(user);
             }
 
             @Override
-            public void removeAllObjects() {
+            public void removeAllUsers() {
                 newMembersAdapter.removeAllMembers();
             }
         };
 
-        ObjectReceivedHandler whenFinished = new ObjectReceivedHandler() {
+        BooleanReceivedHandler whenFinished = new BooleanReceivedHandler() {
             @Override
-            public void onObjectReceived(Object obj) {
-                Boolean noFriendsToAdd = (Boolean) obj;
+            public void onBooleanReceived(Boolean bool) {
+                Boolean noFriendsToAdd = bool;
 
                 if (noFriendsToAdd) {
                     // TODO: Strings.xml
@@ -173,9 +173,6 @@ public class GroupMembersTableActivity extends TableViewActivity {
                                 }}).show();
                 }
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         // Retrieve relevant users from Facebook

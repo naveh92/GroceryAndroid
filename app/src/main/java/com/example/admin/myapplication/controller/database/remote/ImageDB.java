@@ -3,9 +3,8 @@ package com.example.admin.myapplication.controller.database.remote;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.BitmapReceivedHandler;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -35,7 +34,7 @@ public class ImageDB {
         return instance;
     }
 
-    public void downloadImage(String userKey, ObjectReceivedHandler handler) {
+    public void downloadImage(String userKey, BitmapReceivedHandler handler) {
         String imagePath = userKey + FORMAT_SUFFIX;
 
         // TODO: Make sure the image is up to date.
@@ -44,14 +43,14 @@ public class ImageDB {
         if (imageUpToDate) {
             // TODO: Get the image from the local storage
             Bitmap bitmap = cache.get(userKey);
-            handler.onObjectReceived(bitmap);
+            handler.onBitmapReceived(bitmap);
         }
         else {
             getImageFromRemote(imagePath, handler);
         }
     }
 
-    private void getImageFromRemote(String imagePath, final ObjectReceivedHandler handler) {
+    private void getImageFromRemote(String imagePath, final BitmapReceivedHandler handler) {
         final long ONE_MEGABYTE = 1024 * 1024;
 
         // TODO: Delete this when saving to local storage.
@@ -62,7 +61,7 @@ public class ImageDB {
             public void onSuccess(byte[] bytes) {
                 // Data for requested image returns
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                handler.onObjectReceived(bitmap);
+                handler.onBitmapReceived(bitmap);
 
                 // TODO: Save the image to local storage
                 cache.put(userKey, bitmap);
@@ -71,7 +70,7 @@ public class ImageDB {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
-                handler.onObjectReceived(null);
+                handler.onBitmapReceived(null);
             }
         });
     }

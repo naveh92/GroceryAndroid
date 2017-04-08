@@ -13,14 +13,14 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 
 import com.example.admin.myapplication.R;
-import com.example.admin.myapplication.controller.MainActivity;
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.TableViewFragment;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.group.members.GroupMembersTableActivity;
+import com.example.admin.myapplication.controller.handlers.GroupReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.Group;
 
 /**
@@ -64,9 +64,9 @@ public class GroupFragment extends TableViewFragment {
     }
 
     private void fetchGroups() {
-        ObjectReceivedHandler groupReceivedHandler = new ObjectReceivedHandler() {
+        GroupReceivedHandler groupReceivedHandler = new GroupReceivedHandler() {
             @Override
-            public void onObjectReceived(Object group) {
+            public void onGroupReceived(Group group) {
                 // In case this happens on refresh when MainActivity is first created
                 if (adapter != null) {
                     adapter.onGroupReceived((Group) group);
@@ -74,10 +74,12 @@ public class GroupFragment extends TableViewFragment {
             }
 
             @Override
-            public void removeAllObjects() {}
+            public void removeAllGroups() {}
         };
 
-        db = new UserGroupsDB(AuthenticationManager.getInstance().getCurrentUserId());
+        if (db == null) {
+            db = new UserGroupsDB(AuthenticationManager.getInstance().getCurrentUserId());
+        }
         db.observeUserGroupsAddition(groupReceivedHandler);
     }
 

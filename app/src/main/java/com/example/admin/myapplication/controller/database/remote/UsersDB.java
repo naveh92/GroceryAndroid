@@ -2,8 +2,7 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.util.Log;
 
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
-import com.example.admin.myapplication.model.entities.Group;
+import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -11,10 +10,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,7 +34,7 @@ public class UsersDB {
         return instance;
     }
 
-    public void findUserByKey(final String userKey, final ObjectReceivedHandler handler) {
+    public void findUserByKey(final String userKey, final UserReceivedHandler handler) {
         if (userCache.get(userKey) == null) {
             // Read from the database
             usersRef.child(userKey).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -47,7 +43,7 @@ public class UsersDB {
                     if (dataSnapshot.exists()) {
                         User user = mapToUser(userKey, (Map<String, Object>) dataSnapshot.getValue());
                         userCache.put(userKey, user);
-                        handler.onObjectReceived(user);
+                        handler.onUserReceived(user);
                     }
                 }
 
@@ -59,11 +55,11 @@ public class UsersDB {
             });
         }
         else {
-            handler.onObjectReceived(userCache.get(userKey));
+            handler.onUserReceived(userCache.get(userKey));
         }
     }
 
-    public void findUserByFacebookId(final String facebookId, final ObjectReceivedHandler handler) {
+    public void findUserByFacebookId(final String facebookId, final UserReceivedHandler handler) {
         usersRef.orderByChild("facebookId").equalTo(facebookId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -75,7 +71,7 @@ public class UsersDB {
 
                         // Extract the User object
                         User user = mapToUser(userKey, userValue);
-                        handler.onObjectReceived(user);
+                        handler.onUserReceived(user);
 
                         break;
                     }

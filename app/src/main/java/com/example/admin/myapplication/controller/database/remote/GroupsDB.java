@@ -2,7 +2,7 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.util.Log;
 
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.GroupReceivedHandler;
 import com.example.admin.myapplication.model.entities.Group;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -10,9 +10,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,7 +47,7 @@ public class GroupsDB {
         groupsRef.child(key).removeValue();
     }
 
-    public void findGroupByKey(String key, final ObjectReceivedHandler handler) {
+    public void findGroupByKey(String key, final GroupReceivedHandler handler) {
 //        if (self.groupCache[key as NSString] == nil) {
         // Read from the database
         groupsRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -58,7 +55,7 @@ public class GroupsDB {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Extract the object
                 Group group = mapToGroup(dataSnapshot.getKey(), (Map<String, Object>)dataSnapshot.getValue());
-                handler.onObjectReceived(group);
+                handler.onGroupReceived(group);
             }
 
             @Override

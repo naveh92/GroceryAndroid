@@ -11,10 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
+import com.example.admin.myapplication.controller.handlers.BitmapReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 
 /**
@@ -38,30 +39,28 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initUsernameTextView(String userKey, final TextView userNameTV) {
-        ObjectReceivedHandler userReceivedHandler = new ObjectReceivedHandler() {
+        UserReceivedHandler userReceivedHandler = new UserReceivedHandler() {
             @Override
-            public void onObjectReceived(Object obj) {
-                User user = (User) obj;
+            public void onUserReceived(User user) {
                 userNameTV.setText(user.getName());
             }
 
             @Override
-            public void removeAllObjects() {}
+            public void removeAllUsers() {}
         };
 
         UsersDB.getInstance().findUserByKey(userKey, userReceivedHandler);
     }
 
     private void initImageView(String userKey, final ImageView imageView) {
-        ObjectReceivedHandler imageReceivedHandler = new ObjectReceivedHandler() {
+        BitmapReceivedHandler imageReceivedHandler = new BitmapReceivedHandler() {
             @Override
-            public void onObjectReceived(Object obj) {
-                Bitmap bitmap = (Bitmap) obj;
+            public void onBitmapReceived(Bitmap bitmap) {
                 imageView.setImageBitmap(bitmap);
             }
 
             @Override
-            public void removeAllObjects() {}
+            public void removeAllBitmaps() {}
         };
 
         ImageDB.getInstance().downloadImage(userKey, imageReceivedHandler);

@@ -78,6 +78,10 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
 
+        refreshTab();
+    }
+
+    private void refreshTab() {
         Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
 
         if (fragment instanceof TableViewFragment) {

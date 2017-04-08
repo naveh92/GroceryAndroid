@@ -2,7 +2,8 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.util.Log;
 
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.IntegerReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,7 +40,7 @@ public class GroupMembersDB {
         lastUpdatedRef = FirebaseDatabase.getInstance().getReference(GROUPS_NODE_URL).child(groupKey).child(LAST_UPDATED_NODE);
     }
 
-    public void observeGroupMembers(final ObjectReceivedHandler handler) {
+    public void observeGroupMembers(final UserReceivedHandler handler) {
         // TODO: Go to db and get last updated.
         // TODO: observeLastUpdated(lastUpdateTimeHandler);
         // TODO: Inside the handler when we get the value:
@@ -54,18 +55,18 @@ public class GroupMembersDB {
         }
     }
 
-    private void fetchGroupMembersFromLocalDB(ObjectReceivedHandler handler) {
+    private void fetchGroupMembersFromLocalDB(UserReceivedHandler handler) {
         // TODO:
     }
 
-    private void fetchGroupMembersFromRemoteDBAndUpdateLocalDB(final ObjectReceivedHandler handler, long remoteLastUpdateTime) {
+    private void fetchGroupMembersFromRemoteDBAndUpdateLocalDB(final UserReceivedHandler handler, long remoteLastUpdateTime) {
         // Read from the database
         databaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Clear the list - we are about to get a new value.
                 members.clear();
-                handler.removeAllObjects();
+                handler.removeAllUsers();
 
                 List<String> userKeys = new ArrayList<>();
 
@@ -95,37 +96,33 @@ public class GroupMembersDB {
         return false;
     }
 
-    private void handleGroupMemberAddition(String userKey, final ObjectReceivedHandler handler) {
-        ObjectReceivedHandler foundUserHandler = new ObjectReceivedHandler() {
+    private void handleGroupMemberAddition(String userKey, final UserReceivedHandler handler) {
+        UserReceivedHandler foundUserHandler = new UserReceivedHandler() {
             @Override
-            public void onObjectReceived(Object obj) {
-                if (obj != null) {
-                    if (obj instanceof User) {
-                        User user = (User)obj;
-
-                        members.add(user);
-                        handler.onObjectReceived(user);
-                    }
+            public void onUserReceived(User user) {
+                if (user != null) {
+                    members.add(user);
+                    handler.onUserReceived(user);
                 }
             }
 
             @Override
-            public void removeAllObjects() {}
+            public void removeAllUsers() {}
         };
 
         // Retrieve the user object
         UsersDB.getInstance().findUserByKey(userKey, foundUserHandler);
     }
 
-    private void findGroupMembersCount(final ObjectReceivedHandler handler) {
+    private void findGroupMembersCount(final IntegerReceivedHandler handler) {
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
-                    handler.onObjectReceived(0);
+                    handler.onIntegerReceived(0);
                 }
                 else {
-                    handler.onObjectReceived(((Long)dataSnapshot.getChildrenCount()).intValue());
+                    handler.onIntegerReceived(((Long)dataSnapshot.getChildrenCount()).intValue());
                 }
             }
 
@@ -162,17 +159,13 @@ public class GroupMembersDB {
     }
 
     private void deleteGroupIfEmpty() {
-        ObjectReceivedHandler membersCountHandler = new ObjectReceivedHandler() {
+        IntegerReceivedHandler membersCountHandler = new IntegerReceivedHandler() {
             @Override
-            public void onObjectReceived(Object obj) {
-                Integer count = (Integer) obj;
+            public void onIntegerReceived(Integer count) {
                 if (count == 0) {
                     GroupsDB.getInstance().deleteGroup(GroupMembersDB.this.groupKey);
                 }
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         findGroupMembersCount(membersCountHandler);

@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
+import com.example.admin.myapplication.controller.handlers.BitmapReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 
 import java.util.ArrayList;
@@ -46,16 +48,13 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
 //        // Make sure we haven't already sent a request to the DB for this image.
 //        if (!imagesToDownload.containsKey(userKey)) {
             // Retrieve the user image from storage.
-            ObjectReceivedHandler receivedImageHandler = new ObjectReceivedHandler() {
+            BitmapReceivedHandler receivedImageHandler = new BitmapReceivedHandler() {
                 @Override
-                public void onObjectReceived(Object obj) {
+                public void onBitmapReceived(Bitmap bitmap) {
 //                    List<UpdateView> viewsToUpdate = imagesToDownload.get(userKey);
 
 //                    synchronized (viewsToUpdate) {
-                        if (obj != null) {
-                            // Get the bitmap
-                            Bitmap bitmap = (Bitmap) obj;
-
+                        if (bitmap != null) {
                             DisplayMetrics dm = new DisplayMetrics();
                             ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
 
@@ -84,7 +83,7 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
                 }
 
                 @Override
-                public void removeAllObjects() {}
+                public void removeAllBitmaps() {}
             };
 
             // Retrieve the user image from storage.
@@ -108,16 +107,18 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
 
     protected void initUserNameTextView(String userKey, final TextView userNameTV) {
         // Retrieve the user object from the DB.
-        ObjectReceivedHandler receivedUserHandler = new ObjectReceivedHandler() {
+        UserReceivedHandler receivedUserHandler = new UserReceivedHandler() {
             @Override
-            public void onObjectReceived(Object obj) {
-                // Get the userName TextView, and set its text.
-                String userName = ((User)obj).getName();
-                userNameTV.setText(userName);
+            public void onUserReceived(User user) {
+                if (user != null) {
+                    // Get the userName TextView, and set its text.
+                    String userName = user.getName();
+                    userNameTV.setText(userName);
+                }
             }
 
             @Override
-            public void removeAllObjects() {}
+            public void removeAllUsers() {}
         };
 
         // Retrieve the user object from the DB.

@@ -1,6 +1,7 @@
 package com.example.admin.myapplication.controller.database.remote;
 
-import com.example.admin.myapplication.controller.ObjectReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.GroupReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.ListReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
 
@@ -19,14 +20,12 @@ public class UserGroceryListsDB {
         groupsDB = new UserGroupsDB(userKey);
     }
 
-    public void observeLists(final ObjectReceivedHandler listAdded, final ObjectReceivedHandler listDeleted) {
-        listAdded.removeAllObjects();
+    public void observeLists(final ListReceivedHandler listAdded, final ListReceivedHandler listDeleted) {
+        listAdded.removeAllLists();
 
-        final ObjectReceivedHandler privateListAdded = new ObjectReceivedHandler() {
+        final ListReceivedHandler privateListAdded = new ListReceivedHandler() {
             @Override
-            public void onObjectReceived(Object obj) {
-                GroceryList addedList = (GroceryList) obj;
-
+            public void onListReceived(GroceryList addedList) {
                 synchronized (lists) {
                     // Make sure the list doesn't already exist. (Just in case..)
                     if (!containsList(addedList)) {
@@ -34,38 +33,36 @@ public class UserGroceryListsDB {
                     }
                 }
 
-                listAdded.onObjectReceived(addedList);
+                // After adding to our private collection, notify the original callback
+                listAdded.onListReceived(addedList);
             }
 
             @Override
-            public void removeAllObjects() {}
+            public void removeAllLists() {}
         };
 
-        final ObjectReceivedHandler privateListDeleted = new ObjectReceivedHandler() {
+        final ListReceivedHandler privateListDeleted = new ListReceivedHandler() {
             @Override
-            public void onObjectReceived(Object obj) {
-                GroceryList deletedList = (GroceryList) obj;
-
+            public void onListReceived(GroceryList deletedList) {
                 synchronized (lists) {
                     lists.remove(deletedList);
                 }
 
-                listDeleted.onObjectReceived(deletedList);
+                // After removing from our private collection, notify the original callback
+                listDeleted.onListReceived(deletedList);
             }
 
             @Override
-            public void removeAllObjects() {}
+            public void removeAllLists() {}
         };
 
-        ObjectReceivedHandler groupAdded = new ObjectReceivedHandler() {
+        GroupReceivedHandler groupAdded = new GroupReceivedHandler() {
             @Override
-            public void onObjectReceived(Object obj) {
-                Group group = (Group) obj;
-
+            public void onGroupReceived(Group addedGroup) {
                 // Make sure we didn't already add this group's grocery lists (Could happen when UserGroupsDB resets).
-                if (!containsListDb(group.getKey())) {
+                if (!containsListDb(addedGroup.getKey())) {
                     // Create a db that manages the added group's lists
-                    GroceryListsByGroupDB groupListsDb = new GroceryListsByGroupDB(group.getKey());
+                    GroceryListsByGroupDB groupListsDb = new GroceryListsByGroupDB(addedGroup.getKey());
                     listsDbs.add(groupListsDb);
 
                     // When the new db observes a new list, add it to our array of lists.
@@ -74,14 +71,13 @@ public class UserGroceryListsDB {
             }
 
             @Override
-            public void removeAllObjects() {}
+            public void removeAllGroups() {}
         };
 
         // TODO: Need this? because we registered to listAdded and listDeleted up
-        ObjectReceivedHandler groupDeleted = new ObjectReceivedHandler() {
+        GroupReceivedHandler groupDeleted = new GroupReceivedHandler() {
             @Override
-            public void onObjectReceived(Object obj) {
-                Group deletedGroup = (Group) obj;
+            public void onGroupReceived(Group deletedGroup) {
                 // TODO: ?
 //        removeGroupObserver(groupKey: deletedGroup.key)
 
@@ -89,7 +85,7 @@ public class UserGroceryListsDB {
             }
 
             @Override
-            public void removeAllObjects() {}
+            public void removeAllGroups() {}
         };
 
         groupsDB.observeUserGroupsAddition(groupAdded);
@@ -118,7 +114,7 @@ public class UserGroceryListsDB {
         return false;
     }
 
-    private void removeGroupLists(String groupKey, ObjectReceivedHandler listRemovedHandler) {
+    private void removeGroupLists(String groupKey, ListReceivedHandler listRemovedHandler) {
         List<GroceryList> listsToRemove = new ArrayList<>();
 
         synchronized (lists) {
@@ -134,7 +130,7 @@ public class UserGroceryListsDB {
                 lists.removeAll(listsToRemove);
 
                 // Notify the callback for every list removed.
-                listRemovedHandler.onObjectReceived(list);
+                listRemovedHandler.onListReceived(list);
             }
         }
     }
