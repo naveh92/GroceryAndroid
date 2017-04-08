@@ -31,7 +31,7 @@ public class UserGroupsDB {
         userGroupsRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + "/" + userKey + "/" + GROUPS_NODE_URL);
     }
 
-    public void observeUserGroupsAddition(final ObjectReceivedHandler<Group> handler) {
+    public void observeUserGroupsAddition(final GroupReceivedHandler handler) {
         // TODO:
         // Get the last-update time in the local db
         Long localUpdateTime = null; // LastUpdateTable.getLastUpdateDate();
