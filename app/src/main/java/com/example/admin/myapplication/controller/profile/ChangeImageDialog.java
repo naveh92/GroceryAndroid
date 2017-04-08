@@ -24,8 +24,8 @@ public class ChangeImageDialog extends Dialog {
         activity = (Activity)context;
 
         setContentView(R.layout.change_image_dialog);
-
-        // TODO: Remove title?
+        // TODO: String.xml
+        setTitle("Choose Media");
 
         ImageButton cameraButton = (ImageButton) findViewById(R.id.cameraBtn);
         ImageButton galleryButton = (ImageButton) findViewById(R.id.galleryBtn);
