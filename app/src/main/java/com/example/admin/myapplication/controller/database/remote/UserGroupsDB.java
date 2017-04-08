@@ -1,7 +1,6 @@
 package com.example.admin.myapplication.controller.database.remote;
 
 import com.example.admin.myapplication.controller.handlers.GroupReceivedHandler;
-import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.Group;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -45,7 +44,7 @@ public class UserGroupsDB {
             userRef.orderByChild("lastUpdated").startAt(localUpdateTime).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    // Reset the list of groups. We've got a new array.
+                    // Reset the array of groups. We got a new array.
                     groups.clear();
 
                     // If we got groups
@@ -65,10 +64,9 @@ public class UserGroupsDB {
                         // Handle the groupKeys we received
                         handleUserGroups(groupKeys, handler);
                     }
-                    else {
-                        // Local DB is up to date - get groups from local.
-                        getGroupsFromLocal(handler);
-                    }
+
+                    // Local DB is up to date - get groups from local.
+                    getGroupsFromLocal(handler);
                 }
 
                 @Override
@@ -85,11 +83,11 @@ public class UserGroupsDB {
             userGroupsRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    // Reset the array of groups. We've got a new array.
-                    groups.clear();
-
                     // If we got groups
                     if (dataSnapshot.exists()) {
+                        // Reset the array of groups. We got a new array.
+                        groups.clear();
+
                         // Create a list containing the received groupKeys
                         List<String> groupKeys = new ArrayList<>();
                         groupKeys.addAll(((Map<String, Object>)dataSnapshot.getValue()).keySet());
@@ -245,17 +243,6 @@ public class UserGroupsDB {
         }
 
         return null;
-    }
-
-    public static String title(String groupKey) {
-        for (Group group : groups) {
-            if (group.getKey().equals(groupKey)) {
-                return group.getTitle();
-            }
-        }
-
-        // TODO: strings.xml
-        return "";
     }
 
     public static List<Group> getAllGroups() {

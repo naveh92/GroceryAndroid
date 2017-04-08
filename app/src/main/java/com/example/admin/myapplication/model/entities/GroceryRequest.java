@@ -48,6 +48,7 @@ public class GroceryRequest implements Comparable<GroceryRequest> {
 
     @Override
     public int compareTo(GroceryRequest groceryRequest) {
+        // TODO: Compare by lastUpdateTime?
         return itemName.compareTo(groceryRequest.getItemName());
     }
 }

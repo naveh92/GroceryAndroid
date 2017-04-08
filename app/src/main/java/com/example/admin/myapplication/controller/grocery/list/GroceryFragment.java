@@ -130,7 +130,6 @@ public class GroceryFragment extends TableViewFragment {
         }
 
         notifyDataSetChanged();
-//        refresh();
     }
 
     private void fetchLists() {
@@ -163,26 +162,10 @@ public class GroceryFragment extends TableViewFragment {
             public void removeAllLists() {}
         };
 
-//        ListReceivedHandler listDeletedHandler = new ListReceivedHandler() {
-//            @Override
-//            public void onListReceived(GroceryList list) {
-//                if (db != null) {
-//                    db.removeList(list);
-//
-//                    notifyDataSetChanged();
-//                }
-//            }
-//
-//            @Override
-//            public void removeAllLists() {}
-//        };
-
         if (db == null) {
             db = new UserGroceryListsDB(AuthenticationManager.getInstance().getCurrentUserId());
         }
 
         db.observeLists(listReceivedHandler, groupListDeletedHandler);
-
-//        ListsDB.getInstance().observeListsDeletion(listDeletedHandler);
     }
 }

@@ -6,6 +6,7 @@ import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,6 +29,7 @@ public class UserGroceryListsDB {
                     // Make sure the list doesn't already exist. (Just in case..)
                     if (!containsList(addedList)) {
                         lists.add(addedList);
+                        Collections.sort(lists);
                     }
                 }
 
@@ -65,6 +67,7 @@ public class UserGroceryListsDB {
                     if (listToDelete != null) {
                         // Delete the list
                         lists.remove(listToDelete);
+                        Collections.sort(lists);
                     }
                 }
             }
