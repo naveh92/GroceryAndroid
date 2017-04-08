@@ -115,6 +115,7 @@ public class GroceryFragment extends TableViewFragment {
         fetchLists();
     }
 
+    @Override
     public void notifyDataSetChanged() {
         if (adapter != null) {
             adapter.notifyDataSetChanged();

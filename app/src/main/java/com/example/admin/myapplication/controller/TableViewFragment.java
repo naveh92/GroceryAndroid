@@ -100,4 +100,5 @@ public abstract class TableViewFragment extends Fragment {
     }
 
     protected abstract void refresh();
+    public abstract void notifyDataSetChanged();
 }

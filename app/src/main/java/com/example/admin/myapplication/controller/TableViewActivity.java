@@ -63,8 +63,6 @@ public abstract class TableViewActivity extends Activity {
         });
     }
 
-
-
     private boolean showingViews = true;
 
     private void showViews() {

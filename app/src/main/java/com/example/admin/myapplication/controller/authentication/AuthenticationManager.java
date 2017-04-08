@@ -12,6 +12,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Created by admin on 07/04/2017.
@@ -46,7 +47,13 @@ public class AuthenticationManager {
     }
 
     public String getCurrentUserId() {
-        return FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (currentFirebaseUser != null) {
+            return currentFirebaseUser.getUid();
+        }
+
+        return null;
     }
 
     public void handleFacebookAccessToken(AccessToken token, final Activity context) {
@@ -87,66 +94,4 @@ public class AuthenticationManager {
     public void setAccessToken(AccessToken accessToken) { this.facebookAccessToken = accessToken; }
 
     public void clearAccessToken() { facebookAccessToken = null; }
-
-//    private class AccessTokenManager {
-//        // TODO: Strings.xml
-//        private static final String fileName = "accessToken";
-//        private Context context;
-//
-//        public AccessTokenManager(Context context) {
-//            this.context = context;
-//        }
-//
-//        public void storeAccessToken(AccessToken token) {
-//            FileOutputStream fos = null;
-//            ObjectOutputStream os = null;
-//            try {
-//                fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-//                os = new ObjectOutputStream(fos);
-//                os.writeObject(token);
-//            }
-//            catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            finally {
-//                try {
-//                    os.close();
-//                    fos.close();
-//                }
-//                catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//
-//        public AccessToken loadAccessToken() {
-//            FileInputStream fis = null;
-//            ObjectInputStream is = null;
-//            AccessToken token = null;
-//
-//            try {
-//                fis = context.openFileInput(fileName);
-//                is = new ObjectInputStream(fis);
-//                token = (AccessToken) is.readObject();
-//            }
-//            catch (IOException | ClassNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//            finally {
-//                try {
-//                    is.close();
-//                    fis.close();
-//                }
-//                catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            return token;
-//        }
-//
-//        public void clearAccessToken() {
-//            storeAccessToken(null);
-//        }
-//    }
 }

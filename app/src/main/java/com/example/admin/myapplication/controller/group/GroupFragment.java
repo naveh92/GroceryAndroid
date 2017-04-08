@@ -138,4 +138,11 @@ public class GroupFragment extends TableViewFragment {
     protected void refresh() {
         fetchGroups();
     }
+
+    @Override
+    public void notifyDataSetChanged() {
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+    }
 }

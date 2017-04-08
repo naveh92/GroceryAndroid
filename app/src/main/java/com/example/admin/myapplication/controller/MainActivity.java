@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -69,8 +70,8 @@ public class MainActivity extends FragmentActivity {
                         // Refresh the grocery tab if its the tab that was selected.
                         // (In case we left a group that contains lists.. the lists should be removed).
                         Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
-                        if (fragment instanceof GroceryFragment) {
-                            ((GroceryFragment) fragment).notifyDataSetChanged();
+                        if (fragment instanceof TableViewFragment) {
+                            ((TableViewFragment) fragment).notifyDataSetChanged();
                         }
                     }
                 });
@@ -166,12 +167,29 @@ public class MainActivity extends FragmentActivity {
                 }
 
                 return true;
-
-
-
             }
         });
 
         popup.show();
+    }
+
+    /**
+     * This is for camera/gallery image pick
+     */
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+        Uri selectedImageUri = null;
+
+        if (resultCode == RESULT_OK) {
+            selectedImageUri = imageReturnedIntent.getData();
+        }
+
+        // Get the current fragment
+        Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
+
+        if (fragment instanceof ProfileFragment) {
+            ((ProfileFragment) fragment).refreshImage(selectedImageUri);
+        }
     }
 }

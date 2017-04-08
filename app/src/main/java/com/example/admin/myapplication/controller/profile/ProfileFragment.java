@@ -2,7 +2,9 @@ package com.example.admin.myapplication.controller.profile;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +19,18 @@ import com.example.admin.myapplication.controller.database.remote.UsersDB;
 import com.example.admin.myapplication.controller.handlers.BitmapReceivedHandler;
 import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
 
 /**
  * Created by admin on 06/04/2017.
  */
 public class ProfileFragment extends Fragment {
     private static final String TAG = "ProfileFragment";
+    private static ImageView imageView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -31,9 +39,10 @@ public class ProfileFragment extends Fragment {
 
         // Get userKey from Auth
         String userKey = AuthenticationManager.getInstance().getCurrentUserId();
+        imageView = (ImageView) view.findViewById(R.id.imageView);
 
         initUsernameTextView(userKey, (TextView) view.findViewById(R.id.userNameTV));
-        initImageView(userKey, (ImageView) view.findViewById(R.id.imageView));
+        initImageView(userKey);
 
         return view;
     }
@@ -52,7 +61,7 @@ public class ProfileFragment extends Fragment {
         UsersDB.getInstance().findUserByKey(userKey, userReceivedHandler);
     }
 
-    private void initImageView(String userKey, final ImageView imageView) {
+    private void initImageView(String userKey) {
         BitmapReceivedHandler imageReceivedHandler = new BitmapReceivedHandler() {
             @Override
             public void onBitmapReceived(Bitmap bitmap) {
@@ -67,38 +76,23 @@ public class ProfileFragment extends Fragment {
     }
 
     public void changeImageDialog(Context context) {
-        // TODO:
-//        // Open a dialog.
-//        final Dialog dialog = new Dialog(context);
-//        dialog.setContentView(R.layout.new_group_dialog);
-//        dialog.setTitle("New Group");
-//
-//        // Get the EditText and focus on it.
-//        final EditText groupTitleText = (EditText) dialog.findViewById(R.id.groupTitleText);
-//        groupTitleText.requestFocus();
-//
-//        ImageButton confirmButton = (ImageButton) dialog.findViewById(R.id.confirm);
-//
-//        // If button is clicked, close the custom dialog
-//        confirmButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//
-//                // Get the user input.
-//                String groupTitle = groupTitleText.getText().toString();
-//
-//                // Add the new group to the database.
-//                Group newGroup = new Group("", groupTitle);
-//
-//        // Get userKey from Auth
-//        String userKey = AuthenticationManager.getCurrentUserId();
-//
-//                // TODO: UserGroupsDB? GroupMembersDB?
-//                GroupsDB.getInstance().addNewGroup(newGroup, userKey);
-//            }
-//        });
-//
-//        dialog.show();
+        // Open the dialog.
+        final ChangeImageDialog dialog = new ChangeImageDialog(context);
+        dialog.show();
+    }
+
+    public void refreshImage(Uri selectedImageUri) {
+        if (selectedImageUri != null && imageView != null) {
+            imageView.setImageURI(selectedImageUri);
+
+            // Get the data from an ImageView as bytes
+            imageView.setDrawingCacheEnabled(true);
+            imageView.buildDrawingCache();
+
+            Bitmap bitmap = imageView.getDrawingCache();
+
+            // Save the new image to the DB
+            ImageDB.getInstance().storeImage(bitmap, AuthenticationManager.getInstance().getCurrentUserId());
+        }
     }
 }

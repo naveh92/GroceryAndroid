@@ -2,14 +2,18 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.example.admin.myapplication.controller.handlers.BitmapReceivedHandler;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +23,7 @@ import java.util.Map;
 public class ImageDB {
     private static final String TAG = "ImageDB";
     private static final String FORMAT_SUFFIX = ".jpg";
+    private static final int COMPRESSION_FACTOR = 25;
     private static ImageDB instance;
     private StorageReference storageRef;
     private Map<String, Bitmap> cache = new HashMap<>();
@@ -40,7 +45,7 @@ public class ImageDB {
         // TODO: Make sure the image is up to date.
         boolean imageUpToDate = cache.containsKey(userKey);
 
-        if (imageUpToDate) {
+        if (imageUpToDate && !changedBitmap) {
             // TODO: Get the image from the local storage
             Bitmap bitmap = cache.get(userKey);
             handler.onBitmapReceived(bitmap);
@@ -59,12 +64,12 @@ public class ImageDB {
         storageRef.child(imagePath).getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                // Data for requested image returns
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 handler.onBitmapReceived(bitmap);
 
                 // TODO: Save the image to local storage
                 cache.put(userKey, bitmap);
+                changedBitmap = false;
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -74,6 +79,61 @@ public class ImageDB {
             }
         });
     }
+
+    // TODO: Remove this when we have local images
+    private Boolean changedBitmap = false;
+
+    public void storeImage(final Bitmap bitmap, final String userKey) {
+        final String imagePath = userKey + FORMAT_SUFFIX;
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_FACTOR, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = storageRef.child(imagePath).putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                // Handle unsuccessful uploads
+                Log.d(TAG, "Failed to upload image: " + imagePath);
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Log.d(TAG, "New image successfully uploaded: " + imagePath);
+
+                // TODO: handler?
+
+                // TODO: Save the image to local storage
+                cache.put(userKey, bitmap);
+                // TODO:
+                changedBitmap = true;
+//                LocalImageStorage.sharedInstance.saveImageToFile(image: image, name: imagePath);
+            }
+        });
+    }
+
+    // TODO:
+//    /**
+//     * reduces the size of the image
+//     * @param image
+//     * @param maxSize
+//     * @return
+//     */
+//    private Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+//        int width = image.getWidth();
+//        int height = image.getHeight();
+//
+//        float bitmapRatio = (float)width / (float) height;
+//        if (bitmapRatio > 1) {
+//            width = maxSize;
+//            height = (int) (width / bitmapRatio);
+//        } else {
+//            height = maxSize;
+//            width = (int) (height * bitmapRatio);
+//        }
+//        return Bitmap.createScaledBitmap(image, width, height, true);
+//    }
 
 //    // Array of callback functions. Observers insert their functions here, and are notified when the user changes his image.
 //    static var callbacks: Array<()->()> = []
