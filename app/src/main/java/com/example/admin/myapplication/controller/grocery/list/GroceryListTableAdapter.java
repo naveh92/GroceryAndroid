@@ -21,7 +21,7 @@ import java.util.List;
  * Created by admin on 04/04/2017.
  */
 public class GroceryListTableAdapter extends BaseAdapter {
-    private static List<GroceryList> groceryLists = new ArrayList<>();
+    private List<GroceryList> groceryLists = new ArrayList<>();
     private Context mContext;
 
     public GroceryListTableAdapter(Context c) {
@@ -68,9 +68,12 @@ public class GroceryListTableAdapter extends BaseAdapter {
     }
 
     public void onListReceived(GroceryList list) {
-        groceryLists.add(list);
-        Collections.sort(groceryLists);
-        notifyDataSetChanged();
+        // Make sure the list doesn't already exist. (Just in case...)
+        if (!groceryLists.contains(list)) {
+            groceryLists.add(list);
+            Collections.sort(groceryLists);
+            notifyDataSetChanged();
+        }
     }
 
     public void removeAllLists() {
@@ -83,5 +86,7 @@ public class GroceryListTableAdapter extends BaseAdapter {
 
     public void removeList(GroceryList list) {
         groceryLists.remove(list);
+        Collections.sort(groceryLists);
+        notifyDataSetChanged();
     }
 }

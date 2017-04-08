@@ -26,7 +26,7 @@ public class GroupTableAdapter extends BaseAdapter {
     }
 
     public Object getItem(int position) {
-        return UserGroupsDB.getGroup(position);
+        return null;
     }
 
     public long getItemId(int position) {
@@ -49,7 +49,6 @@ public class GroupTableAdapter extends BaseAdapter {
     }
 
     public void onGroupReceived(Group group) {
-        // What if this happens before Groups is notified?
         notifyDataSetChanged();
     }
 }

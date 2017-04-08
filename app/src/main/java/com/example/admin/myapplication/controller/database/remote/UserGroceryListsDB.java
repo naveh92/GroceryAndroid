@@ -127,7 +127,7 @@ public class UserGroceryListsDB {
 
             for (GroceryList list : listsToRemove) {
                 // Remove all the lists we found
-                lists.removeAll(listsToRemove);
+                lists.remove(listsToRemove);
 
                 // Notify the callback for every list removed.
                 listRemovedHandler.onListReceived(list);

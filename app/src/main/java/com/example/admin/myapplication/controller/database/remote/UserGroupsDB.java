@@ -248,7 +248,6 @@ public class UserGroupsDB {
     }
 
     public static String title(String groupKey) {
-        // TODO: Java8? groups.stream().filter(group -> group.getKey().equals(groupKey)).collect(Collectors.toList())???
         for (Group group : groups) {
             if (group.getKey().equals(groupKey)) {
                 return group.getTitle();

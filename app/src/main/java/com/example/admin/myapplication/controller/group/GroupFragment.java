@@ -50,7 +50,7 @@ public class GroupFragment extends TableViewFragment {
                 // Open an activity for the group that was clicked - show all members in it.
                 Intent intent = new Intent(getActivity(), GroupMembersTableActivity.class);
 
-                Group group = (Group) adapter.getItem(position);
+                Group group = UserGroupsDB.getGroup(position);
                 intent.putExtra("groupKey", group.getKey()); // Add the groupKey for the next activity.
                 intent.putExtra("groupTitle", group.getTitle()); // Add the groupTitle for the next activity.
 

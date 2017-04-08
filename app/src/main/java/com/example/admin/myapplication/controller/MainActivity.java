@@ -51,14 +51,6 @@ public class MainActivity extends FragmentActivity {
                 // When the tab is selected, switch to the
                 // corresponding page in the ViewPager.
                 mViewPager.setCurrentItem(tab.getPosition());
-
-                // Get the current fragment
-                Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
-
-                // If its the grocery-list fragment, refresh it. (Maybe we left a group)
-                if (fragment instanceof GroceryFragment) {
-                    refreshTab();
-                }
             }
 
             public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {}
@@ -73,6 +65,13 @@ public class MainActivity extends FragmentActivity {
                         // When swiping between pages, select the
                         // corresponding tab.
                         getActionBar().setSelectedNavigationItem(position);
+
+                        // Refresh the grocery tab if its the tab that was selected.
+                        // (In case we left a group that contains lists.. the lists should be removed).
+                        Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
+                        if (fragment instanceof GroceryFragment) {
+                            ((GroceryFragment) fragment).notifyDataSetChanged();
+                        }
                     }
                 });
 

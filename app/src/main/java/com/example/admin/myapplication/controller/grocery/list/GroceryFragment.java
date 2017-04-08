@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewFragment;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.remote.GroceryListsByGroupDB;
 import com.example.admin.myapplication.controller.database.remote.ListsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
@@ -30,7 +31,7 @@ import com.example.admin.myapplication.model.entities.Group;
  */
 public class GroceryFragment extends TableViewFragment {
     private UserGroceryListsDB db;
-    private static GroceryListTableAdapter adapter;
+    private GroceryListTableAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -98,7 +99,7 @@ public class GroceryFragment extends TableViewFragment {
                 GroceryList newList = new GroceryList("", groupKey, listTitle);
                 ListsDB.getInstance().addNewList(newList);
 
-                refresh();
+                fetchLists();
             }
         });
 
@@ -106,29 +107,46 @@ public class GroceryFragment extends TableViewFragment {
     }
 
     @Override
-    protected void refresh() {
+    public void refresh() {
         fetchLists();
     }
 
-    public void deleteList(int position) {
-        GroceryList list = adapter.getList(position);
-
-        if (list != null) {
-            String listKey = list.getKey();
-            ListsDB.getInstance().deleteList(listKey);
+    public void notifyDataSetChanged() {
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
         }
+    }
+
+    public void deleteList(int position) {
+        if (adapter != null) {
+            GroceryList list = adapter.getList(position);
+
+            if (list != null) {
+                String listKey = list.getKey();
+                ListsDB.getInstance().deleteList(listKey);
+
+                // TODO: Here?
+//                refresh();
+            }
+        }
+
+        refresh();
     }
 
     private void fetchLists() {
         ListReceivedHandler listReceivedHandler = new ListReceivedHandler() {
             @Override
             public void onListReceived(GroceryList list) {
-                adapter.onListReceived(list);
+                if (adapter != null) {
+                    adapter.onListReceived(list);
+                }
             }
 
             @Override
             public void removeAllLists() {
-                adapter.removeAllLists();
+                if (adapter != null) {
+                    adapter.removeAllLists();
+                }
             }
         };
 
