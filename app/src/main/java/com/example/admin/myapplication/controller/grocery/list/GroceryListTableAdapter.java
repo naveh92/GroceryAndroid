@@ -14,6 +14,7 @@ import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.model.entities.GroceryList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -68,6 +69,7 @@ public class GroceryListTableAdapter extends BaseAdapter {
 
     public void onListReceived(GroceryList list) {
         groceryLists.add(list);
+        Collections.sort(groceryLists);
         notifyDataSetChanged();
     }
 

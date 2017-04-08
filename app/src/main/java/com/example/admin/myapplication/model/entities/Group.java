@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Created by admin on 04/04/2017.
  */
-public class Group {
+public class Group implements Comparable<Group> {
     private String key;
     private String title;
 
@@ -38,5 +38,10 @@ public class Group {
         result.put("title", title);
 
         return result;
+    }
+
+    @Override
+    public int compareTo(Group group) {
+        return title.compareTo(group.getTitle());
     }
 }

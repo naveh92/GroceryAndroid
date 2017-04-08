@@ -97,6 +97,8 @@ public class GroceryFragment extends TableViewFragment {
                 // Add the new list to the database.
                 GroceryList newList = new GroceryList("", groupKey, listTitle);
                 ListsDB.getInstance().addNewList(newList);
+
+                refresh();
             }
         });
 

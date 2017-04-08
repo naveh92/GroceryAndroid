@@ -13,6 +13,7 @@ import com.example.admin.myapplication.controller.ImageCellBaseAdapter;
 import com.example.admin.myapplication.model.entities.GroceryRequest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -76,6 +77,7 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
 
     public void onRequestReceived(GroceryRequest request) {
         groceryRequests.add(request);
+        Collections.sort(groceryRequests);
         notifyDataSetChanged();
     }
 

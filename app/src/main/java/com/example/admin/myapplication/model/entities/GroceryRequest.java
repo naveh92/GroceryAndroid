@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by admin on 05/04/2017.
  */
-public class GroceryRequest {
+public class GroceryRequest implements Comparable<GroceryRequest> {
     private String key;
     private String userKey;
     private String itemName;
@@ -44,5 +44,10 @@ public class GroceryRequest {
         result.put("userId", userKey);
 
         return result;
+    }
+
+    @Override
+    public int compareTo(GroceryRequest groceryRequest) {
+        return itemName.compareTo(groceryRequest.getItemName());
     }
 }

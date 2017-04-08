@@ -51,6 +51,14 @@ public class MainActivity extends FragmentActivity {
                 // When the tab is selected, switch to the
                 // corresponding page in the ViewPager.
                 mViewPager.setCurrentItem(tab.getPosition());
+
+                // Get the current fragment
+                Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
+
+                // If its the grocery-list fragment, refresh it. (Maybe we left a group)
+                if (fragment instanceof GroceryFragment) {
+                    refreshTab();
+                }
             }
 
             public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {}

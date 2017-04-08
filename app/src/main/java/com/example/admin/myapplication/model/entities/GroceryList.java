@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Created by admin on 04/04/2017.
  */
-public class GroceryList {
+public class GroceryList implements Comparable<GroceryList> {
     private String key;
     private String groupKey;
     private String title;
@@ -33,5 +33,10 @@ public class GroceryList {
         result.put("title", title);
 
         return result;
+    }
+
+    @Override
+    public int compareTo(GroceryList list) {
+        return title.compareTo(list.getTitle());
     }
 }

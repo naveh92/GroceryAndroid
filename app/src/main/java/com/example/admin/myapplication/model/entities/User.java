@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by admin on 04/04/2017.
  */
-public class User {
+public class User implements Comparable<User> {
     private String key;
     private String facebookId;
     private String name;
@@ -40,5 +40,10 @@ public class User {
         result.put("name", name);
 
         return result;
+    }
+
+    @Override
+    public int compareTo(User user) {
+        return name.compareTo(user.getName());
     }
 }

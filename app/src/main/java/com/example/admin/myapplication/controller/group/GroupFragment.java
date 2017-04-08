@@ -69,7 +69,7 @@ public class GroupFragment extends TableViewFragment {
             public void onGroupReceived(Group group) {
                 // In case this happens on refresh when MainActivity is first created
                 if (adapter != null) {
-                    adapter.onGroupReceived((Group) group);
+                    adapter.onGroupReceived(group);
                 }
             }
 

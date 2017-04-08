@@ -65,6 +65,7 @@ public class GroupMembersTableAdapter extends ImageCellBaseAdapter {
 
     public void onMemberReceived(User member) {
         members.add(member);
+        Collections.sort(members);
         notifyDataSetChanged();
     }
 

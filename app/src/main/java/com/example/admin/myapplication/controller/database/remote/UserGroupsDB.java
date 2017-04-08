@@ -145,6 +145,7 @@ public class UserGroupsDB {
                 // If the group doesn't already exist (Just in case..)
                 if (!containsGroup(group)) {
                     groups.add(group);
+                    Collections.sort(groups);
                 }
 
                 handler.onGroupReceived(group);
