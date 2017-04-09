@@ -18,6 +18,7 @@ import android.widget.PopupMenu;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.grocery.list.GroceryFragment;
 import com.example.admin.myapplication.controller.profile.ProfileFragment;
 import com.facebook.login.LoginManager;
@@ -189,7 +190,7 @@ public class MainActivity extends FragmentActivity {
         Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
 
         if (fragment instanceof ProfileFragment) {
-            ((ProfileFragment) fragment).refreshImage(selectedImageUri);
+            ((ProfileFragment) fragment).refreshImage(this, selectedImageUri);
         }
     }
 }

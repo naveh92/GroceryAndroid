@@ -1,21 +1,21 @@
 package com.example.admin.myapplication.controller.database.remote;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.admin.myapplication.controller.handlers.BitmapReceivedHandler;
+import com.example.admin.myapplication.controller.database.local.LocalImageManager;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by admin on 05/04/2017.
@@ -26,7 +26,10 @@ public class ImageDB {
     private static final int COMPRESSION_FACTOR = 25;
     private static ImageDB instance;
     private StorageReference storageRef;
-    private Map<String, Bitmap> cache = new HashMap<>();
+    private LocalImageManager localImageManager = new LocalImageManager();
+
+    // TODO: Remove this when we have local images
+    private Boolean changedBitmap = false;
 
     private ImageDB() {
         storageRef = FirebaseStorage.getInstance().getReference();
@@ -39,52 +42,99 @@ public class ImageDB {
         return instance;
     }
 
-    public void downloadImage(String userKey, BitmapReceivedHandler handler) {
-        String imagePath = userKey + FORMAT_SUFFIX;
+    /**
+     * This function gets the remote image's metadata, and later syncs the local and remote images.
+     * When the image is synchronized, it is then passed to handler.
+     */
+    public void downloadImage(final Context context, final String userKey, final ObjectReceivedHandler<Bitmap> handler) {
+        final String imagePath = getImageName(userKey);
 
-        // TODO: Make sure the image is up to date.
-        boolean imageUpToDate = cache.containsKey(userKey);
-
-        if (imageUpToDate && !changedBitmap) {
-            // TODO: Get the image from the local storage
-            Bitmap bitmap = cache.get(userKey);
-            handler.onBitmapReceived(bitmap);
+        // TODO: changedBitmap should be specific to this user.. so check if userKey.equals(Auth.getUserId())
+        if (!changedBitmap && context != null) {
+            // Make sure the image is up to date - get its metadata.
+            storageRef.child(imagePath).getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                @Override
+                public void onSuccess(StorageMetadata storageMetadata) {
+                    // Metadata now contains the metadata for the image
+                    Long updateTime = storageMetadata.getUpdatedTimeMillis();
+                    compareUpdateTimes(context, userKey, updateTime, handler);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Uh-oh, an error occurred!
+                    Log.d(TAG, "Failed to get metadata for image " + imagePath);
+                    handler.onObjectReceived(null);
+                }
+            });
         }
         else {
-            getImageFromRemote(imagePath, handler);
+            getImageFromRemote(context, imagePath, handler);
         }
     }
 
-    private void getImageFromRemote(String imagePath, final BitmapReceivedHandler handler) {
-        final long ONE_MEGABYTE = 1024 * 1024;
+    /**
+     * This function performs the process of syncing the local image with the remote one.
+     * When the image is synchronized, it is then passed to handler.
+     */
+    private void compareUpdateTimes(Context context, String userKey, Long remoteUpdateTime, final ObjectReceivedHandler<Bitmap> handler) {
+        Long localUpdateTime = localImageManager.getUpdateTime(context, userKey);
 
-        // TODO: Delete this when saving to local storage.
-        final String userKey = imagePath.substring(0, imagePath.length() - FORMAT_SUFFIX.length());
+        // If remoteUpdateTime is null we don't have a remote image
+        if (remoteUpdateTime != null) {
+            // Check if the local image needs to be updated
+            // If localUpdateTime is null we don't have a local image
+            if (localUpdateTime == null || localUpdateTime < remoteUpdateTime) {
+                Log.d(TAG, "Need to update " + getImageName(userKey));
+
+                // Download the new remote image
+                getImageFromRemote(context, userKey, handler);
+            }
+            else if (localUpdateTime >= remoteUpdateTime) {
+                // Load the image from local storage
+                Bitmap bitmap = localImageManager.loadImageFromStorage(context, userKey);
+                handler.onObjectReceived(bitmap);
+            }
+        }
+        else {
+            // No image in remote..
+            handler.onObjectReceived(null);
+        }
+    }
+
+    private void getImageFromRemote(final Context context, final String userKey, final ObjectReceivedHandler<Bitmap> handler) {
+        final long ONE_MEGABYTE = 1024 * 1024;
+        final String imagePath = getImageName(userKey);
 
         storageRef.child(imagePath).getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                handler.onBitmapReceived(bitmap);
 
-                // TODO: Save the image to local storage
-                cache.put(userKey, bitmap);
-                changedBitmap = false;
+                Log.d(TAG, "Got image from remote: " + imagePath);
+                handler.onObjectReceived(bitmap);
+
+                if (context != null && bitmap != null) {
+                    // Save the image to local storage
+                    localImageManager.saveToInternalStorage(context, userKey, bitmap, COMPRESSION_FACTOR);
+
+                    // TODO: if (success)?
+                    // TODO: Get this out of the if (context)?
+                    // TODO: If userKey.equals(AuthenticationManager.getInstance().getCurrentUserId())
+                    changedBitmap = false;
+                }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
                 // Handle any errors
-                handler.onBitmapReceived(null);
+                handler.onObjectReceived(null);
             }
         });
     }
 
-    // TODO: Remove this when we have local images
-    private Boolean changedBitmap = false;
-
-    public void storeImage(final Bitmap bitmap, final String userKey) {
-        final String imagePath = userKey + FORMAT_SUFFIX;
+    public void storeImage(final Context context, final Bitmap bitmap, final String userKey) {
+        final String imagePath = getImageName(userKey);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_FACTOR, baos);
@@ -102,122 +152,14 @@ public class ImageDB {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.d(TAG, "New image successfully uploaded: " + imagePath);
 
-                // TODO: handler?
-
-                // TODO: Save the image to local storage
-                cache.put(userKey, bitmap);
-                // TODO:
+                // Save the image to local storage
                 changedBitmap = true;
-//                LocalImageStorage.sharedInstance.saveImageToFile(image: image, name: imagePath);
+                localImageManager.saveToInternalStorage(context, userKey, bitmap, COMPRESSION_FACTOR);
             }
         });
     }
 
-    // TODO:
-//    /**
-//     * reduces the size of the image
-//     * @param image
-//     * @param maxSize
-//     * @return
-//     */
-//    private Bitmap getResizedBitmap(Bitmap image, int maxSize) {
-//        int width = image.getWidth();
-//        int height = image.getHeight();
-//
-//        float bitmapRatio = (float)width / (float) height;
-//        if (bitmapRatio > 1) {
-//            width = maxSize;
-//            height = (int) (width / bitmapRatio);
-//        } else {
-//            height = maxSize;
-//            width = (int) (height * bitmapRatio);
-//        }
-//        return Bitmap.createScaledBitmap(image, width, height, true);
-//    }
-
-//    // Array of callback functions. Observers insert their functions here, and are notified when the user changes his image.
-//    static var callbacks: Array<()->()> = []
-//
-//    private init() {
-//        configureStorage()
-//    }
-//
-//    func configureStorage() {
-//        let storageUrl = FIRApp.defaultApp()?.options.storageBucket
-//                storageRef = FIRStorage.storage().reference(forURL: "gs://" + storageUrl!)
-//    }
-//
-//    static func observeImageModification(whenImageModified: @escaping () -> ()) {
-//        callbacks.append(whenImageModified)
-//    }
-//
-//    private static func executeCallbacks() {
-//        for callback in callbacks {
-//            callback()
-//        }
-//    }
-//
-//    func storeImage(image: UIImage, userId: String) {
-//        storeImage(image: image, userId: userId, whenFinished: {
-//            // Notify the observers
-//            ImageDB.executeCallbacks()
-//        })
-//    }
-//
-//    func storeImage(image: UIImage, userId: String, whenFinished: @escaping ()->()) {
-//        // Don't store the default picture
-//        if (!(ImageDB.defaultImage!.isEqual(image))) {
-//            let imageData = UIImageJPEGRepresentation(image, 0.5)
-//            let imagePath = "\(userId).jpg"
-//
-//            let metadata = FIRStorageMetadata()
-//            metadata.contentType = "image/jpeg"
-//
-//            self.storageRef?.child(imagePath).put(imageData!, metadata: metadata) {(metadata, error) in
-//                if let error = error {
-//                    print("Error uploading: \(error)")
-//                    return
-//                }
-//
-//                // Save the image to local storage
-//                LocalImageStorage.sharedInstance.saveImageToFile(image: image, name: imagePath);
-//
-//                whenFinished()
-//            }
-//        }
-//    }
-//
-//
-//    private func manageRefreshImage(imagePath: String, whenFinished: @escaping (UIImage?) -> Void) {
-//        // Create reference to the file whose metadata we want to retrieve
-//        let imageRef = self.storageRef?.child(imagePath)
-//
-//        // Get metadata properties
-//        imageRef?.metadata { metadata, error in
-//            if let error = error {
-//                // An error occurred!
-//                print ("Error getting update time: \(error)")
-//                return
-//            }
-//            else {
-//                // Metadata now contains the metadata for the image
-//                self.compareUpdateTimes(imagePath: imagePath, remoteUpdateTime: metadata?.updated, whenFinished: whenFinished)
-//            }
-//        }
-//    }
-//
-//    private func compareUpdateTimes(imagePath: String, remoteUpdateTime: Date?, whenFinished: @escaping (UIImage?) -> Void) {
-//        let localUpdateTime = LocalImageStorage.sharedInstance.getUpdateTime(path: imagePath)
-//
-//        // Check if the remote image was updated
-//        if (remoteUpdateTime != nil &&
-//                (localUpdateTime == nil || localUpdateTime?.compare(remoteUpdateTime!) == .orderedAscending)) {
-//            // Download the new remote image
-//            getImageFromRemote(imagePath: imagePath, whenFinished: whenFinished)
-//        }
-//        else {
-//            return
-//        }
-//    }
-
+    private String getImageName(String userKey) {
+        return userKey + FORMAT_SUFFIX;
+    }
 }

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,14 +15,9 @@ import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
-import com.example.admin.myapplication.controller.handlers.BitmapReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.UploadTask;
-
-import java.io.ByteArrayOutputStream;
 
 /**
  * Created by admin on 06/04/2017.
@@ -62,17 +56,21 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initImageView(String userKey) {
-        BitmapReceivedHandler imageReceivedHandler = new BitmapReceivedHandler() {
+        ObjectReceivedHandler<Bitmap> imageReceivedHandler = new ObjectReceivedHandler<Bitmap>() {
             @Override
-            public void onBitmapReceived(Bitmap bitmap) {
-                imageView.setImageBitmap(bitmap);
+            public void onObjectReceived(Bitmap bitmap) {
+                if (bitmap != null) {
+                    imageView.setImageBitmap(bitmap);
+                }
+
+                // TODO: Spinner?
             }
 
             @Override
-            public void removeAllBitmaps() {}
+            public void removeAllObjects() {}
         };
 
-        ImageDB.getInstance().downloadImage(userKey, imageReceivedHandler);
+        ImageDB.getInstance().downloadImage(getContext(), userKey, imageReceivedHandler);
     }
 
     public void changeImageDialog(Context context) {
@@ -81,7 +79,7 @@ public class ProfileFragment extends Fragment {
         dialog.show();
     }
 
-    public void refreshImage(Uri selectedImageUri) {
+    public void refreshImage(Context context, Uri selectedImageUri) {
         if (selectedImageUri != null && imageView != null) {
             imageView.setImageURI(selectedImageUri);
 
@@ -92,7 +90,7 @@ public class ProfileFragment extends Fragment {
             Bitmap bitmap = imageView.getDrawingCache();
 
             // Save the new image to the DB
-            ImageDB.getInstance().storeImage(bitmap, AuthenticationManager.getInstance().getCurrentUserId());
+            ImageDB.getInstance().storeImage(context, bitmap, AuthenticationManager.getInstance().getCurrentUserId());
         }
     }
 }

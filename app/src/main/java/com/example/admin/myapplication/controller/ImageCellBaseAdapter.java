@@ -13,20 +13,15 @@ import android.widget.TextView;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
-import com.example.admin.myapplication.controller.handlers.BitmapReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by admin on 06/04/2017.
  */
 public abstract class ImageCellBaseAdapter extends BaseAdapter {
-    // TODO: Try to fix this
+    // TODO: Try to fix this so that we don't download the same image 34548694267 times.
 
     protected void initUserImageView(final String userKey, View cell) {
         final ImageView imageView = (ImageView)cell.findViewById(R.id.userImageView);
@@ -36,9 +31,9 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
         imageView.setVisibility(View.INVISIBLE);
         progressBar.setVisibility(View.VISIBLE);
 
-            BitmapReceivedHandler receivedImageHandler = new BitmapReceivedHandler() {
+            ObjectReceivedHandler<Bitmap> receivedImageHandler = new ObjectReceivedHandler<Bitmap>() {
                 @Override
-                public void onBitmapReceived(Bitmap bitmap) {
+                public void onObjectReceived(Bitmap bitmap) {
                     if (bitmap != null) {
                         DisplayMetrics dm = new DisplayMetrics();
                         ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
@@ -55,11 +50,11 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
                 }
 
                 @Override
-                public void removeAllBitmaps() {}
+                public void removeAllObjects() {}
             };
 
             // Retrieve the user image from storage.
-            ImageDB.getInstance().downloadImage(userKey, receivedImageHandler);
+            ImageDB.getInstance().downloadImage(getContext(), userKey, receivedImageHandler);
     }
 
     protected void initUserNameTextView(String userKey, final TextView userNameTV) {
