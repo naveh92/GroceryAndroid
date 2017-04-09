@@ -34,19 +34,22 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
             ObjectReceivedHandler<Bitmap> receivedImageHandler = new ObjectReceivedHandler<Bitmap>() {
                 @Override
                 public void onObjectReceived(Bitmap bitmap) {
-                    if (bitmap != null) {
-                        DisplayMetrics dm = new DisplayMetrics();
-                        ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
+                    if (imageView != null) {
+                        if (bitmap != null) {
+                            // TODO: Is this needed??????
+                            DisplayMetrics dm = new DisplayMetrics();
+                            ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-                        // Set the metrics and image.
-                        imageView.setMinimumHeight(dm.heightPixels);
-                        imageView.setMinimumWidth(dm.widthPixels);
-                        imageView.setImageBitmap(bitmap);
+                            // Set the metrics and image.
+                            imageView.setMinimumHeight(dm.heightPixels);
+                            imageView.setMinimumWidth(dm.widthPixels);
+                            imageView.setImageBitmap(bitmap);
+                        }
+
+                        // Show the imageView and hide the progress-bar
+                        imageView.setVisibility(View.VISIBLE);
+                        progressBar.setVisibility(View.INVISIBLE);
                     }
-
-                    // Show the imageView and hide the progress-bar
-                    imageView.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.INVISIBLE);
                 }
 
                 @Override
@@ -55,6 +58,9 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
 
             // Retrieve the user image from storage.
             ImageDB.getInstance().downloadImage(getContext(), userKey, receivedImageHandler);
+
+            // Register this callback for when the image changes.
+            ImageDB.getInstance().registerCallback(receivedImageHandler);
     }
 
     protected void initUserNameTextView(String userKey, final TextView userNameTV) {

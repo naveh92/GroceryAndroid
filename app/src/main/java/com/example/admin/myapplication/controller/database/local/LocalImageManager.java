@@ -25,7 +25,7 @@ public class LocalImageManager {
      * Instead of reading every image from file multiple times, we only read it once.
      * (And update it when storing)
      */
-    private Map<String, Bitmap> cache = new HashMap<>();
+    private static Map<String, Bitmap> cache = new HashMap<>();
 
     public Bitmap loadImageFromStorage(Context context, String userKey) {
         // Check if we already read it from storage
@@ -91,9 +91,6 @@ public class LocalImageManager {
                 + "/Android/data/"
                 + context.getPackageName()
                 + "/Files");
-
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
 
         // Create the storage directory if it does not exist
         if (! mediaStorageDir.exists()){

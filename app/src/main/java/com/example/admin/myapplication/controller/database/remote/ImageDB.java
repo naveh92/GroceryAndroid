@@ -16,6 +16,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by admin on 05/04/2017.
@@ -26,10 +28,13 @@ public class ImageDB {
     private static final int COMPRESSION_FACTOR = 25;
     private static ImageDB instance;
     private StorageReference storageRef;
-    private LocalImageManager localImageManager = new LocalImageManager();
+    private final LocalImageManager localImageManager = new LocalImageManager();
 
-    // TODO: Remove this when we have local images
-    private Boolean changedBitmap = false;
+    /**
+     * These handlers are notified when the user changes his image.
+     * These are the adapters for various list-views over the app.
+     */
+    private final List<ObjectReceivedHandler<Bitmap>> callbacks = new ArrayList<>();
 
     private ImageDB() {
         storageRef = FirebaseStorage.getInstance().getReference();
@@ -49,8 +54,7 @@ public class ImageDB {
     public void downloadImage(final Context context, final String userKey, final ObjectReceivedHandler<Bitmap> handler) {
         final String imagePath = getImageName(userKey);
 
-        // TODO: changedBitmap should be specific to this user.. so check if userKey.equals(Auth.getUserId())
-        if (!changedBitmap && context != null) {
+        if (context != null) {
             // Make sure the image is up to date - get its metadata.
             storageRef.child(imagePath).getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                 @Override
@@ -85,7 +89,7 @@ public class ImageDB {
             // Check if the local image needs to be updated
             // If localUpdateTime is null we don't have a local image
             if (localUpdateTime == null || localUpdateTime < remoteUpdateTime) {
-                Log.d(TAG, "Need to update " + getImageName(userKey));
+                Log.d(TAG, "Need to update image " + getImageName(userKey));
 
                 // Download the new remote image
                 getImageFromRemote(context, userKey, handler);
@@ -117,11 +121,6 @@ public class ImageDB {
                 if (context != null && bitmap != null) {
                     // Save the image to local storage
                     localImageManager.saveToInternalStorage(context, userKey, bitmap, COMPRESSION_FACTOR);
-
-                    // TODO: if (success)?
-                    // TODO: Get this out of the if (context)?
-                    // TODO: If userKey.equals(AuthenticationManager.getInstance().getCurrentUserId())
-                    changedBitmap = false;
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -152,11 +151,41 @@ public class ImageDB {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Log.d(TAG, "New image successfully uploaded: " + imagePath);
 
+                // Re-download the image (to get a new reference that won't be recycled later).
+                notifyCallbacks(context, userKey);
+
                 // Save the image to local storage
-                changedBitmap = true;
                 localImageManager.saveToInternalStorage(context, userKey, bitmap, COMPRESSION_FACTOR);
             }
         });
+    }
+
+    public void registerCallback(ObjectReceivedHandler<Bitmap> handler) {
+        callbacks.add(handler);
+    }
+
+    /**
+     * This function re-downloads the image (to get a new reference that won't be recycled later),
+     * and notifies all registered callbacks.
+     */
+    private void notifyCallbacks(Context context, String userKey) {
+        ObjectReceivedHandler<Bitmap> imageReceivedFromRemote =  new ObjectReceivedHandler<Bitmap>() {
+            @Override
+            public void onObjectReceived(Bitmap newUserBitmap) {
+                // When finished and got the new image from remote, notify all callbacks.
+                synchronized (callbacks) {
+                    for (ObjectReceivedHandler<Bitmap> handler : callbacks) {
+                        handler.onObjectReceived(newUserBitmap);
+                    }
+                }
+            }
+
+            @Override
+            public void removeAllObjects() {}
+        };
+
+        // Send the request
+        this.getImageFromRemote(context, userKey, imageReceivedFromRemote);
     }
 
     private String getImageName(String userKey) {
