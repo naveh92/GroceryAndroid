@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
@@ -25,6 +26,7 @@ import com.example.admin.myapplication.model.entities.User;
 public class ProfileFragment extends Fragment {
     private static final String TAG = "ProfileFragment";
     private static ImageView imageView;
+    private ProgressBar progressBar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class ProfileFragment extends Fragment {
         // Get userKey from Auth
         String userKey = AuthenticationManager.getInstance().getCurrentUserId();
         imageView = (ImageView) view.findViewById(R.id.imageView);
+        progressBar = (ProgressBar) view.findViewById(R.id.progressBar);
 
         initUsernameTextView(userKey, (TextView) view.findViewById(R.id.userNameTV));
         initImageView(userKey);
@@ -63,7 +66,8 @@ public class ProfileFragment extends Fragment {
                     imageView.setImageBitmap(bitmap);
                 }
 
-                // TODO: Spinner?
+                imageView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
