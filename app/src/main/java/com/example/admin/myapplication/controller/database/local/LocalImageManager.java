@@ -11,6 +11,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by admin on 09/04/2017.
@@ -19,13 +21,29 @@ public class LocalImageManager {
     private static final String TAG = "LocalImageManager";
     private static final String FORMAT_SUFFIX = ".jpg";
 
+    /**
+     * Instead of reading every image from file multiple times, we only read it once.
+     * (And update it when storing)
+     */
+    private Map<String, Bitmap> cache = new HashMap<>();
+
     public Bitmap loadImageFromStorage(Context context, String userKey) {
+        // Check if we already read it from storage
+        if (cache.containsKey(userKey)) {
+            return cache.get(userKey);
+        }
+
         Bitmap bitmapFromFile = null;
         File file = getMediaFile(context, userKey);
 
         try {
-            bitmapFromFile = BitmapFactory.decodeStream(new FileInputStream(file));
-            Log.d(TAG, "Successfully loaded image " + getImageName(userKey) + " from local storage.");
+            if (file != null) {
+                bitmapFromFile = BitmapFactory.decodeStream(new FileInputStream(file));
+                Log.d(TAG, "Successfully loaded image " + getImageName(userKey) + " from local storage.");
+
+                // Save it in cache
+                saveImageInMemoryCache(userKey, bitmapFromFile);
+            }
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -39,10 +57,16 @@ public class LocalImageManager {
         FileOutputStream fos = null;
 
         try {
-            fos = new FileOutputStream(file);
-            // Use the compress method on the BitMap object to write image to the OutputStream
-            bitmap.compress(Bitmap.CompressFormat.PNG, compressionFactor, fos);
-            Log.d(TAG, "Successfully saved image " + getImageName(userKey) + " to local storage.");
+            if (file != null) {
+                fos = new FileOutputStream(file);
+
+                // Use the compress method on the BitMap object to write image to the OutputStream
+                bitmap.compress(Bitmap.CompressFormat.PNG, compressionFactor, fos);
+                Log.d(TAG, "Successfully saved image " + getImageName(userKey) + " to local storage.");
+
+                // Save it in cache
+                saveImageInMemoryCache(userKey, bitmap);
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -85,6 +109,13 @@ public class LocalImageManager {
 
     private String getImageName(String userKey) {
         return userKey + FORMAT_SUFFIX;
+    }
+
+    private void saveImageInMemoryCache(String userKey, Bitmap bitmapFromFile) {
+        // Save the bitmap in memory cache
+        if (bitmapFromFile != null) {
+            cache.put(userKey, bitmapFromFile);
+        }
     }
 
     public Long getUpdateTime(Context context, String userKey) {
