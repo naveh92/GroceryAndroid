@@ -17,33 +17,28 @@ import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler
 import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by admin on 06/04/2017.
  */
 public abstract class ImageCellBaseAdapter extends BaseAdapter {
-    // TODO: Try to fix this so that we don't download the same image 34548694267 times.
+    private Map<String, Bitmap> images = new HashMap<>();
 
     protected void initUserImageView(final String userKey, View cell) {
         final ImageView imageView = (ImageView)cell.findViewById(R.id.userImageView);
         final ProgressBar progressBar = (ProgressBar) cell.findViewById(R.id.pleaseWait);
-
-        // Show the progress-bar and hide the imageView until the image returns from storage.
-        imageView.setVisibility(View.INVISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
 
             ObjectReceivedHandler<Bitmap> receivedImageHandler = new ObjectReceivedHandler<Bitmap>() {
                 @Override
                 public void onObjectReceived(Bitmap bitmap) {
                     if (imageView != null) {
                         if (bitmap != null) {
-                            // TODO: Is this needed??????
-                            DisplayMetrics dm = new DisplayMetrics();
-                            ((Activity) getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-                            // Set the metrics and image.
-                            imageView.setMinimumHeight(dm.heightPixels);
-                            imageView.setMinimumWidth(dm.widthPixels);
                             imageView.setImageBitmap(bitmap);
+
+                            // Save this bitmap for later in case we try to get it again.
+                            images.put(userKey, bitmap);
                         }
 
                         // Show the imageView and hide the progress-bar
@@ -56,11 +51,18 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
                 public void removeAllObjects() {}
             };
 
+        // Check if this is the first time getting the relevant images.
+        if (!images.containsKey(userKey)) {
             // Retrieve the user image from storage.
             ImageDB.getInstance().downloadImage(getContext(), userKey, receivedImageHandler);
 
             // Register this callback for when the image changes.
             ImageDB.getInstance().registerCallback(receivedImageHandler);
+        }
+        else {
+            // Pass the image we previously received.
+            receivedImageHandler.onObjectReceived(images.get(userKey));
+        }
     }
 
     protected void initUserNameTextView(String userKey, final TextView userNameTV) {

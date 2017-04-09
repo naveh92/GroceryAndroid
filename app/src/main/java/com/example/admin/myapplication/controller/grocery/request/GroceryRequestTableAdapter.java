@@ -78,7 +78,11 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
     public void onRequestReceived(GroceryRequest request) {
         groceryRequests.add(request);
         Collections.sort(groceryRequests);
-        notifyDataSetChanged();
+
+        // TODO: Invalidated or changed?
+        // TODO: Changed queries everything again..
+        super.notifyDataSetInvalidated();
+//        notifyDataSetChanged();
     }
 
     public void removeAllRequests() {
