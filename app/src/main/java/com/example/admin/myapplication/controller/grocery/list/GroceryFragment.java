@@ -157,10 +157,14 @@ public class GroceryFragment extends TableViewFragment {
             public void removeAllLists() {}
         };
 
-        if (db == null) {
-            db = new UserGroceryListsDB(AuthenticationManager.getInstance().getCurrentUserId());
-        }
+        // TODO: ??
+//        if (db == null) {
+//            db = new UserGroceryListsDB(AuthenticationManager.getInstance().getCurrentUserId());
+//        }
 
-        db.observeLists(listReceivedHandler, groupListDeletedHandler);
+        // TODO: ??
+        if (db != null) {
+            db.observeLists(listReceivedHandler, groupListDeletedHandler);
+        }
     }
 }

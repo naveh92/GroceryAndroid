@@ -25,6 +25,7 @@ public class LoginActivity extends Activity {
     private static final String TAG = "LoginActivity";
     private FirebaseAuth.AuthStateListener mAuthListener;
     private CallbackManager mCallbackManager;
+    private static Boolean continued;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,10 @@ public class LoginActivity extends Activity {
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
+
+        // Reset the continued (In case we exited but didn't shut down the app.)
+        // Note: When logging-out, we start this activity, so the variable will be reset.
+        continued = false;
 
         initAuthenticationListener();
         initFacebookLoginButton();
@@ -58,9 +63,14 @@ public class LoginActivity extends Activity {
                     // Set the access token.
                     AuthenticationManager.getInstance().setAccessToken(AccessToken.getCurrentAccessToken());
 
-                    // Once we logged-in, move on to the main activity.
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
+                    // Prevent this from happening twice as long as the app is running.
+                    if (!continued) {
+                        continued = true;
+
+                        // Once we logged-in, move on to the main activity.
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
 
                     // Finish this activity.
                     LoginActivity.this.finish();
