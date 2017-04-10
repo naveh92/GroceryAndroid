@@ -32,8 +32,9 @@ import com.example.admin.myapplication.model.entities.Group;
  * Created by admin on 04/04/2017.
  */
 public class GroceryFragment extends TableViewFragment {
+    // TODO: static? test this.. (If having problems with refresh)
     private static UserGroceryListsDB db;
-    private static GroceryListTableAdapter adapter;
+    private GroceryListTableAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
