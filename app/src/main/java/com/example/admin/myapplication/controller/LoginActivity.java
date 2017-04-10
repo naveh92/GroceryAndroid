@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
@@ -74,9 +76,6 @@ public class LoginActivity extends Activity {
                         // Manage user creation
                         manageUserCreation(user.getUid(), token.getUserId(), user.getDisplayName());
                     }
-
-                    // Finish this activity.
-                    LoginActivity.this.finish();
                 }
                 else {
                     // User is signed out
@@ -103,6 +102,9 @@ public class LoginActivity extends Activity {
                 // Once we logged-in, move on to the main activity.
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
+
+                // Finish this activity.
+                LoginActivity.this.finish();
             }
 
             @Override
@@ -122,6 +124,7 @@ public class LoginActivity extends Activity {
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook: onSuccess:" + loginResult);
                 AuthenticationManager.getInstance().handleFacebookAccessToken(loginResult.getAccessToken(), LoginActivity.this);
+                findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -152,10 +155,12 @@ public class LoginActivity extends Activity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            ((TextView)findViewById(R.id.greetingTV)).setText("Welcome back, " + user.getDisplayName());
+            ((TextView) findViewById(R.id.greetingTV)).setText("Welcome back, " + user.getDisplayName());
+             findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
         }
         else {
-            ((TextView)findViewById(R.id.greetingTV)).setText("Hello");
+            ((TextView) findViewById(R.id.greetingTV)).setText("Hello");
+            findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
         }
     }
 }
