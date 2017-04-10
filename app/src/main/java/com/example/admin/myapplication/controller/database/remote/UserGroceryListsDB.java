@@ -178,7 +178,6 @@ public class UserGroceryListsDB {
         return count;
     }
 
-    // TODO:
     public Boolean doesUserHaveGroup() {
         return groupsDB.getGroupsCount() > 0;
     }

@@ -1,6 +1,7 @@
 package com.example.admin.myapplication.controller.database.remote;
 
 import com.example.admin.myapplication.controller.handlers.GroupReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.Group;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -206,22 +207,40 @@ public class UserGroupsDB {
         return null;
     }
 
-    public void addGroupToUser(String groupKey) {
-        // TODO: new Date().toFirebase()?
-        Map<String, Object> valuesToPost = new HashMap<>();
-        valuesToPost.put(groupKey, true);
-//        valuesToPost.put("lastUpdated", )
+    public void addGroupToUser(final String groupKey) {
+        ObjectReceivedHandler<Long> timestampHandler = new ObjectReceivedHandler<Long>() {
+            @Override
+            public void onObjectReceived(Long currentRemoteDate) {
+                Map<String, Object> valuesToPost = new HashMap<>();
+                valuesToPost.put(groupKey, true);
+                valuesToPost.put("lastUpdated", currentRemoteDate);
 
-        userGroupsRef.updateChildren(valuesToPost);
+                userGroupsRef.updateChildren(valuesToPost);
+            }
+
+            @Override
+            public void removeAllObjects() {}
+        };
+
+        DatabaseDateManager.getTimestamp(timestampHandler);
     }
 
-    public void removeGroupFromUser(String groupKey) {
-        userGroupsRef.child(groupKey).removeValue();
+    public void removeGroupFromUser(final String groupKey) {
+        ObjectReceivedHandler<Long> timestampHandler = new ObjectReceivedHandler<Long>() {
+            @Override
+            public void onObjectReceived(Long currentRemoteDate) {
+                userGroupsRef.child(groupKey).removeValue();
 
-        // TODO: new Date().toFirebase()?
-        Map<String, Object> valuesToPost = new HashMap<>();
-//        valuesToPost.put("lastUpdated", )
-//        userGroupsRef.updateChildren(valuesToPost);
+                Map<String, Object> valuesToPost = new HashMap<>();
+                valuesToPost.put("lastUpdated", currentRemoteDate);
+                userGroupsRef.updateChildren(valuesToPost);
+            }
+
+            @Override
+            public void removeAllObjects() {}
+        };
+
+        DatabaseDateManager.getTimestamp(timestampHandler);
     }
 
     // TODO: ?

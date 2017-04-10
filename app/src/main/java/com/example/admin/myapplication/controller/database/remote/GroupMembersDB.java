@@ -163,7 +163,11 @@ public class GroupMembersDB {
             @Override
             public void onIntegerReceived(Integer count) {
                 if (count == 0) {
+                    // Delete the group
                     GroupsDB.getInstance().deleteGroup(GroupMembersDB.this.groupKey);
+
+                    // Delete all lists in that group
+                    new GroceryListsByGroupDB(GroupMembersDB.this.groupKey).deleteAllListsForGroup();
                 }
             }
         };

@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
-import com.example.admin.myapplication.controller.handlers.BooleanReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 import com.facebook.GraphRequest;
@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class FacebookFriendsFinder {
 
-    public void find(final List<User> currentMembers, final UserReceivedHandler memberReceived, final BooleanReceivedHandler whenFinishedHandler) {
+    public void find(final List<User> currentMembers, final UserReceivedHandler memberReceived, final ObjectReceivedHandler<Boolean> whenFinishedHandler) {
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id, name");
 
@@ -65,7 +65,7 @@ public class FacebookFriendsFinder {
 
                 // Notify the caller whether there are friends to add
                 // (If there are, the caller should be waiting..)
-                whenFinishedHandler.onBooleanReceived(noFriendsToAdd);
+                whenFinishedHandler.onObjectReceived(noFriendsToAdd);
             }
         });
 

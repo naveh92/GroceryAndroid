@@ -9,7 +9,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,11 +39,7 @@ public class GroceryListsByGroupDB {
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                // TODO: Need this?
-//                GroceryList modifiedList = mapToGroceryList(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue());
-//                listChangedHandler.onObjectReceived(modifiedList);
-            }
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
@@ -67,6 +66,31 @@ public class GroceryListsByGroupDB {
 
     public String getGroupKey() {
         return groupKey;
+    }
+
+    public void deleteAllListsForGroup() {
+        // Query all lists for this group
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> listsKeys = new ArrayList<>();
+
+                // Add the keys of all the lists for this group.
+                for (DataSnapshot listValue : dataSnapshot.getChildren()) {
+                    listsKeys.add(listValue.getKey());
+                }
+
+                // Delete every list from DB
+                for (String listKey : listsKeys) {
+                    ListsDB.getInstance().deleteList(listKey);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "Failed to retrieve Grocery-lists..");
+            }
+        });
     }
 
     // TODO: ?

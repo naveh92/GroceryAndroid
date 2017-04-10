@@ -19,7 +19,7 @@ import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
-import com.example.admin.myapplication.controller.handlers.BooleanReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 
@@ -156,9 +156,9 @@ public class GroupMembersTableActivity extends TableViewActivity {
             }
         };
 
-        BooleanReceivedHandler whenFinished = new BooleanReceivedHandler() {
+        ObjectReceivedHandler<Boolean> whenFinished = new ObjectReceivedHandler<Boolean>() {
             @Override
-            public void onBooleanReceived(Boolean bool) {
+            public void onObjectReceived(Boolean bool) {
                 Boolean noFriendsToAdd = bool;
 
                 if (noFriendsToAdd) {
@@ -173,6 +173,9 @@ public class GroupMembersTableActivity extends TableViewActivity {
                                 }}).show();
                 }
             }
+
+            @Override
+            public void removeAllObjects() {}
         };
 
         // Retrieve relevant users from Facebook

@@ -28,7 +28,7 @@ import com.example.admin.myapplication.model.entities.Group;
  */
 public class GroupFragment extends TableViewFragment {
     private UserGroupsDB db;
-    private GroupTableAdapter adapter;
+    private static GroupTableAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class GroupFragment extends TableViewFragment {
             }
         });
 
-        fetchGroups();
+        refresh();
 
         return view;
     }
@@ -116,7 +116,7 @@ public class GroupFragment extends TableViewFragment {
                 String userKey = AuthenticationManager.getInstance().getCurrentUserId();
 
                 // Add the group
-                String groupKey = GroupsDB.getInstance().addNewGroup(newGroup, userKey);
+                String groupKey = GroupsDB.getInstance().addNewGroup(newGroup);
 
                 // Add the user as a group member
                 new GroupMembersDB(groupKey).addMember(userKey);
@@ -136,12 +136,15 @@ public class GroupFragment extends TableViewFragment {
 
     @Override
     protected void refresh() {
+        notifyDataSetChanged();
         fetchGroups();
     }
 
     @Override
     public void notifyDataSetChanged() {
         if (adapter != null) {
+            // TODO: Which?
+            adapter.notifyDataSetInvalidated();
             adapter.notifyDataSetChanged();
         }
     }

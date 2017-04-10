@@ -1,7 +1,9 @@
 package com.example.admin.myapplication.controller.grocery.list;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,7 +33,7 @@ import com.example.admin.myapplication.model.entities.Group;
  */
 public class GroceryFragment extends TableViewFragment {
     private static UserGroceryListsDB db;
-    private GroceryListTableAdapter adapter;
+    private static GroceryListTableAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,42 +74,59 @@ public class GroceryFragment extends TableViewFragment {
 
     @Override
     public void newObjectDialog(Context context) {
-        // Open a dialog.
-        final Dialog dialog = new Dialog(context);
-        dialog.setContentView(R.layout.new_list_dialog);
-        dialog.setTitle("New Grocery List");
+        if (db.doesUserHaveGroup()) {
+            // Open a dialog.
+            final Dialog dialog = new Dialog(context);
+            dialog.setContentView(R.layout.new_list_dialog);
+            dialog.setTitle("New Grocery List");
 
-        // Get the EditText and focus on it.
-        final EditText listTitleText = (EditText) dialog.findViewById(R.id.listTitleText);
-        listTitleText.requestFocus();
+            // Get the EditText and focus on it.
+            final EditText listTitleText = (EditText) dialog.findViewById(R.id.listTitleText);
+            listTitleText.requestFocus();
 
-        final Spinner groupComboBox = (Spinner) dialog.findViewById(R.id.spinner);
-        GroupComboBoxAdapter comboBoxAdapter = new GroupComboBoxAdapter(context,
-                                                                android.R.layout.simple_spinner_item,
-                                                                db.getAllGroups());
-        groupComboBox.setAdapter(comboBoxAdapter);
+            final Spinner groupComboBox = (Spinner) dialog.findViewById(R.id.spinner);
+            GroupComboBoxAdapter comboBoxAdapter = new GroupComboBoxAdapter(context,
+                    android.R.layout.simple_spinner_item,
+                    db.getAllGroups());
+            groupComboBox.setAdapter(comboBoxAdapter);
 
-        ImageButton confirmButton = (ImageButton) dialog.findViewById(R.id.confirm);
+            ImageButton confirmButton = (ImageButton) dialog.findViewById(R.id.confirm);
 
-        // If button is clicked, close the custom dialog
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
+            // If button is clicked, close the custom dialog
+            confirmButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
 
-                // Get the user input.
-                String listTitle = listTitleText.getText().toString();
-                String groupKey = ((Group)groupComboBox.getSelectedItem()).getKey();
+                    // Get the user input.
+                    String listTitle = listTitleText.getText().toString();
+                    String groupKey = ((Group) groupComboBox.getSelectedItem()).getKey();
 
-                // Add the new list to the database.
-                GroceryList newList = new GroceryList("", groupKey, listTitle);
-                ListsDB.getInstance().addNewList(newList);
+                    // Add the new list to the database.
+                    GroceryList newList = new GroceryList("", groupKey, listTitle);
+                    ListsDB.getInstance().addNewList(newList);
 
-                fetchLists();
-            }
-        });
+                    fetchLists();
+                }
+            });
 
-        dialog.show();
+            dialog.show();
+        }
+        else {
+            // User doesn't have a group. He cannot create a list.
+            // TODO: Strings.xml
+            // Show alert dialog
+            new AlertDialog.Builder(context).setTitle("Sorry!")
+                    .setMessage("You need to have a group to create a list.")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            dialog.dismiss();
+
+                            // TODO: Move to group fragment?
+//                            getFragmentManager()
+                        }}).show();
+        }
     }
 
     @Override
@@ -118,6 +137,8 @@ public class GroceryFragment extends TableViewFragment {
     @Override
     public void notifyDataSetChanged() {
         if (adapter != null) {
+            // Which one?
+            adapter.notifyDataSetInvalidated();
             adapter.notifyDataSetChanged();
         }
     }

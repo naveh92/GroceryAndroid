@@ -18,7 +18,6 @@ import android.widget.PopupMenu;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
-import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.grocery.list.GroceryFragment;
 import com.example.admin.myapplication.controller.profile.ProfileFragment;
 import com.facebook.login.LoginManager;

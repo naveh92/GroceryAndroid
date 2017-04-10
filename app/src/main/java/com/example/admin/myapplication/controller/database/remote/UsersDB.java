@@ -100,8 +100,7 @@ public class UsersDB {
         userCache.put(key, user);
     }
 
-    private User mapToUser(String key, Map<String, Object> values) {
-        String userKey = key;
+    private User mapToUser(String userKey, Map<String, Object> values) {
         String userName = (String) values.get("name");
         String facebookId = (String) values.get("facebookId");
 

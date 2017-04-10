@@ -1,5 +1,7 @@
 package com.example.admin.myapplication.model.entities;
 
+import android.support.annotation.NonNull;
+
 import com.google.firebase.database.Exclude;
 
 import java.util.HashMap;
@@ -13,6 +15,7 @@ public class GroceryRequest implements Comparable<GroceryRequest> {
     private String userKey;
     private String itemName;
     private Boolean purchased;
+    private Long updateTime;
 
     public String getKey() {
         return key;
@@ -22,6 +25,7 @@ public class GroceryRequest implements Comparable<GroceryRequest> {
         return itemName;
     }
     public Boolean getPurchased() { return purchased; }
+    public Long getUpdateTime() { return updateTime; }
 
     public GroceryRequest(String itemName, String userKey) {
         this.itemName = itemName;
@@ -29,11 +33,12 @@ public class GroceryRequest implements Comparable<GroceryRequest> {
         this.purchased = false;
     }
 
-    public GroceryRequest(String key, String userKey, String itemName, Boolean purchased) {
+    public GroceryRequest(String key, String userKey, String itemName, Boolean purchased, Long updateTime) {
         this.key = key;
         this.userKey = userKey;
         this.itemName = itemName;
         this.purchased = purchased;
+        this.updateTime = updateTime;
     }
 
     @Exclude
@@ -47,8 +52,7 @@ public class GroceryRequest implements Comparable<GroceryRequest> {
     }
 
     @Override
-    public int compareTo(GroceryRequest groceryRequest) {
-        // TODO: Compare by lastUpdateTime?
+    public int compareTo(@NonNull GroceryRequest groceryRequest) {
         return itemName.compareTo(groceryRequest.getItemName());
     }
 }

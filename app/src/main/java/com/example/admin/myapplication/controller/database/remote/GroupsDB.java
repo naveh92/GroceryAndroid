@@ -32,7 +32,7 @@ public class GroupsDB {
         return instance;
     }
 
-    public String addNewGroup(Group group, String userKey) {
+    public String addNewGroup(Group group) {
         // Generate a key for the new group
         String key = groupsRef.push().getKey();
         Map<String, Object> postValues = group.toMap();
@@ -48,7 +48,6 @@ public class GroupsDB {
     }
 
     public void findGroupByKey(String key, final GroupReceivedHandler handler) {
-//        if (self.groupCache[key as NSString] == nil) {
         // Read from the database
         groupsRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

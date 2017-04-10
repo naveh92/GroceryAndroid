@@ -2,12 +2,14 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.util.Log;
 
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.controller.handlers.RequestReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -40,14 +42,11 @@ public class RequestsDB {
                 handler.removeAllRequests();
 
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    // Extract the object from the map
                     Map<String, Object> values = ((Map<String, Object>)child.getValue());
+                    GroceryRequest request = mapToRequest(child.getKey(), values);
 
-                    String requestKey = child.getKey();
-                    String userKey = (String) values.get("userId");
-                    String itemName = (String) values.get("itemName");
-                    Boolean purchased = Boolean.valueOf((String)values.get("purchased"));
-
-                    handler.onRequestReceived(new GroceryRequest(requestKey, userKey, itemName, purchased));
+                    handler.onRequestReceived(request);
                 }
             }
 
@@ -59,27 +58,55 @@ public class RequestsDB {
         });
     }
 
-    public void addNewRequest(GroceryRequest request) {
-        // Generate a key for the new list
-        String key = requestsRef.push().getKey();
-        Map<String, Object> postValues = request.toMap();
-        // TODO: FIRDataetfgnmooer
-//        postValues.put("lastUpdated", new Date());
+    private GroceryRequest mapToRequest(String requestKey, Map<String, Object> values) {
+        String userKey = (String) values.get("userId");
+        String itemName = (String) values.get("itemName");
+        Boolean purchased = Boolean.valueOf((String)values.get("purchased"));
+        Long updateTime = (Long) values.get("lastUpdated");
 
-        // Set the values
-        requestsRef.child(key).setValue(postValues);
+        return new GroceryRequest(requestKey, userKey, itemName, purchased, updateTime);
     }
 
-    public void togglePurchased(String requestKey, Boolean currentPurchasedValue) {
-        Boolean newValue = !currentPurchasedValue;
+    public void addNewRequest(final GroceryRequest request) {
+        ObjectReceivedHandler<Long> timestampHandler = new ObjectReceivedHandler<Long>() {
+            @Override
+            public void onObjectReceived(Long currentRemoteDate) {
+                // Generate a key for the new list
+                String key = requestsRef.push().getKey();
+                Map<String, Object> postValues = request.toMap();
 
-        // Generate a key for the new list
-        Map<String, Object> postValues = new HashMap<>();
-        postValues.put("purchased", newValue.toString());
-        // TODO: FIRDataetfgnmooer
-//        postValues.put("lastUpdated", new Date());
+                postValues.put("lastUpdated", currentRemoteDate);
 
-        // Set the values
-        requestsRef.child(requestKey).updateChildren(postValues);
+                // Set the values
+                requestsRef.child(key).setValue(postValues);
+            }
+
+            @Override
+            public void removeAllObjects() {}
+        };
+
+        DatabaseDateManager.getTimestamp(timestampHandler);
+    }
+
+    public void togglePurchased(final String requestKey, final Boolean currentPurchasedValue) {
+        ObjectReceivedHandler<Long> timestampHandler = new ObjectReceivedHandler<Long>() {
+            @Override
+            public void onObjectReceived(Long currentRemoteDate) {
+                Boolean newValue = !currentPurchasedValue;
+
+                // Generate a key for the new list
+                Map<String, Object> postValues = new HashMap<>();
+                postValues.put("purchased", newValue.toString());
+                postValues.put("lastUpdated", currentRemoteDate);
+
+                // Set the values
+                requestsRef.child(requestKey).updateChildren(postValues);
+            }
+
+            @Override
+            public void removeAllObjects() {}
+        };
+
+        DatabaseDateManager.getTimestamp(timestampHandler);
     }
 }
