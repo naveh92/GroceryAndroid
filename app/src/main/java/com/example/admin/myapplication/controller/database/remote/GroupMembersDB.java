@@ -3,7 +3,7 @@ package com.example.admin.myapplication.controller.database.remote;
 import android.util.Log;
 
 import com.example.admin.myapplication.controller.handlers.IntegerReceivedHandler;
-import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,7 +40,7 @@ public class GroupMembersDB {
         lastUpdatedRef = FirebaseDatabase.getInstance().getReference(GROUPS_NODE_URL).child(groupKey).child(LAST_UPDATED_NODE);
     }
 
-    public void observeGroupMembers(final UserReceivedHandler handler) {
+    public void observeGroupMembers(final ObjectReceivedHandler<User> handler) {
         // TODO: Go to db and get last updated.
         // TODO: observeLastUpdated(lastUpdateTimeHandler);
         // TODO: Inside the handler when we get the value:
@@ -55,18 +55,18 @@ public class GroupMembersDB {
         }
     }
 
-    private void fetchGroupMembersFromLocalDB(UserReceivedHandler handler) {
+    private void fetchGroupMembersFromLocalDB(ObjectReceivedHandler<User> handler) {
         // TODO:
     }
 
-    private void fetchGroupMembersFromRemoteDBAndUpdateLocalDB(final UserReceivedHandler handler, long remoteLastUpdateTime) {
+    private void fetchGroupMembersFromRemoteDBAndUpdateLocalDB(final ObjectReceivedHandler<User> handler, long remoteLastUpdateTime) {
         // Read from the database
         databaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Clear the list - we are about to get a new value.
                 members.clear();
-                handler.removeAllUsers();
+                handler.removeAllObjects();
 
                 List<String> userKeys = new ArrayList<>();
 
@@ -96,18 +96,18 @@ public class GroupMembersDB {
         return false;
     }
 
-    private void handleGroupMemberAddition(String userKey, final UserReceivedHandler handler) {
-        UserReceivedHandler foundUserHandler = new UserReceivedHandler() {
+    private void handleGroupMemberAddition(String userKey, final ObjectReceivedHandler<User> handler) {
+        ObjectReceivedHandler<User> foundUserHandler = new ObjectReceivedHandler<User>() {
             @Override
-            public void onUserReceived(User user) {
+            public void onObjectReceived(User user) {
                 if (user != null) {
                     members.add(user);
-                    handler.onUserReceived(user);
+                    handler.onObjectReceived(user);
                 }
             }
 
             @Override
-            public void removeAllUsers() {}
+            public void removeAllObjects() {}
         };
 
         // Retrieve the user object

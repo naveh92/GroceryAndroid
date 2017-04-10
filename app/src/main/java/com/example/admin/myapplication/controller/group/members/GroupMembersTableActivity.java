@@ -20,7 +20,6 @@ import com.example.admin.myapplication.controller.authentication.AuthenticationM
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
-import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 
 /**
@@ -54,14 +53,14 @@ public class GroupMembersTableActivity extends TableViewActivity {
         // Register the animations when gridview is touched.
         super.createHideViewsWhenScroll(gridview);
 
-        UserReceivedHandler memberReceivedHandler = new UserReceivedHandler() {
+        ObjectReceivedHandler<User> memberReceivedHandler = new ObjectReceivedHandler<User>() {
             @Override
-            public void onUserReceived(User member) {
+            public void onObjectReceived(User member) {
                 groupMembersAdapter.onMemberReceived(member);
             }
 
             @Override
-            public void removeAllUsers() {
+            public void removeAllObjects() {
                 groupMembersAdapter.removeAllMembers();
             }
         };
@@ -144,14 +143,14 @@ public class GroupMembersTableActivity extends TableViewActivity {
             }
         });
 
-        UserReceivedHandler facebookFriendHandler = new UserReceivedHandler() {
+        ObjectReceivedHandler<User> facebookFriendHandler = new ObjectReceivedHandler<User>() {
             @Override
-            public void onUserReceived(User user) {
+            public void onObjectReceived(User user) {
                 newMembersAdapter.onMemberReceived(user);
             }
 
             @Override
-            public void removeAllUsers() {
+            public void removeAllObjects() {
                 newMembersAdapter.removeAllMembers();
             }
         };

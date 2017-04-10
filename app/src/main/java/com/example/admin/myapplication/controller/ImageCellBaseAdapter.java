@@ -1,9 +1,7 @@
 package com.example.admin.myapplication.controller;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -14,7 +12,6 @@ import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
-import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 
 import java.util.HashMap;
@@ -67,9 +64,9 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
 
     protected void initUserNameTextView(String userKey, final TextView userNameTV) {
         // Retrieve the user object from the DB.
-        UserReceivedHandler receivedUserHandler = new UserReceivedHandler() {
+        ObjectReceivedHandler<User> receivedUserHandler = new ObjectReceivedHandler<User>() {
             @Override
-            public void onUserReceived(User user) {
+            public void onObjectReceived(User user) {
                 if (user != null) {
                     // Get the userName TextView, and set its text.
                     String userName = user.getName();
@@ -78,7 +75,7 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
             }
 
             @Override
-            public void removeAllUsers() {}
+            public void removeAllObjects() {}
         };
 
         // Retrieve the user object from the DB.

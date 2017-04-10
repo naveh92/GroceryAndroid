@@ -17,7 +17,6 @@ import com.example.admin.myapplication.controller.authentication.AuthenticationM
 import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
-import com.example.admin.myapplication.controller.handlers.UserReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 
 /**
@@ -45,14 +44,14 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initUsernameTextView(String userKey, final TextView userNameTV) {
-        UserReceivedHandler userReceivedHandler = new UserReceivedHandler() {
+        ObjectReceivedHandler<User> userReceivedHandler = new ObjectReceivedHandler<User>() {
             @Override
-            public void onUserReceived(User user) {
+            public void onObjectReceived(User user) {
                 userNameTV.setText(user.getName());
             }
 
             @Override
-            public void removeAllUsers() {}
+            public void removeAllObjects() {}
         };
 
         UsersDB.getInstance().findUserByKey(userKey, userReceivedHandler);

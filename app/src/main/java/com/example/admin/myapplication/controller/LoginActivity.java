@@ -9,11 +9,13 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.remote.UsersDB;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
+import com.example.admin.myapplication.model.entities.User;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -60,16 +62,17 @@ public class LoginActivity extends Activity {
                     Log.d(TAG, "onAuthStateChanged: signed_in:" + user.getUid());
                     updateUI(user);
 
+                    AccessToken token = AccessToken.getCurrentAccessToken();
+
                     // Set the access token.
-                    AuthenticationManager.getInstance().setAccessToken(AccessToken.getCurrentAccessToken());
+                    AuthenticationManager.getInstance().setAccessToken(token);
 
                     // Prevent this from happening twice as long as the app is running.
                     if (!continued) {
                         continued = true;
 
-                        // Once we logged-in, move on to the main activity.
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
+                        // Manage user creation
+                        manageUserCreation(user.getUid(), token.getUserId(), user.getDisplayName());
                     }
 
                     // Finish this activity.
@@ -82,6 +85,31 @@ public class LoginActivity extends Activity {
                 }
             }
         };
+    }
+
+    /**
+     * This function gets the user object from UserDB.
+     * If it can't find it, it creates a new user.
+     */
+    private void manageUserCreation(final String userKey, final String facebookId, final String name) {
+        ObjectReceivedHandler<User> userReceivedHandler = new ObjectReceivedHandler<User>() {
+            @Override
+            public void onObjectReceived(User receivedUser) {
+                if (receivedUser == null) {
+                    User user = new User(userKey, facebookId, name);
+                    UsersDB.getInstance().addNewUser(user);
+                }
+
+                // Once we logged-in, move on to the main activity.
+                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+
+            @Override
+            public void removeAllObjects() {}
+        };
+
+        UsersDB.getInstance().findUserByKey(userKey, userReceivedHandler);
     }
 
     private void initFacebookLoginButton() {
