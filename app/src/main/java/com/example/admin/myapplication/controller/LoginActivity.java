@@ -141,12 +141,14 @@ public class LoginActivity extends Activity {
         // Initialize Facebook Login button
         mCallbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = (LoginButton) findViewById(R.id.button_facebook_login);
+        loginButton.setEnabled(true);
         loginButton.setReadPermissions("email", "public_profile");
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook: onSuccess:" + loginResult);
                 AuthenticationManager.getInstance().handleFacebookAccessToken(loginResult.getAccessToken(), LoginActivity.this);
+                hideLogoutButton();
                 findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
             }
 
@@ -180,10 +182,20 @@ public class LoginActivity extends Activity {
         if (user != null) {
             ((TextView) findViewById(R.id.greetingTV)).setText("Welcome back, " + user.getDisplayName());
              findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+
+            hideLogoutButton();
         }
         else {
             ((TextView) findViewById(R.id.greetingTV)).setText("Hello");
             findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
+
+            // Enable the facebook button
+            findViewById(R.id.button_facebook_login).setVisibility(View.VISIBLE);
         }
+    }
+
+    private void hideLogoutButton() {
+        // Disable the facebook button
+        findViewById(R.id.button_facebook_login).setVisibility(View.INVISIBLE);
     }
 }

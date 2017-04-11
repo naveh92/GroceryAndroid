@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
@@ -21,8 +22,9 @@ import java.util.List;
  * Created by admin on 05/04/2017.
  */
 public class GroupMembersTableAdapter extends ImageCellBaseAdapter {
-    private List<User> members = new ArrayList<>();
+    private final List<User> members = new ArrayList<>();
     private Context mContext;
+    private ProgressBar progressBar;
 
     public GroupMembersTableAdapter(Context c) {
         mContext = c;

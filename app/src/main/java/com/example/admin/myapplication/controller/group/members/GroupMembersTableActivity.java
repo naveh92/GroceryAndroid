@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewActivity;
@@ -128,6 +129,8 @@ public class GroupMembersTableActivity extends TableViewActivity {
         final GroupMembersTableAdapter newMembersAdapter = new GroupMembersTableAdapter(this);
         gridview.setAdapter(newMembersAdapter);
 
+        final ProgressBar progressBar = (ProgressBar) dialog.findViewById(R.id.progressBar);
+
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                     dialog.dismiss();
@@ -147,6 +150,9 @@ public class GroupMembersTableActivity extends TableViewActivity {
             @Override
             public void onObjectReceived(User user) {
                 newMembersAdapter.onMemberReceived(user);
+
+                // Received a new member - hide the progress bar.
+                hideProgressBar(progressBar);
             }
 
             @Override
@@ -157,9 +163,7 @@ public class GroupMembersTableActivity extends TableViewActivity {
 
         ObjectReceivedHandler<Boolean> whenFinished = new ObjectReceivedHandler<Boolean>() {
             @Override
-            public void onObjectReceived(Boolean bool) {
-                Boolean noFriendsToAdd = bool;
-
+            public void onObjectReceived(Boolean noFriendsToAdd) {
                 if (noFriendsToAdd) {
                     // TODO: Strings.xml
                     // Show alert dialog
@@ -170,6 +174,9 @@ public class GroupMembersTableActivity extends TableViewActivity {
                                 public void onClick(DialogInterface dialog, int whichButton) {
                                     dialog.dismiss();
                                 }}).show();
+
+                    // No members - hide the progress bar.
+                    hideProgressBar(progressBar);
                 }
             }
 
@@ -181,5 +188,11 @@ public class GroupMembersTableActivity extends TableViewActivity {
         new FacebookFriendsFinder().find(groupMembersAdapter.getAllMembers(), facebookFriendHandler, whenFinished);
 
         dialog.show();
+    }
+
+    private void hideProgressBar(ProgressBar progressBar) {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
 }
