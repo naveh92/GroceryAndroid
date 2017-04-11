@@ -1,6 +1,7 @@
 package com.example.admin.myapplication.controller;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
@@ -97,6 +99,8 @@ public class LoginActivity extends Activity {
                 if (receivedUser == null) {
                     User user = new User(userKey, facebookId, name);
                     UsersDB.getInstance().addNewUser(user);
+
+                    setUserProfilePic(userKey);
                 }
 
                 // Once we logged-in, move on to the main activity.
@@ -105,6 +109,25 @@ public class LoginActivity extends Activity {
 
                 // Finish this activity.
                 LoginActivity.this.finish();
+            }
+
+            private void setUserProfilePic(final String userKey) {
+                ObjectReceivedHandler<Bitmap> profilePicHandler = new ObjectReceivedHandler<Bitmap>() {
+                    @Override
+                    public void onObjectReceived(Bitmap userProfilePic) {
+                        // If succeeded, save it to storage.
+                        if (userProfilePic != null) {
+                            Log.d(TAG, "Downloaded user Facebook profile pic. Storing...");
+                            ImageDB.getInstance().storeImage(LoginActivity.this, userProfilePic, userKey);
+                        }
+                    }
+
+                    @Override
+                    public void removeAllObjects() {}
+                };
+
+                // Get the user's profile pic from Facebook
+                new FacebookImageManager().downloadUserProfilePic(facebookId, profilePicHandler);
             }
 
             @Override
