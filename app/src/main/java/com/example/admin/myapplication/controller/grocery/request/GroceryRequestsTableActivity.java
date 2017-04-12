@@ -14,7 +14,7 @@ import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.RequestsDB;
-import com.example.admin.myapplication.controller.handlers.RequestReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryRequest;
 
 /**
@@ -56,14 +56,14 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
             }
         });
 
-        RequestReceivedHandler requestReceivedHandler = new RequestReceivedHandler() {
+        ObjectReceivedHandler<GroceryRequest> requestReceivedHandler = new ObjectReceivedHandler<GroceryRequest>() {
             @Override
-            public void onRequestReceived(GroceryRequest request) {
+            public void onObjectReceived(GroceryRequest request) {
                 adapter.onRequestReceived(request);
             }
 
             @Override
-            public void removeAllRequests() {
+            public void removeAllObjects() {
                 adapter.removeAllRequests();
             }
         };

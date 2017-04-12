@@ -19,7 +19,6 @@ import com.example.admin.myapplication.controller.database.remote.GroupMembersDB
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.group.members.GroupMembersTableActivity;
-import com.example.admin.myapplication.controller.handlers.GroupReceivedHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.Group;
 
@@ -68,9 +67,9 @@ public class GroupFragment extends TableViewFragment {
     }
 
     private void fetchGroups() {
-        GroupReceivedHandler groupReceivedHandler = new GroupReceivedHandler() {
+        ObjectReceivedHandler<Group> groupReceivedHandler = new ObjectReceivedHandler<Group>() {
             @Override
-            public void onGroupReceived(Group group) {
+            public void onObjectReceived(Group group) {
                 // In case this happens on refresh when MainActivity is first created
                 if (adapter != null) {
                     adapter.onGroupReceived();
@@ -78,7 +77,7 @@ public class GroupFragment extends TableViewFragment {
             }
 
             @Override
-            public void removeAllGroups() {}
+            public void removeAllObjects() {}
         };
 
         if (db == null) {

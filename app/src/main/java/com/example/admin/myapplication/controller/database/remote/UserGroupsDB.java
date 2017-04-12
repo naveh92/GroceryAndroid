@@ -1,6 +1,5 @@
 package com.example.admin.myapplication.controller.database.remote;
 
-import com.example.admin.myapplication.controller.handlers.GroupReceivedHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.Group;
 import com.google.firebase.database.ChildEventListener;
@@ -31,7 +30,7 @@ public class UserGroupsDB {
         userGroupsRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + "/" + userKey + "/" + GROUPS_NODE_URL);
     }
 
-    public void observeUserGroupsAddition(final GroupReceivedHandler handler) {
+    public void observeUserGroupsAddition(final ObjectReceivedHandler<Group> handler) {
         // TODO:
         // Get the last-update time in the local db
         Long localUpdateTime = null; // LastUpdateTable.getLastUpdateDate();
@@ -113,7 +112,7 @@ public class UserGroupsDB {
 
     }
 
-    private void getGroupsFromLocal(GroupReceivedHandler handler) {
+    private void getGroupsFromLocal(ObjectReceivedHandler<Group> handler) {
         // TODO:
 //        let groupKeysFromLocal = UserGroupsTable.getUserGroupKeys(database: LocalDb.sharedInstance?.database)
 //
@@ -122,7 +121,7 @@ public class UserGroupsDB {
 //        }
     }
 
-    private void handleUserGroups(List<String> groupKeys, GroupReceivedHandler handler) {
+    private void handleUserGroups(List<String> groupKeys, ObjectReceivedHandler<Group> handler) {
         // Handle each group individually.
         for (String groupKey : groupKeys) {
             handleUserGroupAddition(groupKey, handler);
@@ -137,21 +136,21 @@ public class UserGroupsDB {
 //                lastUpdate: Date())
     }
 
-    private void handleUserGroupAddition(String groupKey, final GroupReceivedHandler handler) {
-        GroupReceivedHandler receivedGroupHandler = new GroupReceivedHandler() {
+    private void handleUserGroupAddition(String groupKey, final ObjectReceivedHandler<Group> handler) {
+        ObjectReceivedHandler<Group> receivedGroupHandler = new ObjectReceivedHandler<Group>() {
             @Override
-            public void onGroupReceived(Group group) {
+            public void onObjectReceived(Group group) {
                 // If the group doesn't already exist (Just in case..)
                 if (!containsGroup(group)) {
                     groups.add(group);
                     Collections.sort(groups);
                 }
 
-                handler.onGroupReceived(group);
+                handler.onObjectReceived(group);
             }
 
             @Override
-            public void removeAllGroups() {}
+            public void removeAllObjects() {}
         };
 
         // Retrieve the Group object
@@ -169,7 +168,7 @@ public class UserGroupsDB {
         return false;
     }
 
-    public void observeUserGroupsDeletion(final GroupReceivedHandler handler) {
+    public void observeUserGroupsDeletion(final ObjectReceivedHandler<Group> handler) {
         userGroupsRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {}
@@ -185,7 +184,7 @@ public class UserGroupsDB {
                     // Remove the group from memory
                     Group removedGroup = groups.remove(groupIndex.intValue());
 
-                    handler.onGroupReceived(removedGroup);
+                    handler.onObjectReceived(removedGroup);
                 }
             }
 

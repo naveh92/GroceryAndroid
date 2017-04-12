@@ -18,13 +18,11 @@ import android.widget.Spinner;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewFragment;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
-import com.example.admin.myapplication.controller.database.remote.GroceryListsByGroupDB;
 import com.example.admin.myapplication.controller.database.remote.ListsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
-import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.grocery.request.GroceryRequestsTableActivity;
 import com.example.admin.myapplication.controller.grocery.request.GroupComboBoxAdapter;
-import com.example.admin.myapplication.controller.handlers.ListReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
 
@@ -34,7 +32,7 @@ import com.example.admin.myapplication.model.entities.Group;
 public class GroceryFragment extends TableViewFragment {
     // TODO: static? test this.. (If having problems with refresh)
     private static UserGroceryListsDB db;
-    private GroceryListTableAdapter adapter;
+    private static GroceryListTableAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -138,7 +136,7 @@ public class GroceryFragment extends TableViewFragment {
     @Override
     public void notifyDataSetChanged() {
         if (adapter != null) {
-            // Which one?
+            // TODO: Which one?
             adapter.notifyDataSetInvalidated();
             adapter.notifyDataSetChanged();
         }
@@ -156,27 +154,27 @@ public class GroceryFragment extends TableViewFragment {
     }
 
     private void fetchLists() {
-        ListReceivedHandler listReceivedHandler = new ListReceivedHandler() {
+        ObjectReceivedHandler<GroceryList> listReceivedHandler = new ObjectReceivedHandler<GroceryList>() {
             @Override
-            public void onListReceived(GroceryList list) {
+            public void onObjectReceived(GroceryList list) {
                 notifyDataSetChanged();
             }
 
             @Override
-            public void removeAllLists() {
+            public void removeAllObjects() {
                 // TODO: Delete this? Check if it is even being called..
                 notifyDataSetChanged();
             }
         };
 
-        ListReceivedHandler groupListDeletedHandler = new ListReceivedHandler() {
+        ObjectReceivedHandler<GroceryList> groupListDeletedHandler = new ObjectReceivedHandler<GroceryList>() {
             @Override
-            public void onListReceived(GroceryList list) {
+            public void onObjectReceived(GroceryList list) {
                 notifyDataSetChanged();
             }
 
             @Override
-            public void removeAllLists() {}
+            public void removeAllObjects() {}
         };
 
         // TODO: ??

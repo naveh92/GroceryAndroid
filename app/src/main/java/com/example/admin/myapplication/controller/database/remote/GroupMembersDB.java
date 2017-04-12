@@ -2,7 +2,6 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.util.Log;
 
-import com.example.admin.myapplication.controller.handlers.IntegerReceivedHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 import com.google.firebase.database.DataSnapshot;
@@ -114,15 +113,15 @@ public class GroupMembersDB {
         UsersDB.getInstance().findUserByKey(userKey, foundUserHandler);
     }
 
-    private void findGroupMembersCount(final IntegerReceivedHandler handler) {
+    private void findGroupMembersCount(final ObjectReceivedHandler<Integer> handler) {
         databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()) {
-                    handler.onIntegerReceived(0);
+                    handler.onObjectReceived(0);
                 }
                 else {
-                    handler.onIntegerReceived(((Long)dataSnapshot.getChildrenCount()).intValue());
+                    handler.onObjectReceived(((Long)dataSnapshot.getChildrenCount()).intValue());
                 }
             }
 
@@ -159,9 +158,9 @@ public class GroupMembersDB {
     }
 
     private void deleteGroupIfEmpty() {
-        IntegerReceivedHandler membersCountHandler = new IntegerReceivedHandler() {
+        ObjectReceivedHandler<Integer> membersCountHandler = new ObjectReceivedHandler<Integer>() {
             @Override
-            public void onIntegerReceived(Integer count) {
+            public void onObjectReceived(Integer count) {
                 if (count == 0) {
                     // Delete the group
                     GroupsDB.getInstance().deleteGroup(GroupMembersDB.this.groupKey);
@@ -170,6 +169,9 @@ public class GroupMembersDB {
                     new GroceryListsByGroupDB(GroupMembersDB.this.groupKey).deleteAllListsForGroup();
                 }
             }
+
+            @Override
+            public void removeAllObjects() {}
         };
 
         findGroupMembersCount(membersCountHandler);

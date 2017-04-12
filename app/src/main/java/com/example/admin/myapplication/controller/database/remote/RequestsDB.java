@@ -3,13 +3,11 @@ package com.example.admin.myapplication.controller.database.remote;
 import android.util.Log;
 
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
-import com.example.admin.myapplication.controller.handlers.RequestReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -32,21 +30,21 @@ public class RequestsDB {
     // --------------
     //    Requests
     // --------------
-    public void observeRequestsAddition(final RequestReceivedHandler handler) {
+    public void observeRequestsAddition(final ObjectReceivedHandler<GroceryRequest> handler) {
         // Read from the database
         requestsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                handler.removeAllRequests();
+                handler.removeAllObjects();
 
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     // Extract the object from the map
                     Map<String, Object> values = ((Map<String, Object>)child.getValue());
                     GroceryRequest request = mapToRequest(child.getKey(), values);
 
-                    handler.onRequestReceived(request);
+                    handler.onObjectReceived(request);
                 }
             }
 

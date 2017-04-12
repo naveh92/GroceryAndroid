@@ -11,14 +11,9 @@ import android.widget.TextView;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
-import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
-import com.example.admin.myapplication.controller.handlers.GroupReceivedHandler;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by admin on 04/04/2017.
@@ -58,16 +53,16 @@ public class GroceryListTableAdapter extends BaseAdapter {
         TextView listTitleTV = (TextView)view.findViewById(R.id.listTitle);
         listTitleTV.setText(listTitle);
 
-        GroupReceivedHandler groupReceivedHandler = new GroupReceivedHandler() {
+        ObjectReceivedHandler<Group> groupReceivedHandler = new ObjectReceivedHandler<Group>() {
             @Override
-            public void onGroupReceived(Group group) {
+            public void onObjectReceived(Group group) {
                 // Get the GroupName TextView, and set its text.
                 TextView groupName = (TextView)view.findViewById(R.id.groupName);
                 groupName.setText(group.getTitle());
             }
 
             @Override
-            public void removeAllGroups() {}
+            public void removeAllObjects() {}
         };
 
         // Get this lists group, and when finished, set its title.
