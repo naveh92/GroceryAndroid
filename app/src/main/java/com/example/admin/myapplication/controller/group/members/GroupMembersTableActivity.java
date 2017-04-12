@@ -171,7 +171,9 @@ public class GroupMembersTableActivity extends TableViewActivity {
                             .setMessage("There are no more members to add to this group.")
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int whichButton) {
+                                public void onClick(DialogInterface alertDialog, int whichButton) {
+                                    // Dismiss both dialogs.
+                                    alertDialog.dismiss();
                                     dialog.dismiss();
                                 }}).show();
 

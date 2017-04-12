@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;

@@ -19,7 +19,6 @@ public class DatabaseDateManager {
      * @param handler
      */
     public static void getTimestamp(final ObjectReceivedHandler<Long> handler) {
-        // TODO: Should this be before the listener is added?..
         ref.setValue(ServerValue.TIMESTAMP);
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
