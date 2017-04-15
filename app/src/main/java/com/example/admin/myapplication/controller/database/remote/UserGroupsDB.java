@@ -1,5 +1,8 @@
 package com.example.admin.myapplication.controller.database.remote;
 
+import android.content.Context;
+
+import com.example.admin.myapplication.controller.database.local.UserGroupsTable;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.Group;
 import com.google.firebase.database.ChildEventListener;
@@ -24,13 +27,22 @@ public class UserGroupsDB {
     private DatabaseReference userRef;
     private DatabaseReference userGroupsRef;
     private List<Group> groups = new ArrayList<>();
+    private String userKey;
+    // TODO: Need to table.close() onDestroy()??
+    private UserGroupsTable table;
 
     public UserGroupsDB(String userKey) {
+        this.userKey = userKey;
         userRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + "/" + userKey);
         userGroupsRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + "/" + userKey + "/" + GROUPS_NODE_URL);
     }
 
-    public void observeUserGroupsAddition(final ObjectReceivedHandler<Group> handler) {
+    public void observeUserGroupsAddition(Context context, final ObjectReceivedHandler<Group> handler) {
+        // Make sure the local db is initialized
+        if (table == null) {
+            table = new UserGroupsTable(context);
+        }
+
         // TODO:
         // Get the last-update time in the local db
         Long localUpdateTime = null; // LastUpdateTable.getLastUpdateDate();
@@ -109,27 +121,32 @@ public class UserGroupsDB {
                 }
             });
         }
-
     }
 
     private void getGroupsFromLocal(ObjectReceivedHandler<Group> handler) {
-        // TODO:
-//        let groupKeysFromLocal = UserGroupsTable.getUserGroupKeys(database: LocalDb.sharedInstance?.database)
-//
-//        for groupKey in groupKeysFromLocal {
-//            self.handleUserGroupAddition(groupKey: groupKey, whenGroupAdded: whenGroupAdded)
-//        }
+        // Get the group keys from local db
+        List<String> groupKeys = table.getUserGroupKeys(userKey);
+
+        // Handle each received group key individually
+        for (String groupKey : groupKeys) {
+            handleUserGroupAddition(groupKey, handler);
+        }
     }
 
+    /**
+     * This function is only for lists received from remote db
+     */
     private void handleUserGroups(List<String> groupKeys, ObjectReceivedHandler<Group> handler) {
-        // Handle each group individually.
+        // Handle each received group key individually
         for (String groupKey : groupKeys) {
             handleUserGroupAddition(groupKey, handler);
         }
 
-        // TODO: Update local records.
-//        UserGroupsTable.truncateTable(database: LocalDb.sharedInstance?.database)
-//        UserGroupsTable.addGroupKeys(database: LocalDb.sharedInstance?.database, groupKeys: groupKeys)
+        // Update local records.
+        table.truncate();
+        table.insertGroupKeys(userKey, groupKeys);
+
+        // TODO: Update LastUpdateTable
 //        LastUpdateTable.setLastUpdate(database: LocalDb.sharedInstance?.database,
 //                table: UserGroupsTable.TABLE,
 //                key: self.userKey as String,

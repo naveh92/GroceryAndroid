@@ -83,7 +83,13 @@ public class GroupFragment extends TableViewFragment {
         if (db == null) {
             db = new UserGroupsDB(AuthenticationManager.getInstance().getCurrentUserId());
         }
-        db.observeUserGroupsAddition(groupReceivedHandler);
+
+        Context context = getContext();
+
+        // TODO: Maybe just don't user local db if context is null? (though its stupid)
+        if (context != null) {
+            db.observeUserGroupsAddition(context, groupReceivedHandler);
+        }
     }
 
     @Override

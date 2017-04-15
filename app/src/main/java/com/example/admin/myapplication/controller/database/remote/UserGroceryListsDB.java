@@ -1,5 +1,7 @@
 package com.example.admin.myapplication.controller.database.remote;
 
+import android.content.Context;
+
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
@@ -20,7 +22,7 @@ public class UserGroceryListsDB {
         groupsDB = new UserGroupsDB(userKey);
     }
 
-    public void observeLists(final ObjectReceivedHandler<GroceryList> listAdded, final ObjectReceivedHandler<GroceryList> listDeleted) {
+    public void observeLists(Context context, final ObjectReceivedHandler<GroceryList> listAdded, final ObjectReceivedHandler<GroceryList> listDeleted) {
         final ObjectReceivedHandler<GroceryList> privateListAdded = new ObjectReceivedHandler<GroceryList>() {
             @Override
             public void onObjectReceived(GroceryList addedList) {
@@ -104,7 +106,7 @@ public class UserGroceryListsDB {
             public void removeAllObjects() {}
         };
 
-        groupsDB.observeUserGroupsAddition(groupAdded);
+        groupsDB.observeUserGroupsAddition(context, groupAdded);
         groupsDB.observeUserGroupsDeletion(groupDeleted);
     }
 
