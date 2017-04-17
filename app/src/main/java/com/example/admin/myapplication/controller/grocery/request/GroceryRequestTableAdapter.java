@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
     // Editing
-    private Integer editingIndex = null;
+    private String editingRequestKey = null;
     private String newItemName = null;
 
     private static List<GroceryRequest> groceryRequests = new ArrayList<>();
@@ -59,7 +59,7 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
         GroceryRequest request = groceryRequests.get(position);
 
         // Check if editing mode is on for this cell
-        if (editingIndex != null && editingIndex.equals(position)) {
+        if (editingRequestKey != null && editingRequestKey.equals(request.getKey())) {
             // Editing mode is on for this cell.
             initEditingMode(request, view);
         }
@@ -137,7 +137,7 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
     }
 
     public void startEditing(int index) {
-        editingIndex = index;
+        editingRequestKey = getRequest(index).getKey();
 
         // TODO: Invalidated or changed?
         // TODO: Changed queries everything again..
@@ -145,7 +145,7 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
     }
 
     public void stopEditing() {
-        editingIndex = null;
+        editingRequestKey = null;
         newItemName = null;
 
         // TODO: Invalidated or changed?
@@ -158,6 +158,6 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
     }
 
     public String getEditingRequestKey() {
-        return getRequest(editingIndex).getKey();
+        return editingRequestKey;
     }
 }
