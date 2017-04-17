@@ -35,7 +35,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text=""
         android:id="@+id/userName"
         android:textColor="#999999"
         android:layout_gravity="right"
@@ -57,13 +56,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/editText"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
+        android:visibility="invisible"
+        android:gravity="center"
+        android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/userImageView"
-        android:layout_toStartOf="@+id/v"
-        android:layout_above="@+id/userName"
-        android:visibility="invisible" />
+        android:layout_toStartOf="@+id/userName" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -73,8 +70,8 @@
         android:scaleType="centerInside"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_above="@+id/userName"
-        android:onClick="confirmEdit"
-        android:visibility="invisible" />
+        android:onClick="finishedEditing"
+        android:visibility="invisible"
+        android:layout_above="@+id/userName" />
 
 </RelativeLayout>

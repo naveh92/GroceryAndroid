@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -63,6 +64,11 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 adapter.startEditing(i);
+
+                // Show the keyboard
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.toggleSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+
                 return false;
             }
         });
@@ -87,13 +93,14 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
     /**
      * This is the function that is called when a user edits request item name
      */
-    public void confirmEdit(View view) {
+    public void finishedEditing(View view) {
         String newItemName = adapter.getNewItemName();
         String requestKey = adapter.getEditingRequestKey();
-        adapter.stopEditing();
 
         // Update the request in db.
         db.updateItemName(requestKey, newItemName);
+
+        adapter.stopEditing();
     }
 
     protected void newObjectDialog(View view) {

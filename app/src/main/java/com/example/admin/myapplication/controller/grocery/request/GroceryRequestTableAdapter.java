@@ -3,10 +3,13 @@ package com.example.admin.myapplication.controller.grocery.request;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -79,20 +82,31 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
         ImageButton confirmButton = (ImageButton) cell.findViewById(R.id.v);
         final EditText editText = (EditText) cell.findViewById(R.id.editText);
 
-        editText.setText(request.getItemName());
-
-        editText.setOnKeyListener(new View.OnKeyListener() {
+        editText.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
                 newItemName = editText.getText().toString();
-                return false;
             }
         });
+
+        if (!editText.getText().toString().equals(request.getItemName())) {
+            editText.setText(request.getItemName());
+        }
 
         // Hide and show the relevant views
         confirmButton.setVisibility(View.VISIBLE);
         editText.setVisibility(View.VISIBLE);
         cell.findViewById(R.id.itemName).setVisibility(View.INVISIBLE);
+
+        // Focus on the editText and select all text.
+        editText.selectAll();
+        editText.requestFocus();
     }
 
     private void initNonEditingMode(GroceryRequest request, View cell) {
