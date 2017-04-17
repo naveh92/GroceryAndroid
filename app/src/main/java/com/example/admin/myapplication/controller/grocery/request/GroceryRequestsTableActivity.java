@@ -43,7 +43,7 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
         // Save the add button for animations later
         addNewButton = (ImageButton) findViewById(R.id.add_new_object_button);
 
-        GridView gridview = (GridView) findViewById(R.id.gridview);
+        final GridView gridview = (GridView) findViewById(R.id.gridview);
         adapter = new GroceryRequestTableAdapter(this);
         gridview.setAdapter(adapter);
 
@@ -64,6 +64,8 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 adapter.startEditing(i);
+
+                // TODO: scroll to the position? (doesn't work)
 
                 View focus = getCurrentFocus();
 
