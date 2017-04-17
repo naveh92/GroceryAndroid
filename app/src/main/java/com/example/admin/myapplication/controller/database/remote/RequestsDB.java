@@ -92,9 +92,29 @@ public class RequestsDB {
             public void onObjectReceived(Long currentRemoteDate) {
                 Boolean newValue = !currentPurchasedValue;
 
-                // Generate a key for the new list
+                // Set the updated values
                 Map<String, Object> postValues = new HashMap<>();
                 postValues.put("purchased", newValue.toString());
+                postValues.put("lastUpdated", currentRemoteDate);
+
+                // Set the values
+                requestsRef.child(requestKey).updateChildren(postValues);
+            }
+
+            @Override
+            public void removeAllObjects() {}
+        };
+
+        DatabaseDateManager.getTimestamp(timestampHandler);
+    }
+
+    public void updateItemName(final String requestKey, final String newItemName) {
+        ObjectReceivedHandler<Long> timestampHandler = new ObjectReceivedHandler<Long>() {
+            @Override
+            public void onObjectReceived(Long currentRemoteDate) {
+                // Set the updated values
+                Map<String, Object> postValues = new HashMap<>();
+                postValues.put("itemName", newItemName);
                 postValues.put("lastUpdated", currentRemoteDate);
 
                 // Set the values

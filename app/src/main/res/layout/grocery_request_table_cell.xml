@@ -53,4 +53,28 @@
         android:indeterminate="false"
         android:layout_alignBottom="@+id/userName" />
 
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_toEndOf="@+id/userImageView"
+        android:layout_toStartOf="@+id/v"
+        android:layout_above="@+id/userName"
+        android:visibility="invisible" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/v"
+        android:src="@drawable/com_facebook_button_like_icon_selected"
+        android:scaleType="centerInside"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@+id/userName"
+        android:onClick="confirmEdit"
+        android:visibility="invisible" />
+
 </RelativeLayout>

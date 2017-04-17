@@ -22,6 +22,7 @@ import com.example.admin.myapplication.model.entities.GroceryRequest;
  */
 public class GroceryRequestsTableActivity extends TableViewActivity {
     private RequestsDB db;
+    private GroceryRequestTableAdapter adapter;
 
     // TODO: REMOVE OBSERVERS ON onDestroy(). also in GroupMembers and any other activity.
 
@@ -42,17 +43,27 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
         addNewButton = (ImageButton) findViewById(R.id.add_new_object_button);
 
         GridView gridview = (GridView) findViewById(R.id.gridview);
-        final GroceryRequestTableAdapter adapter = new GroceryRequestTableAdapter(this);
+        adapter = new GroceryRequestTableAdapter(this);
         gridview.setAdapter(adapter);
 
         // Register the animations when gridview is touched.
         super.createHideViewsWhenScroll(gridview);
 
+        // Click - toggle purchased
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 // When an item was clicked, toggle its 'purchased' field.
                 GroceryRequest request = adapter.getRequest(position);
                 db.togglePurchased(request.getKey(), request.getPurchased());
+            }
+        });
+
+        // Long click - edit item name
+        gridview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                adapter.startEditing(i);
+                return false;
             }
         });
 
@@ -71,6 +82,18 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
         // Create a new RequestsDB specific to this GroceryList.
         db = new RequestsDB(listKey);
         db.observeRequestsAddition(requestReceivedHandler);
+    }
+
+    /**
+     * This is the function that is called when a user edits request item name
+     */
+    public void confirmEdit(View view) {
+        String newItemName = adapter.getNewItemName();
+        String requestKey = adapter.getEditingRequestKey();
+        adapter.stopEditing();
+
+        // Update the request in db.
+        db.updateItemName(requestKey, newItemName);
     }
 
     protected void newObjectDialog(View view) {
