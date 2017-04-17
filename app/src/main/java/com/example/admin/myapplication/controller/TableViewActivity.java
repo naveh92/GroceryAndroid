@@ -90,4 +90,12 @@ public abstract class TableViewActivity extends Activity {
             });
         }
     }
+
+    protected void hideNewObjectButton() {
+        addNewButton.setVisibility(View.INVISIBLE);
+    }
+
+    protected void showNewObjectButton() {
+        addNewButton.setVisibility(View.VISIBLE);
+    }
 }

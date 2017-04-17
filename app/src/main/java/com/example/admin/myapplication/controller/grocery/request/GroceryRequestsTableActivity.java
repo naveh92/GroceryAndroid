@@ -65,9 +65,16 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 adapter.startEditing(i);
 
-                // Show the keyboard
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.toggleSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+                View focus = getCurrentFocus();
+
+                if (focus != null) {
+                    // Show the keyboard
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.toggleSoftInputFromWindow(focus.getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+                }
+
+                // Hide the add new request button as long as we are editing
+                hideNewObjectButton();
 
                 return false;
             }
@@ -101,6 +108,27 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
         db.updateItemName(requestKey, newItemName);
 
         adapter.stopEditing();
+
+        hideKeyboard();
+
+        // Show the add new request button
+        showNewObjectButton();
+    }
+
+    @Override
+    protected void onPause() {
+        hideKeyboard();
+        super.onPause();
+    }
+
+    private void hideKeyboard() {
+        View focus = getCurrentFocus();
+
+        if (focus != null) {
+            // Hide the keyboard
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(focus.getWindowToken(), 0);
+        }
     }
 
     protected void newObjectDialog(View view) {

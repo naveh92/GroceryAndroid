@@ -29,6 +29,7 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
     // Editing
     private String editingRequestKey = null;
     private String newItemName = null;
+    private Boolean edited = false;
 
     private static List<GroceryRequest> groceryRequests = new ArrayList<>();
     private Context mContext;
@@ -78,9 +79,16 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
         return view;
     }
 
-    private void initEditingMode(GroceryRequest request, View cell) {
+    private void initEditingMode(final GroceryRequest request, View cell) {
+        final String requestItemName = request.getItemName();
+
         ImageButton confirmButton = (ImageButton) cell.findViewById(R.id.v);
         final EditText editText = (EditText) cell.findViewById(R.id.editText);
+
+        if (!editText.getText().toString().equals(requestItemName) && !edited) {
+            editText.setText(requestItemName);
+            newItemName = requestItemName;
+        }
 
         editText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -91,13 +99,10 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
 
             @Override
             public void afterTextChanged(Editable editable) {
+                edited = true;
                 newItemName = editText.getText().toString();
             }
         });
-
-        if (!editText.getText().toString().equals(request.getItemName())) {
-            editText.setText(request.getItemName());
-        }
 
         // Hide and show the relevant views
         confirmButton.setVisibility(View.VISIBLE);
@@ -161,6 +166,7 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
     public void stopEditing() {
         editingRequestKey = null;
         newItemName = null;
+        edited = false;
 
         // TODO: Invalidated or changed?
         // TODO: Changed queries everything again..
