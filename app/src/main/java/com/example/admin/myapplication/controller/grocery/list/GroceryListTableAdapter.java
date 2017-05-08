@@ -60,9 +60,6 @@ public class GroceryListTableAdapter extends BaseAdapter {
                 TextView groupName = (TextView)view.findViewById(R.id.groupName);
                 groupName.setText(group.getTitle());
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         // Get this lists group, and when finished, set its title.

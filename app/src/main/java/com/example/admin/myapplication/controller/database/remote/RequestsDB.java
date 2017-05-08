@@ -2,6 +2,7 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.util.Log;
 
+import com.example.admin.myapplication.controller.handlers.ObjectHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryRequest;
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +31,7 @@ public class RequestsDB {
     // --------------
     //    Requests
     // --------------
-    public void observeRequestsAddition(final ObjectReceivedHandler<GroceryRequest> handler) {
+    public void observeRequestsAddition(final ObjectHandler<GroceryRequest> handler) {
         // Read from the database
         requestsRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -78,9 +79,6 @@ public class RequestsDB {
                 // Set the values
                 requestsRef.child(key).setValue(postValues);
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         DatabaseDateManager.getTimestamp(timestampHandler);
@@ -100,9 +98,6 @@ public class RequestsDB {
                 // Set the values
                 requestsRef.child(requestKey).updateChildren(postValues);
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         DatabaseDateManager.getTimestamp(timestampHandler);
@@ -120,9 +115,6 @@ public class RequestsDB {
                 // Set the values
                 requestsRef.child(requestKey).updateChildren(postValues);
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         DatabaseDateManager.getTimestamp(timestampHandler);

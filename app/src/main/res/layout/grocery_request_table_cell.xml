@@ -59,6 +59,7 @@
         android:id="@+id/editText"
         android:visibility="invisible"
         android:gravity="center"
+        android:singleLine="true"
         android:layout_toEndOf="@+id/userImageView"
         android:layout_toStartOf="@+id/v"
         android:layout_centerVertical="true"

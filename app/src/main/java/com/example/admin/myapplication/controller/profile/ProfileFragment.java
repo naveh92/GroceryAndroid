@@ -49,9 +49,6 @@ public class ProfileFragment extends Fragment {
             public void onObjectReceived(User user) {
                 userNameTV.setText(user.getName());
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         UsersDB.getInstance().findUserByKey(userKey, userReceivedHandler);
@@ -68,9 +65,6 @@ public class ProfileFragment extends Fragment {
                 imageView.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.INVISIBLE);
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         ImageDB.getInstance().downloadImage(getContext(), userKey, imageReceivedHandler);

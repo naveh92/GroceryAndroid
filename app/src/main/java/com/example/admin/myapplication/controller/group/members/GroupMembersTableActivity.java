@@ -20,6 +20,7 @@ import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
+import com.example.admin.myapplication.controller.handlers.ObjectHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 
@@ -54,7 +55,7 @@ public class GroupMembersTableActivity extends TableViewActivity {
         // Register the animations when gridview is touched.
         super.createHideViewsWhenScroll(gridview);
 
-        ObjectReceivedHandler<User> memberReceivedHandler = new ObjectReceivedHandler<User>() {
+        ObjectHandler<User> memberReceivedHandler = new ObjectHandler<User>() {
             @Override
             public void onObjectReceived(User member) {
                 groupMembersAdapter.onMemberReceived(member);
@@ -146,7 +147,7 @@ public class GroupMembersTableActivity extends TableViewActivity {
             }
         });
 
-        ObjectReceivedHandler<User> facebookFriendHandler = new ObjectReceivedHandler<User>() {
+        ObjectHandler<User> facebookFriendHandler = new ObjectHandler<User>() {
             @Override
             public void onObjectReceived(User user) {
                 newMembersAdapter.onMemberReceived(user);
@@ -181,9 +182,6 @@ public class GroupMembersTableActivity extends TableViewActivity {
                     hideProgressBar(progressBar);
                 }
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         // Retrieve relevant users from Facebook

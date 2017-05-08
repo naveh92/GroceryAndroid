@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
+import com.example.admin.myapplication.controller.handlers.ObjectHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 import com.facebook.GraphRequest;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 public class FacebookFriendsFinder {
 
-    public void find(final List<User> currentMembers, final ObjectReceivedHandler<User> memberReceived, final ObjectReceivedHandler<Boolean> whenFinishedHandler) {
+    public void find(final List<User> currentMembers, final ObjectHandler<User> memberReceived, final ObjectReceivedHandler<Boolean> whenFinishedHandler) {
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id, name");
 

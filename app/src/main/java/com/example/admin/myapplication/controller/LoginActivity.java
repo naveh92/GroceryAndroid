@@ -120,17 +120,11 @@ public class LoginActivity extends Activity {
                             ImageDB.getInstance().storeImage(LoginActivity.this, userProfilePic, userKey);
                         }
                     }
-
-                    @Override
-                    public void removeAllObjects() {}
                 };
 
                 // Get the user's profile pic from Facebook
                 new FacebookImageManager().downloadUserProfilePic(facebookId, profilePicHandler);
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         UsersDB.getInstance().findUserByKey(userKey, userReceivedHandler);

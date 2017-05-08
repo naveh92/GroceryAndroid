@@ -75,9 +75,6 @@ public class GroupFragment extends TableViewFragment {
                     adapter.onGroupReceived();
                 }
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         if (db == null) {

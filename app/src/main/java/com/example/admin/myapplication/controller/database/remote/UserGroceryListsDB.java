@@ -37,9 +37,6 @@ public class UserGroceryListsDB {
                 // After adding to our private collection, notify the original callback
                 listAdded.onObjectReceived(addedList);
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         final ObjectReceivedHandler<GroceryList> privateListDeleted = new ObjectReceivedHandler<GroceryList>() {
@@ -50,9 +47,6 @@ public class UserGroceryListsDB {
                 // After removing from our private collection, notify the original callback
                 listDeleted.onObjectReceived(deletedList);
             }
-
-            @Override
-            public void removeAllObjects() {}
 
             private void removeListByKey(String listKey) {
                 GroceryList listToDelete = null;
@@ -87,9 +81,6 @@ public class UserGroceryListsDB {
                     groupListsDb.observeLists(privateListAdded ,privateListDeleted);
                 }
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         // TODO: Need this? because we registered to listAdded and listDeleted up
@@ -101,9 +92,6 @@ public class UserGroceryListsDB {
 
                 removeGroupLists(deletedGroup.getKey(), privateListDeleted);
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         groupsDB.observeUserGroupsAddition(context, groupAdded);
@@ -191,10 +179,6 @@ public class UserGroceryListsDB {
         }
 
         return null;
-    }
-
-    public void removeList(GroceryList list) {
-        lists.remove(list);
     }
 
     public List<Group> getAllGroups() {

@@ -43,9 +43,6 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
                         progressBar.setVisibility(View.INVISIBLE);
                     }
                 }
-
-                @Override
-                public void removeAllObjects() {}
             };
 
         // Check if this is the first time getting the relevant images.
@@ -73,9 +70,6 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
                     userNameTV.setText(userName);
                 }
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         // Retrieve the user object from the DB.

@@ -165,9 +165,6 @@ public class UserGroupsDB {
 
                 handler.onObjectReceived(group);
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         // Retrieve the Group object
@@ -233,9 +230,6 @@ public class UserGroupsDB {
 
                 userGroupsRef.updateChildren(valuesToPost);
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         DatabaseDateManager.getTimestamp(timestampHandler);
@@ -251,9 +245,6 @@ public class UserGroupsDB {
                 valuesToPost.put("lastUpdated", currentRemoteDate);
                 userGroupsRef.updateChildren(valuesToPost);
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         DatabaseDateManager.getTimestamp(timestampHandler);

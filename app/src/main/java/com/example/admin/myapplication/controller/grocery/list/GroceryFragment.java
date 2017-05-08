@@ -22,6 +22,7 @@ import com.example.admin.myapplication.controller.database.remote.ListsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
 import com.example.admin.myapplication.controller.grocery.request.GroceryRequestsTableActivity;
 import com.example.admin.myapplication.controller.grocery.request.GroupComboBoxAdapter;
+import com.example.admin.myapplication.controller.handlers.ObjectHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
@@ -154,7 +155,7 @@ public class GroceryFragment extends TableViewFragment {
     }
 
     private void fetchLists() {
-        ObjectReceivedHandler<GroceryList> listReceivedHandler = new ObjectReceivedHandler<GroceryList>() {
+        ObjectHandler<GroceryList> listReceivedHandler = new ObjectHandler<GroceryList>() {
             @Override
             public void onObjectReceived(GroceryList list) {
                 notifyDataSetChanged();
@@ -172,9 +173,6 @@ public class GroceryFragment extends TableViewFragment {
             public void onObjectReceived(GroceryList list) {
                 notifyDataSetChanged();
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         // TODO: ??

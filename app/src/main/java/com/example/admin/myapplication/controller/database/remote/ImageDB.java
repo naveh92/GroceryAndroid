@@ -179,9 +179,6 @@ public class ImageDB {
                     }
                 }
             }
-
-            @Override
-            public void removeAllObjects() {}
         };
 
         // Send the request

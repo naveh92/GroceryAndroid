@@ -5,5 +5,4 @@ package com.example.admin.myapplication.controller.handlers;
  */
 public interface ObjectReceivedHandler<T> {
     void onObjectReceived(T obj);
-    void removeAllObjects();
 }
