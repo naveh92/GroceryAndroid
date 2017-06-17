@@ -12,6 +12,9 @@ import java.util.List;
 /**
  * Created by admin on 15/04/2017.
  */
+
+//TODO: Delete all the sql light open helper
+
 public class UserGroupsTable extends SQLiteOpenHelper {
     // TODO: For all statements - compile first!
 

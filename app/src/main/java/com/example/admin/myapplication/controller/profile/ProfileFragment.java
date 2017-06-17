@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.models.UserModel;
 import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
@@ -51,7 +52,7 @@ public class ProfileFragment extends Fragment {
             }
         };
 
-        UsersDB.getInstance().findUserByKey(userKey, userReceivedHandler);
+        UserModel.getInstance().findUserByKey(userKey, userReceivedHandler);
     }
 
     private void initImageView(String userKey) {

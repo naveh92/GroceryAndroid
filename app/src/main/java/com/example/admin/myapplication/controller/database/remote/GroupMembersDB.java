@@ -2,6 +2,7 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.util.Log;
 
+import com.example.admin.myapplication.controller.database.models.UserModel;
 import com.example.admin.myapplication.controller.handlers.ObjectHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
@@ -108,7 +109,7 @@ public class GroupMembersDB {
         };
 
         // Retrieve the user object
-        UsersDB.getInstance().findUserByKey(userKey, foundUserHandler);
+        UserModel.getInstance().findUserByKey(userKey, foundUserHandler);
     }
 
     private void findGroupMembersCount(final ObjectReceivedHandler<Integer> handler) {

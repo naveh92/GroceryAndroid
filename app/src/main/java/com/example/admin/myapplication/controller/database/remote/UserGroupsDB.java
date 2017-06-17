@@ -45,7 +45,7 @@ public class UserGroupsDB {
 
         // TODO:
         // Get the last-update time in the local db
-        Long localUpdateTime = null; // LastUpdateTable.getLastUpdateDate();
+        Long localUpdateTime = null; // stUpdateTable.getLastUpdateDate();
 
         if (localUpdateTime != null) {
             // -----------------------------
