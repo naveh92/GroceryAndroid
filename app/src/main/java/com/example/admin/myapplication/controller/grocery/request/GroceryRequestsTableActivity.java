@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.models.RequestsModel;
 import com.example.admin.myapplication.controller.database.remote.RequestsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
@@ -23,7 +24,7 @@ import com.example.admin.myapplication.model.entities.GroceryRequest;
  * Created by admin on 05/04/2017.
  */
 public class GroceryRequestsTableActivity extends TableViewActivity {
-    private RequestsDB db;
+    private RequestsModel db;
     private GroceryRequestTableAdapter adapter;
 
     // TODO: REMOVE OBSERVERS ON onDestroy(). also in GroupMembers and any other activity.
@@ -96,7 +97,7 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
         };
 
         // Create a new RequestsDB specific to this GroceryList.
-        db = new RequestsDB(listKey);
+        db = new RequestsModel(listKey);
         db.observeRequestsAddition(requestReceivedHandler);
     }
 
