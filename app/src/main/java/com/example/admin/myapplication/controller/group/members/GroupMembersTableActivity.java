@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.models.UserGroupsModel;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectHandler;
@@ -98,7 +99,7 @@ public class GroupMembersTableActivity extends TableViewActivity {
                                 db.removeMember(userKey);
 
                                 // Remove the group from the users list of groups.
-                                new UserGroupsDB(AuthenticationManager.getInstance().getCurrentUserId()).removeGroupFromUser(groupKey);
+                                new UserGroupsModel(AuthenticationManager.getInstance().getCurrentUserId()).removeGroupFromUser(groupKey);
 
                                 // Mock a back press so that we exit this activity and go back to the list of groups.
                                 GroupMembersTableActivity.this.onBackPressed();
@@ -143,7 +144,7 @@ public class GroupMembersTableActivity extends TableViewActivity {
                     db.addMember(user.getKey());
 
                     // Add the group to the users list of groups
-                    new UserGroupsDB(user.getKey()).addGroupToUser(groupKey);
+                    new UserGroupsModel(user.getKey()).addGroupToUser(groupKey);
             }
         });
 

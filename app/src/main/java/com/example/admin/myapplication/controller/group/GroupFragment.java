@@ -15,6 +15,7 @@ import android.widget.ImageButton;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewFragment;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.models.UserGroupsModel;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
@@ -26,7 +27,7 @@ import com.example.admin.myapplication.model.entities.Group;
  * Created by admin on 04/04/2017.
  */
 public class GroupFragment extends TableViewFragment {
-    private UserGroupsDB db;
+    private UserGroupsModel db;
     private static GroupTableAdapter adapter;
 
     @Override
@@ -38,7 +39,7 @@ public class GroupFragment extends TableViewFragment {
         addNewButton = (ImageButton) view.findViewById(R.id.add_new_object_button);
 
         if (db == null) {
-            db = new UserGroupsDB(AuthenticationManager.getInstance().getCurrentUserId());
+            db = new UserGroupsModel(AuthenticationManager.getInstance().getCurrentUserId());
         }
 
         GridView gridview = (GridView) view.findViewById(R.id.gridview);
@@ -78,7 +79,7 @@ public class GroupFragment extends TableViewFragment {
         };
 
         if (db == null) {
-            db = new UserGroupsDB(AuthenticationManager.getInstance().getCurrentUserId());
+            db = new UserGroupsModel(AuthenticationManager.getInstance().getCurrentUserId());
         }
 
         Context context = getContext();
@@ -125,7 +126,7 @@ public class GroupFragment extends TableViewFragment {
 
                 // Make sure db is not null
                 if (db == null) {
-                    db = new UserGroupsDB(AuthenticationManager.getInstance().getCurrentUserId());
+                    db = new UserGroupsModel(AuthenticationManager.getInstance().getCurrentUserId());
                 }
 
                 // Add the group to the users list of groups

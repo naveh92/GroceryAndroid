@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import com.example.admin.myapplication.R;
+import com.example.admin.myapplication.controller.database.models.UserGroupsModel;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.model.entities.Group;
@@ -16,9 +17,9 @@ import com.example.admin.myapplication.model.entities.Group;
  */
 public class GroupTableAdapter extends BaseAdapter {
     private Context mContext;
-    private UserGroupsDB db;
+    private UserGroupsModel db;
 
-    public GroupTableAdapter(Context c, UserGroupsDB db) {
+    public GroupTableAdapter(Context c, UserGroupsModel db) {
         mContext = c;
         this.db = db;
     }
