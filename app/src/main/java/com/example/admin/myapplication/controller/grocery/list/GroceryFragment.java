@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewFragment;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.models.UserGroceryLitsModel;
 import com.example.admin.myapplication.controller.database.remote.ListsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
 import com.example.admin.myapplication.controller.grocery.request.GroceryRequestsTableActivity;
@@ -32,7 +33,7 @@ import com.example.admin.myapplication.model.entities.Group;
  */
 public class GroceryFragment extends TableViewFragment {
     // TODO: static? test this.. (If having problems with refresh)
-    private static UserGroceryListsDB db;
+    private static UserGroceryLitsModel db;
     private static GroceryListTableAdapter adapter;
 
     @Override
@@ -41,7 +42,7 @@ public class GroceryFragment extends TableViewFragment {
         View view = inflater.inflate(R.layout.table_view, container, false);
 
         if (db == null) {
-            db = new UserGroceryListsDB(AuthenticationManager.getInstance().getCurrentUserId());
+            db = new UserGroceryLitsModel(AuthenticationManager.getInstance().getCurrentUserId());
         }
 
         // Save the add button for animations later

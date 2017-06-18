@@ -181,7 +181,6 @@ public class UserGroceryListsDB {
         return null;
     }
 
-    //TODO: Clear it because already in UserModel
     public List<Group> getAllGroups() {
         return groupsDB.getAllGroups();
     }

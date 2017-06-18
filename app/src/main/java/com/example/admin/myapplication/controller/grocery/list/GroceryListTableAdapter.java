@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
+import com.example.admin.myapplication.controller.database.models.UserGroceryLitsModel;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
@@ -20,9 +21,9 @@ import com.example.admin.myapplication.model.entities.Group;
  */
 public class GroceryListTableAdapter extends BaseAdapter {
     private Context mContext;
-    UserGroceryListsDB db;
+    UserGroceryLitsModel db;
 
-    public GroceryListTableAdapter(Context c, UserGroceryListsDB db) {
+    public GroceryListTableAdapter(Context c, UserGroceryLitsModel db) {
         mContext = c;
         this.db = db;
     }
