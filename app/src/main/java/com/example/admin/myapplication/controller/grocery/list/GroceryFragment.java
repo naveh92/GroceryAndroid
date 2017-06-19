@@ -18,6 +18,7 @@ import android.widget.Spinner;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewFragment;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.models.ListsModel;
 import com.example.admin.myapplication.controller.database.models.UserGroceryLitsModel;
 import com.example.admin.myapplication.controller.database.remote.ListsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
@@ -105,7 +106,7 @@ public class GroceryFragment extends TableViewFragment {
 
                     // Add the new list to the database.
                     GroceryList newList = new GroceryList("", groupKey, listTitle);
-                    ListsDB.getInstance().addNewList(newList);
+                    ListsModel.getInstance().addNewList(newList);
 
                     fetchLists();
                 }
@@ -149,7 +150,7 @@ public class GroceryFragment extends TableViewFragment {
 
         if (list != null) {
             String listKey = list.getKey();
-            ListsDB.getInstance().deleteList(listKey);
+            ListsModel.getInstance().deleteList(listKey);
         }
 
         notifyDataSetChanged();
