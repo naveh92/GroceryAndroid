@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
+import com.example.admin.myapplication.controller.database.models.GroupModel;
 import com.example.admin.myapplication.controller.database.models.UserGroceryLitsModel;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
@@ -64,7 +65,7 @@ public class GroceryListTableAdapter extends BaseAdapter {
         };
 
         // Get this lists group, and when finished, set its title.
-        GroupsDB.getInstance().findGroupByKey(list.getGroupKey(), groupReceivedHandler);
+        GroupModel.getInstance().findGroupByKey(list.getGroupKey(), groupReceivedHandler);
 
         // Get the PopupMenu button and set its id to the position.
         ImageView popupButton = (ImageView)view.findViewById(R.id.popupBtn);
