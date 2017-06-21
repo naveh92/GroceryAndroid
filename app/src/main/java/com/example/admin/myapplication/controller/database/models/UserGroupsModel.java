@@ -15,10 +15,8 @@ import java.util.List;
 public class UserGroupsModel {
 
     private UserGroupsDB usersGroupDB;
-    private String userKey;
 
     public UserGroupsModel(String userKey){
-        this.userKey = userKey;
         usersGroupDB = new UserGroupsDB(userKey);
     }
 

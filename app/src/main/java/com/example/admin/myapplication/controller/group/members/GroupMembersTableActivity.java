@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.models.GroupMembersModel;
 import com.example.admin.myapplication.controller.database.models.UserGroupsModel;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
@@ -29,7 +30,7 @@ import com.example.admin.myapplication.model.entities.User;
  * Created by admin on 06/04/2017.
  */
 public class GroupMembersTableActivity extends TableViewActivity {
-    private GroupMembersDB db;
+    private GroupMembersModel db;
     private String groupKey;
     private GroupMembersTableAdapter groupMembersAdapter;
 
@@ -69,7 +70,7 @@ public class GroupMembersTableActivity extends TableViewActivity {
         };
 
         // Create a new GroupMembersDB specific to this Group.
-        db = new GroupMembersDB(groupKey);
+        db = new GroupMembersModel(groupKey);
         db.observeGroupMembers(memberReceivedHandler);
     }
 
