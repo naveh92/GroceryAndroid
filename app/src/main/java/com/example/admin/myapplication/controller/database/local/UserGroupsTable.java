@@ -13,14 +13,10 @@ import java.util.List;
  * Created by admin on 15/04/2017.
  */
 
-//TODO: Delete all the sql light open helper
 
-public class UserGroupsTable extends SQLiteOpenHelper {
+public class UserGroupsTable {
     // TODO: For all statements - compile first!
 
-    private static final int DATABASE_VERSION = 1;
-
-    private static final String DATABASE_NAME = "UserGroupsTable.db";
     private static final String TABLE_NAME = "USER_GROUPS";
     private static final String USER_KEY = "USER_KEY";
     private static final String GROUP_KEY = "GROUP_KEY";
@@ -30,28 +26,21 @@ public class UserGroupsTable extends SQLiteOpenHelper {
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + USER_KEY + " TEXT, " + GROUP_KEY + " TEXT);";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-    public UserGroupsTable(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-    }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
+    static public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_STATEMENT);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+    static public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         db.execSQL(DROP_TABLE_STATEMENT);
         onCreate(db);
     }
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        onUpgrade(db, oldVersion, newVersion);
-    }
 
-    public List<String> getUserGroupKeys(String userKey) {
-        SQLiteDatabase db = getReadableDatabase();
+    public List<String> getUserGroupKeys(SQLiteDatabase db ,String userKey) {
+
 
         // Define a projection that specifies which columns from the database
         // we will actually use after this query.
@@ -85,18 +74,17 @@ public class UserGroupsTable extends SQLiteOpenHelper {
         return groupKeys;
     }
 
-    public void insertGroupKeys(String userKey, List<String> groupKeys) {
+    public void insertGroupKeys(SQLiteDatabase db ,String userKey, List<String> groupKeys) {
         // Insert every groupKey individually.
         for (String groupKey : groupKeys) {
-            insert(userKey, groupKey);
+            insert(db ,userKey, groupKey);
         }
     }
 
-    public void insert(String userKey, String groupKey) {
+    public void insert(SQLiteDatabase db ,String userKey, String groupKey) {
         // TODO: Insert or replace?
 
-        // Get the data-repository in write mode
-        SQLiteDatabase db = getWritableDatabase();
+
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
@@ -107,7 +95,7 @@ public class UserGroupsTable extends SQLiteOpenHelper {
         long newRowId = db.insert(TABLE_NAME, null, values);
     }
 
-    public void delete(String userKey, String groupKey) {
+    public void delete(SQLiteDatabase db ,String userKey, String groupKey) {
 //        // Define 'where' part of query.
 //        String selection = FeedEntry.COLUMN_NAME_TITLE + " LIKE ?";
 //// Specify arguments in placeholder order.
@@ -120,11 +108,11 @@ public class UserGroupsTable extends SQLiteOpenHelper {
         String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + USER_KEY + " = " + userKey + " and " + GROUP_KEY + " = " + groupKey;
 
         // TODO: db.delete()?
-        getWritableDatabase().execSQL(DELETE_STATEMENT);
+        db.execSQL(DELETE_STATEMENT);
     }
 
-    public void truncate() {
-        getWritableDatabase().execSQL("DELETE FROM " + TABLE_NAME);
-        getWritableDatabase().execSQL("VACUUM");
+    public void truncate(SQLiteDatabase db) {
+        db.execSQL("DELETE FROM " + TABLE_NAME);
+        db.execSQL("VACUUM");
     }
 }

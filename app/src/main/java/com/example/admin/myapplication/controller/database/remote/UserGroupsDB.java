@@ -2,6 +2,7 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.content.Context;
 
+import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
 import com.example.admin.myapplication.controller.database.local.UserGroupsTable;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.Group;
@@ -40,7 +41,7 @@ public class UserGroupsDB {
     public void observeUserGroupsAddition(Context context, final ObjectReceivedHandler<Group> handler) {
         // Make sure the local db is initialized
         if (table == null) {
-            table = new UserGroupsTable(context);
+            table = new UserGroupsTable();
         }
 
         // TODO:
@@ -125,7 +126,7 @@ public class UserGroupsDB {
 
     private void getGroupsFromLocal(ObjectReceivedHandler<Group> handler) {
         // Get the group keys from local db
-        List<String> groupKeys = table.getUserGroupKeys(userKey);
+        List<String> groupKeys = table.getUserGroupKeys(DatabaseHelper.getInstance().getWritableDatabase() ,userKey);
 
         // Handle each received group key individually
         for (String groupKey : groupKeys) {
@@ -143,8 +144,8 @@ public class UserGroupsDB {
         }
 
         // Update local records.
-        table.truncate();
-        table.insertGroupKeys(userKey, groupKeys);
+        table.truncate(DatabaseHelper.getInstance().getWritableDatabase());
+        table.insertGroupKeys(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupKeys);
 
         // TODO: Update LastUpdateTable
 //        LastUpdateTable.setLastUpdate(database: LocalDb.sharedInstance?.database,
