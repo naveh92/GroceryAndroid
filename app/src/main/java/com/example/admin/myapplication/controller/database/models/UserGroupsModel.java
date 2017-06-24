@@ -21,9 +21,6 @@ public class UserGroupsModel {
     }
 
     public void observeUserGroupsAddition( Context context, final ObjectReceivedHandler<Group> handler){
-
-
-
         usersGroupDB.observeUserGroupsAddition(context, handler);
     }
 
@@ -35,7 +32,6 @@ public class UserGroupsModel {
 
     public Group getGroup(int position) {
 
-
         return usersGroupDB.getGroup(position);
     }
 
@@ -46,7 +42,6 @@ public class UserGroupsModel {
     }
 
     public void addGroupToUser(String groupKey) {
-
 
         usersGroupDB.addGroupToUser(groupKey);
     }

@@ -1,7 +1,10 @@
 package com.example.admin.myapplication.controller.database.models;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
 
+import com.example.admin.myapplication.controller.GroceryApp;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
@@ -40,6 +43,14 @@ public class UserModel {
 
 
     public void findUserByKey(final String userKey, final ObjectReceivedHandler<User> handler){
+
+        //1. get local lastUpdateTade
+        SharedPreferences pref = GroceryApp.getMyContext().getSharedPreferences("TAG", Context.MODE_PRIVATE);
+        final double lastUpdateDate = pref.getFloat("UsersLastUpdateDate",0);
+        Log.d("TAG","lastUpdateDate: " + lastUpdateDate);
+
+
+
         usersDB.findUserByKey(userKey,handler);
     }
 
