@@ -11,6 +11,7 @@ public class GroceryList implements Comparable<GroceryList> {
     private String key;
     private String groupKey;
     private String title;
+    private Boolean archived = false;
 
     public String getKey() {
         return key;
@@ -19,11 +20,22 @@ public class GroceryList implements Comparable<GroceryList> {
     public String getTitle() {
         return title;
     }
+    public Boolean getIsArchived() {
+        return archived;
+    }
 
-    public GroceryList(String key, String groupKey, String title) {
+
+    public GroceryList(String key, String groupKey, String title ) {
         this.key = key;
         this.groupKey = groupKey;
         this.title = title;
+    }
+
+    public GroceryList(String key, String groupKey, String title , Boolean archived ) {
+        this.key = key;
+        this.groupKey = groupKey;
+        this.title = title;
+        this.archived = archived;
     }
 
     @Exclude

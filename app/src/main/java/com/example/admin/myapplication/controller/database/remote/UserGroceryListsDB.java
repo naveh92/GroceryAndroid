@@ -28,7 +28,8 @@ public class UserGroceryListsDB {
             public void onObjectReceived(GroceryList addedList) {
                 synchronized (lists) {
                     // Make sure the list doesn't already exist. (Just in case..)
-                    if (!containsList(addedList)) {
+                    // And make sure the list is not archived
+                    if (!addedList.getIsArchived() && !containsList(addedList)) {
                         lists.add(addedList);
                         Collections.sort(lists);
                     }

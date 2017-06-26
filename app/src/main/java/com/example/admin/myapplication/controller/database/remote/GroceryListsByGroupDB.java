@@ -39,12 +39,16 @@ public class GroceryListsByGroupDB {
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                GroceryList removedList = mapToGroceryList(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue());
+
+                if (removedList.getIsArchived())
+                    listRemovedHandler.onObjectReceived(removedList);
+            }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                GroceryList removedList = mapToGroceryList(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue());
-                listRemovedHandler.onObjectReceived(removedList);
+
             }
 
             @Override
@@ -58,8 +62,12 @@ public class GroceryListsByGroupDB {
             private GroceryList mapToGroceryList(String key, Map<String, Object> values) {
                 String groupKey = (String) values.get("groupKey");
                 String title = (String) values.get("title");
+                Boolean archive = (Boolean) values.get("Archive");
 
-                return new GroceryList(key, groupKey, title);
+                if (archive == null)
+                    archive = false;
+
+                return new GroceryList(key, groupKey, title , archive);
             }
         });
     }

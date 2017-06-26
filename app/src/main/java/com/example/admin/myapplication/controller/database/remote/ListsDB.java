@@ -4,6 +4,7 @@ import com.example.admin.myapplication.model.entities.GroceryList;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -39,7 +40,10 @@ public class ListsDB {
     }
 
     public void deleteList(String listKey) {
-        listsRef.child(listKey).removeValue();
+
+        Map<String, Object> updateArchive = new HashMap<String, Object>();
+        updateArchive.put("Archive" , true);
+        listsRef.child(listKey).updateChildren(updateArchive);
 
         // TODO: Update in localDB as well
     }

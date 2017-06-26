@@ -41,7 +41,6 @@ public class UserModel {
         return instance;
     }
 
-
     public void findUserByKey(final String userKey, final ObjectReceivedHandler<User> handler){
 
         //1. get local lastUpdateTade

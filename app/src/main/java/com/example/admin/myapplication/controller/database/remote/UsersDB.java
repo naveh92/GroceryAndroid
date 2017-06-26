@@ -26,7 +26,6 @@ public class UsersDB {
         usersRef = FirebaseDatabase.getInstance().getReference().child(USERS_NODE_URL);
     }
 
-
     public void findUserByKey(final String userKey, final ObjectReceivedHandler<User> handler) {
         if (userCache.get(userKey) == null) {
             // Read from the database

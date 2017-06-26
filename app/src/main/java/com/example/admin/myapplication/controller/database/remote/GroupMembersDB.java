@@ -73,15 +73,18 @@ public class GroupMembersDB {
 
                 // Extract group member user keys and append them to our user keys array
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    String userKey = child.getKey();
 
-                    userKeys.add(userKey);
+                    if ((Boolean) child.getValue()) {
+                        String userKey = child.getKey();
 
-                    // Handle each member fetched independently
-                    handleGroupMemberAddition(userKey, handler);
+                        userKeys.add(userKey);
 
-                    // TODO: Update local db with the fetched user keys
+                        // Handle each member fetched independently
+                        handleGroupMemberAddition(userKey, handler);
+
+                        // TODO: Update local db with the fetched user keys
 //                    updateLocalDB(userKeys: userKeys, remoteLastUpdateTime: remoteLastUpdateTime)
+                    }
                 }
             }
 
@@ -120,7 +123,14 @@ public class GroupMembersDB {
                     handler.onObjectReceived(0);
                 }
                 else {
-                    handler.onObjectReceived(((Long)dataSnapshot.getChildrenCount()).intValue());
+                    int count = 0;
+                    for (DataSnapshot sp:
+                        dataSnapshot.getChildren()) {
+                        if ((Boolean) sp.getValue())
+                            count++;
+
+                    }
+                    handler.onObjectReceived(count);
                 }
             }
 
@@ -144,7 +154,7 @@ public class GroupMembersDB {
     }
 
     public void removeMember(String userKey) {
-        databaseRef.child(userKey).removeValue();
+        databaseRef.child(userKey).setValue(false);
 
         // TODO: When finished?
         // We updated the members value, so we should set the last updated time.

@@ -1,6 +1,7 @@
 package com.example.admin.myapplication.controller.database.remote;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
 import com.example.admin.myapplication.controller.database.local.UserGroupsTable;
@@ -62,11 +63,28 @@ public class UserGroupsDB {
 
                     // If we got groups
                     if (dataSnapshot.exists()) {
+
                         Map<String, Object> groupNodeValue = (Map<String, Object>) ((Map<String, Object>) dataSnapshot.getValue()).values();
 
                         // Create a list containing the group keys.
                         List<String> groupKeys = new ArrayList<>();
-                        groupKeys.addAll(groupNodeValue.keySet());
+
+                        // list of not archived user groups
+                        HashMap<String, Object> usersGroup = new HashMap<String, Object>();
+
+                        // Sorting the archived groups from the current user groups
+                        for (Map.Entry<String, Object> entry : groupNodeValue.entrySet()) {
+
+                            // if is not archived
+                            if ((Boolean) entry.getValue()){
+                                usersGroup.entrySet().add(entry);
+                            }
+                            else{
+                                //TODO: Handle archived groups
+                            }
+                        }
+
+                        groupKeys.addAll(usersGroup.keySet());
 
                         // The list contains the lastUpdated value
                         if (groupKeys.contains("lastUpdated")) {
@@ -103,7 +121,28 @@ public class UserGroupsDB {
 
                         // Create a list containing the received groupKeys
                         List<String> groupKeys = new ArrayList<>();
-                        groupKeys.addAll(((Map<String, Object>)dataSnapshot.getValue()).keySet());
+                        //groupKeys.addAll(((Map<String, Object>)dataSnapshot.getValue()).keySet());
+
+                        Map<String, Object> groupNodeValue = (Map<String, Object>) dataSnapshot.getValue();
+
+                        // list of not archived user groups
+                        HashMap<String, Object> usersGroup = new HashMap<String, Object>();
+
+                        // Sorting the archived groups from the current user groups
+                        for (Map.Entry<String, Object> entry : groupNodeValue.entrySet()) {
+
+                            // if is not archived and not
+                            if (!entry.getKey().equals("lastUpdated") &&
+                                    (Boolean) entry.getValue()){
+                                usersGroup.put(entry.getKey(), entry.getValue());
+                            }
+                            else{
+                                //TODO: Handle archived groups
+                            }
+                        }
+
+                        groupKeys.addAll(usersGroup.keySet());
+
 
                         // The list contains the lastUpdated value
                         if (groupKeys.contains("lastUpdated")) {
@@ -240,7 +279,7 @@ public class UserGroupsDB {
         ObjectReceivedHandler<Long> timestampHandler = new ObjectReceivedHandler<Long>() {
             @Override
             public void onObjectReceived(Long currentRemoteDate) {
-                userGroupsRef.child(groupKey).removeValue();
+                userGroupsRef.child(groupKey).setValue(false);
 
                 Map<String, Object> valuesToPost = new HashMap<>();
                 valuesToPost.put("lastUpdated", currentRemoteDate);

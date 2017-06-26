@@ -10,6 +10,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -44,7 +45,10 @@ public class GroupsDB {
     }
 
     public void deleteGroup(String key) {
-        groupsRef.child(key).removeValue();
+        //groupsRef.child(key).removeValue();
+        Map<String, Object> updateArchive = new HashMap<String, Object>();
+        updateArchive.put("Archive" , true);
+        groupsRef.child(key).updateChildren(updateArchive);
     }
 
     public void findGroupByKey(String key, final ObjectReceivedHandler<Group> handler) {
