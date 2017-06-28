@@ -29,7 +29,7 @@ public class UserGroceryListsDB {
                 synchronized (lists) {
                     // Make sure the list doesn't already exist. (Just in case..)
                     // And make sure the list is not archived
-                    if (!addedList.getIsArchived() && !containsList(addedList)) {
+                    if (addedList.isRelevant() && !containsList(addedList)) {
                         lists.add(addedList);
                         Collections.sort(lists);
                     }

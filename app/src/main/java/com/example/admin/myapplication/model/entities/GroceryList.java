@@ -11,7 +11,7 @@ public class GroceryList implements Comparable<GroceryList> {
     private String key;
     private String groupKey;
     private String title;
-    private Boolean archived = false;
+    private Boolean relevant;
 
     public String getKey() {
         return key;
@@ -20,8 +20,8 @@ public class GroceryList implements Comparable<GroceryList> {
     public String getTitle() {
         return title;
     }
-    public Boolean getIsArchived() {
-        return archived;
+    public Boolean isRelevant() {
+        return relevant;
     }
 
     /**
@@ -32,11 +32,11 @@ public class GroceryList implements Comparable<GroceryList> {
         this(key, groupKey, title, true);
     }
 
-    public GroceryList(String key, String groupKey, String title , Boolean archived) {
+    public GroceryList(String key, String groupKey, String title , Boolean relevant) {
         this.key = key;
         this.groupKey = groupKey;
         this.title = title;
-        this.archived = archived;
+        this.relevant = relevant;
     }
 
     @Exclude
@@ -44,7 +44,7 @@ public class GroceryList implements Comparable<GroceryList> {
         HashMap<String, Object> result = new HashMap<>();
         result.put("groupKey", groupKey);
         result.put("title", title);
-        result.put("archived", archived);
+        result.put("relevant", relevant);
 
         return result;
     }

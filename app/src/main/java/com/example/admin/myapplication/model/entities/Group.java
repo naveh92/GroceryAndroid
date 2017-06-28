@@ -14,6 +14,7 @@ import java.util.Map;
 public class Group implements Comparable<Group> {
     private String key;
     private String title;
+    private Boolean relevant;
 
     public String getKey() {
         return key;
@@ -21,10 +22,22 @@ public class Group implements Comparable<Group> {
     public String getTitle() {
         return title;
     }
+    public Boolean isRelevant() {
+        return relevant;
+    }
 
+    /**
+     * This constructor is only for when a user creates a new group.
+     * It should be relevant.
+     */
     public Group(String key, String title) {
+        this(key, title, true);
+    }
+
+    public Group(String key, String title, Boolean relevant) {
         this.key = key;
         this.title = title;
+        this.relevant = relevant;
     }
 
     @Override
@@ -36,6 +49,7 @@ public class Group implements Comparable<Group> {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("title", title);
+        result.put("relevant", relevant);
 
         return result;
     }

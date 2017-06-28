@@ -40,10 +40,9 @@ public class ListsDB {
     }
 
     public void deleteList(String listKey) {
-
-        Map<String, Object> updateArchive = new HashMap<String, Object>();
-        updateArchive.put("archive" , true);
-        listsRef.child(listKey).updateChildren(updateArchive);
+        Map<String, Object> relevance = new HashMap<String, Object>();
+        relevance.put("relevant" , false);
+        listsRef.child(listKey).updateChildren(relevance);
 
         // TODO: Update in localDB as well
     }

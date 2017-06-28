@@ -42,8 +42,10 @@ public class GroceryListsByGroupDB {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 GroceryList removedList = mapToGroceryList(dataSnapshot.getKey(), (Map<String, Object>) dataSnapshot.getValue());
 
-                if (removedList.getIsArchived())
+                // Check if the list was deleted (archived)
+                if (!removedList.isRelevant()) {
                     listRemovedHandler.onObjectReceived(removedList);
+                }
             }
 
             @Override
@@ -62,13 +64,14 @@ public class GroceryListsByGroupDB {
             private GroceryList mapToGroceryList(String key, Map<String, Object> values) {
                 String groupKey = (String) values.get("groupKey");
                 String title = (String) values.get("title");
-                Boolean archive = (Boolean) values.get("archive");
+                Boolean relevant = (Boolean) values.get("relevant");
 
-                if (archive == null) {
-                    archive = false;
+                // TODO: Do we need this? all groups now have 'relevant' variable
+                if (relevant == null) {
+                    relevant = true;
                 }
 
-                return new GroceryList(key, groupKey, title , archive);
+                return new GroceryList(key, groupKey, title , relevant);
             }
         });
     }

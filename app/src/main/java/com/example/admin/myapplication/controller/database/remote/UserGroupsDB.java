@@ -66,14 +66,13 @@ public class UserGroupsDB {
 
                         Map<String, Object> groupNodeValue = (Map<String, Object>) ((Map<String, Object>) dataSnapshot.getValue()).values();
 
-                        // Create a list containing the not-archived group keys.
+                        // Create a list containing the relevant group keys.
                         List<String> groupKeys = new ArrayList<>();
 
                         // Managing the archived groups from the current user groups
                         for (Map.Entry<String, Object> entry : groupNodeValue.entrySet()) {
 
-                            // if is not archived
-                            // TODO: Naveh: I need to understand why this works, we are checking if the archive is true.. (should be checking for false)
+                            // If this group is relevant
                             if ((Boolean) entry.getValue()) {
                                 groupKeys.add(entry.getKey());
                             }
@@ -115,16 +114,16 @@ public class UserGroupsDB {
                         // Reset the array of groups. We got a new array.
                         groups.clear();
 
-                        // Create a list containing the received (not-archived) groupKeys
+                        // Create a list containing the received (relevant) groupKeys
                         List<String> groupKeys = new ArrayList<>();
 
                         Map<String, Object> groupNodeValue = (Map<String, Object>) dataSnapshot.getValue();
 
-                        // Managing the archived groups from the current user groups
+                        // Managing the relevant groups from the current user groups
                         for (Map.Entry<String, Object> entry : groupNodeValue.entrySet()) {
                             String key = entry.getKey();
 
-                            // if is not archived and not
+                            // Check if this group is relevant
                             if (key != null && !key.equals("lastUpdated") && (Boolean) entry.getValue()) {
                                 groupKeys.add(key);
                             }
@@ -254,6 +253,7 @@ public class UserGroupsDB {
             @Override
             public void onObjectReceived(Long currentRemoteDate) {
                 Map<String, Object> valuesToPost = new HashMap<>();
+                // Set the relevance variable to true
                 valuesToPost.put(groupKey, true);
                 valuesToPost.put("lastUpdated", currentRemoteDate);
 
@@ -268,6 +268,7 @@ public class UserGroupsDB {
         ObjectReceivedHandler<Long> timestampHandler = new ObjectReceivedHandler<Long>() {
             @Override
             public void onObjectReceived(Long currentRemoteDate) {
+                // Set the relevance variable to false
                 userGroupsRef.child(groupKey).setValue(false);
 
                 Map<String, Object> valuesToPost = new HashMap<>();

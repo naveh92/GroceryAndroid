@@ -65,20 +65,25 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
         gridview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                adapter.startEditing(i);
+                String createdBy = adapter.getRequest(i).getUserKey();
 
-                // TODO: scroll to the position? (doesn't work)
+                // Make sure this request was created by the editing user
+                if (AuthenticationManager.getInstance().getCurrentUserId().equals(createdBy)) {
+                    adapter.startEditing(i);
 
-                View focus = getCurrentFocus();
+                    // TODO: scroll to the position? (doesn't work)
 
-                if (focus != null) {
-                    // Show the keyboard
-                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputMethodManager.toggleSoftInputFromWindow(focus.getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+                    View focus = getCurrentFocus();
+
+                    if (focus != null) {
+                        // Show the keyboard
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.toggleSoftInputFromWindow(focus.getWindowToken(), InputMethodManager.SHOW_FORCED, 0);
+                    }
+
+                    // Hide the add new request button as long as we are editing
+                    hideNewObjectButton();
                 }
-
-                // Hide the add new request button as long as we are editing
-                hideNewObjectButton();
 
                 return false;
             }

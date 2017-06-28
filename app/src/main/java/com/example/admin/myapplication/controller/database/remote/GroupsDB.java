@@ -45,10 +45,9 @@ public class GroupsDB {
     }
 
     public void deleteGroup(String key) {
-        //groupsRef.child(key).removeValue();
-        Map<String, Object> updateArchive = new HashMap<String, Object>();
-        updateArchive.put("Archive" , true);
-        groupsRef.child(key).updateChildren(updateArchive);
+        Map<String, Object> relevance = new HashMap<>();
+        relevance.put("relevant" , false);
+        groupsRef.child(key).updateChildren(relevance);
     }
 
     public void findGroupByKey(String key, final ObjectReceivedHandler<Group> handler) {
@@ -72,7 +71,8 @@ public class GroupsDB {
     private Group mapToGroup(String key, Map<String, Object> values) {
         String groupKey = key;
         String title = (String) values.get("title");
+        Boolean relevant = (Boolean) values.get("relevant");
 
-        return new Group(groupKey, title);
+        return new Group(groupKey, title, relevant);
     }
 }

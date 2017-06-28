@@ -124,11 +124,11 @@ public class GroupMembersDB {
                 }
                 else {
                     int count = 0;
-                    for (DataSnapshot sp:
-                        dataSnapshot.getChildren()) {
-                        if ((Boolean) sp.getValue())
+                    for (DataSnapshot sp : dataSnapshot.getChildren()) {
+                        // Make sure this member is relevant
+                        if ((Boolean) sp.getValue()) {
                             count++;
-
+                        }
                     }
                     handler.onObjectReceived(count);
                 }
