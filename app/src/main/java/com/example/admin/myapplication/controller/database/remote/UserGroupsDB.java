@@ -66,25 +66,21 @@ public class UserGroupsDB {
 
                         Map<String, Object> groupNodeValue = (Map<String, Object>) ((Map<String, Object>) dataSnapshot.getValue()).values();
 
-                        // Create a list containing the group keys.
+                        // Create a list containing the not-archived group keys.
                         List<String> groupKeys = new ArrayList<>();
 
-                        // list of not archived user groups
-                        HashMap<String, Object> usersGroup = new HashMap<String, Object>();
-
-                        // Sorting the archived groups from the current user groups
+                        // Managing the archived groups from the current user groups
                         for (Map.Entry<String, Object> entry : groupNodeValue.entrySet()) {
 
                             // if is not archived
-                            if ((Boolean) entry.getValue()){
-                                usersGroup.entrySet().add(entry);
+                            // TODO: Naveh: I need to understand why this works, we are checking if the archive is true.. (should be checking for false)
+                            if ((Boolean) entry.getValue()) {
+                                groupKeys.add(entry.getKey());
                             }
-                            else{
-                                //TODO: Handle archived groups
+                            else {
+                                // TODO: Handle archived groups
                             }
                         }
-
-                        groupKeys.addAll(usersGroup.keySet());
 
                         // The list contains the lastUpdated value
                         if (groupKeys.contains("lastUpdated")) {
@@ -119,30 +115,23 @@ public class UserGroupsDB {
                         // Reset the array of groups. We got a new array.
                         groups.clear();
 
-                        // Create a list containing the received groupKeys
+                        // Create a list containing the received (not-archived) groupKeys
                         List<String> groupKeys = new ArrayList<>();
-                        //groupKeys.addAll(((Map<String, Object>)dataSnapshot.getValue()).keySet());
 
                         Map<String, Object> groupNodeValue = (Map<String, Object>) dataSnapshot.getValue();
 
-                        // list of not archived user groups
-                        HashMap<String, Object> usersGroup = new HashMap<String, Object>();
-
-                        // Sorting the archived groups from the current user groups
+                        // Managing the archived groups from the current user groups
                         for (Map.Entry<String, Object> entry : groupNodeValue.entrySet()) {
+                            String key = entry.getKey();
 
                             // if is not archived and not
-                            if (!entry.getKey().equals("lastUpdated") &&
-                                    (Boolean) entry.getValue()){
-                                usersGroup.put(entry.getKey(), entry.getValue());
+                            if (key != null && !key.equals("lastUpdated") && (Boolean) entry.getValue()) {
+                                groupKeys.add(key);
                             }
-                            else{
-                                //TODO: Handle archived groups
+                            else {
+                                // TODO: Handle archived groups
                             }
                         }
-
-                        groupKeys.addAll(usersGroup.keySet());
-
 
                         // The list contains the lastUpdated value
                         if (groupKeys.contains("lastUpdated")) {

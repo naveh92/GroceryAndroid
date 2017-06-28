@@ -24,14 +24,15 @@ public class GroceryList implements Comparable<GroceryList> {
         return archived;
     }
 
-
-    public GroceryList(String key, String groupKey, String title ) {
-        this.key = key;
-        this.groupKey = groupKey;
-        this.title = title;
+    /**
+     * This constructor is only called when a user creates a new GroceryList.
+     * It will always be relevant at first.
+     */
+    public GroceryList(String key, String groupKey, String title) {
+        this(key, groupKey, title, true);
     }
 
-    public GroceryList(String key, String groupKey, String title , Boolean archived ) {
+    public GroceryList(String key, String groupKey, String title , Boolean archived) {
         this.key = key;
         this.groupKey = groupKey;
         this.title = title;
@@ -43,6 +44,7 @@ public class GroceryList implements Comparable<GroceryList> {
         HashMap<String, Object> result = new HashMap<>();
         result.put("groupKey", groupKey);
         result.put("title", title);
+        result.put("archived", archived);
 
         return result;
     }
