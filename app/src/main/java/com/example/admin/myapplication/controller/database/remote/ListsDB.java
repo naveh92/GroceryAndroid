@@ -42,7 +42,7 @@ public class ListsDB {
     public void deleteList(String listKey) {
 
         Map<String, Object> updateArchive = new HashMap<String, Object>();
-        updateArchive.put("Archive" , true);
+        updateArchive.put("archive" , true);
         listsRef.child(listKey).updateChildren(updateArchive);
 
         // TODO: Update in localDB as well

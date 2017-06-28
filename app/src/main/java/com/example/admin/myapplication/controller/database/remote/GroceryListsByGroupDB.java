@@ -62,10 +62,11 @@ public class GroceryListsByGroupDB {
             private GroceryList mapToGroceryList(String key, Map<String, Object> values) {
                 String groupKey = (String) values.get("groupKey");
                 String title = (String) values.get("title");
-                Boolean archive = (Boolean) values.get("Archive");
+                Boolean archive = (Boolean) values.get("archive");
 
-                if (archive == null)
+                if (archive == null) {
                     archive = false;
+                }
 
                 return new GroceryList(key, groupKey, title , archive);
             }
