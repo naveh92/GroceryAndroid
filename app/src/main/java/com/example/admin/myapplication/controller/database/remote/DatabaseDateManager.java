@@ -12,7 +12,8 @@ import com.google.firebase.database.ValueEventListener;
  * Created by admin on 10/04/2017.
  */
 public class DatabaseDateManager {
-    private static DatabaseReference ref = FirebaseDatabase.getInstance().getReference("timestamp");
+    private static final String TIMESTAMP = "timestamp";
+    private static DatabaseReference ref = FirebaseDatabase.getInstance().getReference(TIMESTAMP);
 
     /**
      * This function retrieves the current timestamp from firebase server.

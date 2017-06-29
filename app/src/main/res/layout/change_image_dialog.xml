@@ -13,7 +13,8 @@
         android:onClick="camera"
         android:background="@null"
         android:layout_marginTop="45dp"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@string/camera" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -25,6 +26,7 @@
         android:layout_marginTop="45dp"
         android:layout_below="@+id/cameraBtn"
         android:layout_alignStart="@+id/cameraBtn"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"
+        android:contentDescription="@string/gallery" />
 
 </RelativeLayout>

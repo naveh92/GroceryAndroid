@@ -15,9 +15,8 @@ import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.models.RequestsModel;
-import com.example.admin.myapplication.controller.database.remote.RequestsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectHandler;
-import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
+import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.GroceryRequest;
 
 /**
@@ -36,8 +35,8 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
 
         // Retrieve the listKey from the previous activity.
         Intent intent = getIntent();
-        String listKey = intent.getStringExtra("listKey");
-        String listTitle = intent.getStringExtra("listTitle");
+        String listKey = intent.getStringExtra(GroceryList.LIST_KEY_STRING);
+        String listTitle = intent.getStringExtra(GroceryList.TITLE_STRING);
 
         // Set this activity's title.
         setTitle(listTitle);
@@ -149,7 +148,7 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
         // Open a dialog.
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.new_request_dialog);
-        dialog.setTitle("New Request");
+        dialog.setTitle(context.getString(R.string.new_request));
 
         // Get the EditText and focus on it.
         final EditText itemNameText = (EditText) dialog.findViewById(R.id.itemNameText);

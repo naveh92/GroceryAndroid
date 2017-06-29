@@ -26,6 +26,8 @@ import java.util.Map;
 public class UserGroupsDB {
     private static final String USERS_NODE_URL = "users";
     private static final String GROUPS_NODE_URL = "groups";
+    private static final String LAST_UPDATED_STRING = "lastUpdated";
+    private static final String DELIMITER = "/";
     private DatabaseReference userRef;
     private DatabaseReference userGroupsRef;
     private List<Group> groups = new ArrayList<>();
@@ -35,8 +37,8 @@ public class UserGroupsDB {
 
     public UserGroupsDB(String userKey) {
         this.userKey = userKey;
-        userRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + "/" + userKey);
-        userGroupsRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + "/" + userKey + "/" + GROUPS_NODE_URL);
+        userRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + DELIMITER + userKey);
+        userGroupsRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + DELIMITER + userKey + DELIMITER + GROUPS_NODE_URL);
     }
 
     public void observeUserGroupsAddition(Context context, final ObjectReceivedHandler<Group> handler) {
@@ -55,7 +57,7 @@ public class UserGroupsDB {
             // -----------------------------
             // Observe only if the remote update-time is after the the local
             // TODO: localUpdateTime.toFirebase()?
-            userRef.orderByChild("lastUpdated").startAt(localUpdateTime).addValueEventListener(new ValueEventListener() {
+            userRef.orderByChild(LAST_UPDATED_STRING).startAt(localUpdateTime).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     // Reset the array of groups. We got a new array.
@@ -67,25 +69,7 @@ public class UserGroupsDB {
                         Map<String, Object> groupNodeValue = (Map<String, Object>) ((Map<String, Object>) dataSnapshot.getValue()).values();
 
                         // Create a list containing the relevant group keys.
-                        List<String> groupKeys = new ArrayList<>();
-
-                        // Managing the archived groups from the current user groups
-                        for (Map.Entry<String, Object> entry : groupNodeValue.entrySet()) {
-
-                            // If this group is relevant
-                            if ((Boolean) entry.getValue()) {
-                                groupKeys.add(entry.getKey());
-                            }
-                            else {
-                                // TODO: Handle archived groups
-                            }
-                        }
-
-                        // The list contains the lastUpdated value
-                        if (groupKeys.contains("lastUpdated")) {
-                            // Remove it
-                            groupKeys.remove("lastUpdated");
-                        }
+                        List<String> groupKeys = getRelevantGroupKeys(groupNodeValue);
 
                         // Handle the groupKeys we received
                         handleUserGroups(groupKeys, handler);
@@ -115,28 +99,7 @@ public class UserGroupsDB {
                         groups.clear();
 
                         // Create a list containing the received (relevant) groupKeys
-                        List<String> groupKeys = new ArrayList<>();
-
-                        Map<String, Object> groupNodeValue = (Map<String, Object>) dataSnapshot.getValue();
-
-                        // Managing the relevant groups from the current user groups
-                        for (Map.Entry<String, Object> entry : groupNodeValue.entrySet()) {
-                            String key = entry.getKey();
-
-                            // Check if this group is relevant
-                            if (key != null && !key.equals("lastUpdated") && (Boolean) entry.getValue()) {
-                                groupKeys.add(key);
-                            }
-                            else {
-                                // TODO: Handle archived groups
-                            }
-                        }
-
-                        // The list contains the lastUpdated value
-                        if (groupKeys.contains("lastUpdated")) {
-                            // Remove it
-                            groupKeys.remove("lastUpdated");
-                        }
+                        List<String> groupKeys = getRelevantGroupKeys((Map<String, Object>) dataSnapshot.getValue());
 
                         // Handle the groupKeys we received
                         handleUserGroups(groupKeys, handler);
@@ -149,6 +112,32 @@ public class UserGroupsDB {
                 }
             });
         }
+    }
+
+    private List<String> getRelevantGroupKeys(Map<String, Object> groupsNodeValues) {
+        // Create a list containing the received (relevant) groupKeys
+        List<String> groupKeys = new ArrayList<>();
+
+        // Managing the relevant groups from the current user groups
+        for (Map.Entry<String, Object> entry : groupsNodeValues.entrySet()) {
+            String key = entry.getKey();
+
+            // Check if this group is relevant
+            if (key != null && !key.equals(LAST_UPDATED_STRING) && (Boolean) entry.getValue()) {
+                groupKeys.add(key);
+            }
+            else {
+                // TODO: Handle archived groups
+            }
+        }
+
+        // The list contains the lastUpdated value
+        if (groupKeys.contains(LAST_UPDATED_STRING)) {
+            // Remove it
+            groupKeys.remove(LAST_UPDATED_STRING);
+        }
+
+        return groupKeys;
     }
 
     private void getGroupsFromLocal(ObjectReceivedHandler<Group> handler) {
@@ -255,7 +244,7 @@ public class UserGroupsDB {
                 Map<String, Object> valuesToPost = new HashMap<>();
                 // Set the relevance variable to true
                 valuesToPost.put(groupKey, true);
-                valuesToPost.put("lastUpdated", currentRemoteDate);
+                valuesToPost.put(LAST_UPDATED_STRING, currentRemoteDate);
 
                 userGroupsRef.updateChildren(valuesToPost);
             }
@@ -272,7 +261,7 @@ public class UserGroupsDB {
                 userGroupsRef.child(groupKey).setValue(false);
 
                 Map<String, Object> valuesToPost = new HashMap<>();
-                valuesToPost.put("lastUpdated", currentRemoteDate);
+                valuesToPost.put(LAST_UPDATED_STRING, currentRemoteDate);
                 userGroupsRef.updateChildren(valuesToPost);
             }
         };

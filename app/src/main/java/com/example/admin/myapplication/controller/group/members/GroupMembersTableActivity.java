@@ -24,6 +24,7 @@ import com.example.admin.myapplication.controller.database.remote.GroupMembersDB
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
+import com.example.admin.myapplication.model.entities.Group;
 import com.example.admin.myapplication.model.entities.User;
 
 /**
@@ -41,8 +42,8 @@ public class GroupMembersTableActivity extends TableViewActivity {
 
         // Retrieve the groupKey from the previous activity.
         Intent intent = getIntent();
-        groupKey = intent.getStringExtra("groupKey");
-        String groupTitle = intent.getStringExtra("groupTitle");
+        groupKey = intent.getStringExtra(Group.GROUP_KEY_STRING);
+        String groupTitle = intent.getStringExtra(Group.TITLE_STRING);
 
         // Set this activity's title.
         setTitle(groupTitle);
@@ -86,10 +87,9 @@ public class GroupMembersTableActivity extends TableViewActivity {
         switch (item.getItemId()) {
             // action with ID action_refresh was selected
             case R.id.action_leave: {
-                // TODO: Strings.xml
                 // Show confirmation Dialog
-                new AlertDialog.Builder(this).setTitle("Leave group")
-                        .setMessage("Are you sure?\nYou will be able to rejoin only if another member adds you back.")
+                new AlertDialog.Builder(this).setTitle(getString(R.string.leave_group))
+                        .setMessage(getString(R.string.are_you_sure_leave_group))
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton(R.string.leave, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
@@ -126,7 +126,7 @@ public class GroupMembersTableActivity extends TableViewActivity {
         // Open a dialog.
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.new_member_dialog);
-        dialog.setTitle("Add a member");
+        dialog.setTitle(context.getString(R.string.add_a_member));
 
         GridView gridview = (GridView) dialog.findViewById(R.id.gridview);
         final GroupMembersTableAdapter newMembersAdapter = new GroupMembersTableAdapter(this);
@@ -168,10 +168,9 @@ public class GroupMembersTableActivity extends TableViewActivity {
             @Override
             public void onObjectReceived(Boolean noFriendsToAdd) {
                 if (noFriendsToAdd) {
-                    // TODO: Strings.xml
                     // Show alert dialog
-                    new AlertDialog.Builder(GroupMembersTableActivity.this).setTitle("Sorry!")
-                            .setMessage("There are no more members to add to this group.")
+                    new AlertDialog.Builder(GroupMembersTableActivity.this).setTitle(getString(R.string.sorry))
+                            .setMessage(getString(R.string.no_members_to_add))
                             .setIcon(android.R.drawable.ic_dialog_alert)
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface alertDialog, int whichButton) {

@@ -44,7 +44,9 @@ public class MainActivity extends FragmentActivity {
         final ActionBar actionBar = getActionBar();
 
         // Specify that tabs should be displayed in the action bar.
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        if (actionBar != null) {
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        }
 
         // Create a tab listener that is called when the user changes tabs.
         ActionBar.TabListener tabListener = new ActionBar.TabListener() {
@@ -77,9 +79,11 @@ public class MainActivity extends FragmentActivity {
                 });
 
         // Add 3 tabs, specifying the tab's text and TabListener
-        actionBar.addTab(actionBar.newTab().setText("Groups").setTabListener(tabListener));
-        actionBar.addTab(actionBar.newTab().setText("Lists").setTabListener(tabListener));
-        actionBar.addTab(actionBar.newTab().setText("Profile").setTabListener(tabListener));
+        if (actionBar != null) {
+            actionBar.addTab(actionBar.newTab().setText(getString(R.string.groups)).setTabListener(tabListener));
+            actionBar.addTab(actionBar.newTab().setText(getString(R.string.lists)).setTabListener(tabListener));
+            actionBar.addTab(actionBar.newTab().setText(getString(R.string.profile)).setTabListener(tabListener));
+        }
     }
 
     @Override
@@ -143,10 +147,9 @@ public class MainActivity extends FragmentActivity {
                     // action with ID action_refresh was selected
                     case R.id.action_delete_list:
                     {
-                        // TODO: Strings.xml
                         // Show confirmation Dialog
-                        new AlertDialog.Builder(MainActivity.this).setTitle("Delete grocery list?")
-                                .setMessage("Are you sure?")
+                        new AlertDialog.Builder(MainActivity.this).setTitle(getString(R.string.delete_grocery_list))
+                                .setMessage(getString(R.string.are_you_sure))
                                 .setIcon(android.R.drawable.ic_dialog_alert)
                                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int whichButton) {

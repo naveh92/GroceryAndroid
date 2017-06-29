@@ -18,36 +18,35 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        switch (i)
-        {
-            // TODO: Enum & Ordinals
-            case (0):
-            {
-                return new GroupFragment();
-            }
-            case (1):
-            {
-                return new GroceryFragment();
-            }
-            case (2):
-            {
-                return new ProfileFragment();
-            }
-            default:
-            {
-                return null;
+        if (i < getCount()) {
+            TabsEnum tab = TabsEnum.values()[i];
+
+            switch (tab) {
+                case GROUPS: {
+                    return new GroupFragment();
+                }
+                case GROCERY: {
+                    return new GroceryFragment();
+                }
+                case PROFILE: {
+                    return new ProfileFragment();
+                }
+                default: {
+                    return null;
+                }
             }
         }
+
+        return null;
     }
 
     @Override
     public int getCount() {
-        // TODO: Enum.values.groupsNum();
-        return 3;
+        return TabsEnum.values().length;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "OBJECT " + (position + 1);
+        return "";
     }
 }

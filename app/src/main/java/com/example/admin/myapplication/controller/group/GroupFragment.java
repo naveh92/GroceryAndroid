@@ -57,8 +57,8 @@ public class GroupFragment extends TableViewFragment {
                 Intent intent = new Intent(getActivity(), GroupMembersTableActivity.class);
 
                 Group group = db.getGroup(position);
-                intent.putExtra("groupKey", group.getKey()); // Add the groupKey for the next activity.
-                intent.putExtra("groupTitle", group.getTitle()); // Add the groupTitle for the next activity.
+                intent.putExtra(Group.GROUP_KEY_STRING, group.getKey()); // Add the groupKey for the next activity.
+                intent.putExtra(Group.TITLE_STRING, group.getTitle()); // Add the groupTitle for the next activity.
 
                 startActivity(intent);
             }
@@ -97,7 +97,7 @@ public class GroupFragment extends TableViewFragment {
         // Open a dialog.
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.new_group_dialog);
-        dialog.setTitle("New Group");
+        dialog.setTitle(context.getString(R.string.new_group));
 
         // Get the EditText and focus on it.
         final EditText groupTitleText = (EditText) dialog.findViewById(R.id.groupTitleText);

@@ -55,7 +55,7 @@ public class UsersDB {
     }
 
     public void findUserByFacebookId(final String facebookId, final ObjectReceivedHandler<User> handler) {
-        usersRef.orderByChild("facebookId").equalTo(facebookId).addListenerForSingleValueEvent(new ValueEventListener() {
+        usersRef.orderByChild(User.FACEBOOK_ID_STRING).equalTo(facebookId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -93,8 +93,8 @@ public class UsersDB {
     }
 
     private User mapToUser(String userKey, Map<String, Object> values) {
-        String userName = (String) values.get("name");
-        String facebookId = (String) values.get("facebookId");
+        String userName = (String) values.get(User.NAME_STRING);
+        String facebookId = (String) values.get(User.FACEBOOK_ID_STRING);
 
         return new User(userKey, facebookId, userName);
     }

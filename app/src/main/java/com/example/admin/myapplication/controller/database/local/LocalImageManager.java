@@ -20,6 +20,8 @@ import java.util.Map;
 public class LocalImageManager {
     private static final String TAG = "LocalImageManager";
     private static final String FORMAT_SUFFIX = ".jpg";
+    private static final String PATH_PREFIX = "/Android/data/";
+    private static final String PATH_SUFFIX = "/Files";
 
     /**
      * Instead of reading every image from file multiple times, we only read it once.
@@ -88,9 +90,9 @@ public class LocalImageManager {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
-                + "/Android/data/"
+                + PATH_PREFIX
                 + context.getPackageName()
-                + "/Files");
+                + PATH_SUFFIX);
 
         // Create the storage directory if it does not exist
         if (! mediaStorageDir.exists()){

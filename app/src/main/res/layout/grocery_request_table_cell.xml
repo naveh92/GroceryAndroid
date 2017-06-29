@@ -17,7 +17,8 @@
         android:scaleType="fitXY"
         android:layout_toStartOf="@+id/itemName"
         android:visibility="invisible"
-        android:layout_alignEnd="@+id/pleaseWait" />
+        android:layout_alignEnd="@+id/pleaseWait"
+        android:contentDescription="@string/user_image" />
 
     <TextView
         android:layout_width="wrap_content"

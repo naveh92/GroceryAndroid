@@ -26,7 +26,7 @@ public class GroceryListsByGroupDB {
 
     public GroceryListsByGroupDB(String groupKey) {
         this.groupKey = groupKey;
-        query = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL).orderByChild("groupKey").equalTo(groupKey);
+        query = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL).orderByChild(GroceryList.GROUP_KEY_STRING).equalTo(groupKey);
     }
 
     public void observeLists(final ObjectReceivedHandler<GroceryList> listAddedHandler,
@@ -62,14 +62,9 @@ public class GroceryListsByGroupDB {
             }
 
             private GroceryList mapToGroceryList(String key, Map<String, Object> values) {
-                String groupKey = (String) values.get("groupKey");
-                String title = (String) values.get("title");
-                Boolean relevant = (Boolean) values.get("relevant");
-
-                // TODO: Do we need this? all groups now have 'relevant' variable
-                if (relevant == null) {
-                    relevant = true;
-                }
+                String groupKey = (String) values.get(GroceryList.GROUP_KEY_STRING);
+                String title = (String) values.get(GroceryList.TITLE_STRING);
+                Boolean relevant = (Boolean) values.get(GroceryList.RELEVANT_STRING);
 
                 return new GroceryList(key, groupKey, title , relevant);
             }

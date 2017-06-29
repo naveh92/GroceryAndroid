@@ -28,6 +28,7 @@
         android:onClick="newObjectDialog"
         android:background="@null"
         android:alpha="0.9"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="5dp"
+        android:contentDescription="@string/add" />
 
 </RelativeLayout>

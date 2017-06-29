@@ -41,7 +41,7 @@ public class ListsDB {
 
     public void deleteList(String listKey) {
         Map<String, Object> relevance = new HashMap<String, Object>();
-        relevance.put("relevant" , false);
+        relevance.put(GroceryList.RELEVANT_STRING , false);
         listsRef.child(listKey).updateChildren(relevance);
 
         // TODO: Update in localDB as well

@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="List Title:"
+        android:text="@string/list_title"
         android:id="@+id/textView"
         android:layout_marginTop="30dp"
         android:layout_alignParentStart="true"
@@ -45,7 +45,6 @@
         android:layout_marginTop="40dp"
         android:spinnerMode="dropdown"
         android:layout_below="@+id/listTitleText"
-        android:layout_marginLeft="0dp"
         android:layout_alignEnd="@+id/listTitleText"
         android:layout_toEndOf="@+id/textView3"
         android:layout_alignStart="@+id/listTitleText" />
@@ -54,9 +53,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Group:"
+        android:text="@string/group"
         android:id="@+id/textView3"
-        android:layout_marginLeft="0dp"
         android:layout_alignBottom="@+id/spinner"
         android:layout_alignStart="@+id/textView"
         android:layout_marginTop="0dp" />

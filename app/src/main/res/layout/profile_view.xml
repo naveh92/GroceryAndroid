@@ -28,7 +28,8 @@
         android:layout_marginTop="20dp"
         android:src="@drawable/user"
         android:visibility="invisible"
-        android:layout_above="@+id/logout" />
+        android:layout_above="@+id/logout"
+        android:contentDescription="@string/user_image" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -43,7 +44,8 @@
         android:layout_marginBottom="20dp"
         android:background="@null"
         android:src="@drawable/logout"
-        android:scaleType="fitCenter" />
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/logout" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
@@ -65,7 +67,8 @@
         android:background="@null"
         android:alpha="0.85"
         android:layout_alignTop="@+id/imageView"
-        android:layout_alignEnd="@+id/imageView" />
+        android:layout_alignEnd="@+id/imageView"
+        android:contentDescription="@string/change_image" />
 
 
     <!--        <com.facebook.login.widget.LoginButton

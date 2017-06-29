@@ -33,6 +33,7 @@
         android:layout_alignTop="@+id/listTitle"
         android:layout_marginRight="10dp"
         android:clickable="true"
-        android:onClick="showListPopup" />
+        android:onClick="showListPopup"
+        android:contentDescription="@string/menu" />
 
 </RelativeLayout>

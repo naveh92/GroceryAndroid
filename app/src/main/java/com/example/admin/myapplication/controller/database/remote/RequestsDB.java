@@ -22,9 +22,11 @@ public class RequestsDB {
     private DatabaseReference requestsRef;
     private static final String LISTS_NODE_URL = "grocery-lists";
     private static final String REQUESTS_NODE_URL = "requests";
+    private static final String LAST_UPDATED_STRING = "lastUpdated";
+    private static final String DELIMITER = "/";
 
     public RequestsDB(String listKey) {
-        requestsRef = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL + "/" + listKey + "/" + REQUESTS_NODE_URL);
+        requestsRef = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL + DELIMITER + listKey + DELIMITER + REQUESTS_NODE_URL);
         TAG += " (" + listKey + ")";
     }
 
@@ -58,12 +60,12 @@ public class RequestsDB {
     }
 
     private GroceryRequest mapToRequest(String requestKey, Map<String, Object> values) {
-        String userKey = (String) values.get("userId");
-        String itemName = (String) values.get("itemName");
-        Boolean purchased = Boolean.valueOf((String)values.get("purchased"));
-        Long updateTime = (Long) values.get("lastUpdated");
+        String userKey = (String) values.get(GroceryRequest.USER_ID_STRING);
+        String itemName = (String) values.get(GroceryRequest.ITEM_NAME_STRING);
+        Boolean purchased = Boolean.valueOf((String)values.get(GroceryRequest.PURCHASED_STRING));
+        Long updateTime = (Long) values.get(LAST_UPDATED_STRING);
 
-        return new GroceryRequest(requestKey, userKey, itemName, purchased, updateTime);
+        return new GroceryRequest(requestKey, userKey, itemName, purchased);
     }
 
     public void addNewRequest(final GroceryRequest request) {
@@ -74,7 +76,7 @@ public class RequestsDB {
                 String key = requestsRef.push().getKey();
                 Map<String, Object> postValues = request.toMap();
 
-                postValues.put("lastUpdated", currentRemoteDate);
+                postValues.put(LAST_UPDATED_STRING, currentRemoteDate);
 
                 // Set the values
                 requestsRef.child(key).setValue(postValues);
@@ -92,8 +94,8 @@ public class RequestsDB {
 
                 // Set the updated values
                 Map<String, Object> postValues = new HashMap<>();
-                postValues.put("purchased", newValue.toString());
-                postValues.put("lastUpdated", currentRemoteDate);
+                postValues.put(GroceryRequest.PURCHASED_STRING, newValue.toString());
+                postValues.put(LAST_UPDATED_STRING, currentRemoteDate);
 
                 // Set the values
                 requestsRef.child(requestKey).updateChildren(postValues);
@@ -109,8 +111,8 @@ public class RequestsDB {
             public void onObjectReceived(Long currentRemoteDate) {
                 // Set the updated values
                 Map<String, Object> postValues = new HashMap<>();
-                postValues.put("itemName", newItemName);
-                postValues.put("lastUpdated", currentRemoteDate);
+                postValues.put(GroceryRequest.ITEM_NAME_STRING, newItemName);
+                postValues.put(LAST_UPDATED_STRING, currentRemoteDate);
 
                 // Set the values
                 requestsRef.child(requestKey).updateChildren(postValues);

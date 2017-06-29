@@ -11,11 +11,14 @@ import java.util.Map;
  * Created by admin on 05/04/2017.
  */
 public class GroceryRequest implements Comparable<GroceryRequest> {
+    public static final String ITEM_NAME_STRING = "itemName";
+    public static final String PURCHASED_STRING = "purchased";
+    public static final String USER_ID_STRING = "userId";
+
     private String key;
     private String userKey;
     private String itemName;
     private Boolean purchased;
-    private Long updateTime;
 
     public String getKey() {
         return key;
@@ -25,7 +28,6 @@ public class GroceryRequest implements Comparable<GroceryRequest> {
         return itemName;
     }
     public Boolean getPurchased() { return purchased; }
-    public Long getUpdateTime() { return updateTime; }
 
     public GroceryRequest(String itemName, String userKey) {
         this.itemName = itemName;
@@ -33,20 +35,19 @@ public class GroceryRequest implements Comparable<GroceryRequest> {
         this.purchased = false;
     }
 
-    public GroceryRequest(String key, String userKey, String itemName, Boolean purchased, Long updateTime) {
+    public GroceryRequest(String key, String userKey, String itemName, Boolean purchased) {
         this.key = key;
         this.userKey = userKey;
         this.itemName = itemName;
         this.purchased = purchased;
-        this.updateTime = updateTime;
     }
 
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("itemName", itemName);
-        result.put("purchased", purchased.toString());
-        result.put("userId", userKey);
+        result.put(ITEM_NAME_STRING, itemName);
+        result.put(PURCHASED_STRING, purchased.toString());
+        result.put(USER_ID_STRING, userKey);
 
         return result;
     }

@@ -12,6 +12,10 @@ import java.util.Map;
  * Created by admin on 04/04/2017.
  */
 public class Group implements Comparable<Group> {
+    public static final String GROUP_KEY_STRING = "groupKey";
+    public static final String TITLE_STRING = "title";
+    public static final String RELEVANT_STRING = "relevant";
+
     private String key;
     private String title;
     private Boolean relevant;
@@ -48,8 +52,8 @@ public class Group implements Comparable<Group> {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("title", title);
-        result.put("relevant", relevant);
+        result.put(TITLE_STRING, title);
+        result.put(RELEVANT_STRING, relevant);
 
         return result;
     }

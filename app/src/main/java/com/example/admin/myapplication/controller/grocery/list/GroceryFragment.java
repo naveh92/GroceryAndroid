@@ -62,8 +62,8 @@ public class GroceryFragment extends TableViewFragment {
                 Intent intent = new Intent(getActivity(), GroceryRequestsTableActivity.class);
 
                 GroceryList list = db.getGroceryList(position);
-                intent.putExtra("listKey", list.getKey()); // Add the listKey for the next activity.
-                intent.putExtra("listTitle", list.getTitle()); // Add the listTitle for the next activity.
+                intent.putExtra(GroceryList.LIST_KEY_STRING, list.getKey()); // Add the listKey for the next activity.
+                intent.putExtra(GroceryList.TITLE_STRING, list.getTitle()); // Add the listTitle for the next activity.
 
                 startActivity(intent);
             }
@@ -80,7 +80,7 @@ public class GroceryFragment extends TableViewFragment {
             // Open a dialog.
             final Dialog dialog = new Dialog(context);
             dialog.setContentView(R.layout.new_list_dialog);
-            dialog.setTitle("New Grocery List");
+            dialog.setTitle(context.getString(R.string.new_grocery_list));
 
             // Get the EditText and focus on it.
             final EditText listTitleText = (EditText) dialog.findViewById(R.id.listTitleText);
@@ -116,10 +116,9 @@ public class GroceryFragment extends TableViewFragment {
         }
         else {
             // User doesn't have a group. He cannot create a list.
-            // TODO: Strings.xml
             // Show alert dialog
-            new AlertDialog.Builder(context).setTitle("Sorry!")
-                    .setMessage("You need to have a group to create a list.")
+            new AlertDialog.Builder(context).setTitle(context.getString(R.string.sorry))
+                    .setMessage(context.getString(R.string.no_group))
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {

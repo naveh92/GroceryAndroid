@@ -136,7 +136,7 @@ public class LoginActivity extends Activity {
         mCallbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = (LoginButton) findViewById(R.id.button_facebook_login);
         loginButton.setEnabled(true);
-        loginButton.setReadPermissions("email", "public_profile","user_friends");
+        loginButton.setReadPermissions("email", "public_profile", "user_friends");
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -174,13 +174,14 @@ public class LoginActivity extends Activity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            ((TextView) findViewById(R.id.greetingTV)).setText("Welcome back, " + user.getDisplayName());
+            String text = getString(R.string.welcome_back) + ", " + user.getDisplayName();
+            ((TextView) findViewById(R.id.greetingTV)).setText(text);
              findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
 
             hideLogoutButton();
         }
         else {
-            ((TextView) findViewById(R.id.greetingTV)).setText("Hello");
+            ((TextView) findViewById(R.id.greetingTV)).setText(getString(R.string.hello));
             findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
 
             // Enable the facebook button

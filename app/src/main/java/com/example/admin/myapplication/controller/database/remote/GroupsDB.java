@@ -46,7 +46,7 @@ public class GroupsDB {
 
     public void deleteGroup(String key) {
         Map<String, Object> relevance = new HashMap<>();
-        relevance.put("relevant" , false);
+        relevance.put(Group.RELEVANT_STRING , false);
         groupsRef.child(key).updateChildren(relevance);
     }
 
@@ -68,10 +68,9 @@ public class GroupsDB {
         });
     }
 
-    private Group mapToGroup(String key, Map<String, Object> values) {
-        String groupKey = key;
-        String title = (String) values.get("title");
-        Boolean relevant = (Boolean) values.get("relevant");
+    private Group mapToGroup(String groupKey, Map<String, Object> values) {
+        String title = (String) values.get(Group.TITLE_STRING);
+        Boolean relevant = (Boolean) values.get(Group.RELEVANT_STRING);
 
         return new Group(groupKey, title, relevant);
     }

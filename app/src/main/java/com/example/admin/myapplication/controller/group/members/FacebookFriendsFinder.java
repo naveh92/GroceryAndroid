@@ -21,13 +21,15 @@ import java.util.List;
  * Created by admin on 07/04/2017.
  */
 public class FacebookFriendsFinder {
+    private static final String FIELDS = "id, name";
+    private static final String PATH = "/me/friends";
 
     public void find(final List<User> currentMembers, final ObjectHandler<User> memberReceived, final ObjectReceivedHandler<Boolean> whenFinishedHandler) {
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, name");
+        parameters.putString("fields", FIELDS);
 
         GraphRequest request = new GraphRequest(AuthenticationManager.getInstance().getFacebookAccessToken(),
-                                                "/me/friends", parameters, null, new GraphRequest.Callback() {
+                                                PATH, parameters, null, new GraphRequest.Callback() {
             @Override
             public void onCompleted(GraphResponse response) {
                 memberReceived.removeAllObjects();

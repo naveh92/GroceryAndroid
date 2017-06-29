@@ -8,6 +8,11 @@ import java.util.Map;
  * Created by admin on 04/04/2017.
  */
 public class GroceryList implements Comparable<GroceryList> {
+    public static final String GROUP_KEY_STRING = "groupKey";
+    public static final String TITLE_STRING = "title";
+    public static final String RELEVANT_STRING = "relevant";
+    public static final String LIST_KEY_STRING = "listKey";
+
     private String key;
     private String groupKey;
     private String title;
@@ -42,9 +47,9 @@ public class GroceryList implements Comparable<GroceryList> {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("groupKey", groupKey);
-        result.put("title", title);
-        result.put("relevant", relevant);
+        result.put(GROUP_KEY_STRING, groupKey);
+        result.put(TITLE_STRING, title);
+        result.put(RELEVANT_STRING, relevant);
 
         return result;
     }
