@@ -1,12 +1,6 @@
 package com.example.admin.myapplication.controller.database.remote;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
-import com.example.admin.myapplication.controller.database.local.UserGroupsTable;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
-import com.example.admin.myapplication.model.entities.Group;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -15,228 +9,109 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
  * Created by admin on 06/04/2017.
+ * This class manages the access to the Remote DB, but no further logic.
+ * It passes every received/deleted object directly to the Model, where the logic is.
+ * (The only logic is extracting Group Keys from a DataSnapshot etc.)
  */
 public class UserGroupsDB {
     private static final String USERS_NODE_URL = "users";
     private static final String GROUPS_NODE_URL = "groups";
-    private static final String LAST_UPDATED_STRING = "lastUpdated";
+    public static final String LAST_UPDATED_STRING = "lastUpdated";
     private static final String DELIMITER = "/";
     private DatabaseReference userRef;
     private DatabaseReference userGroupsRef;
-    private List<Group> groups = new ArrayList<>();
-    private String userKey;
-    // TODO: Need to table.close() onDestroy()??
-    private UserGroupsTable table;
 
     public UserGroupsDB(String userKey) {
-        this.userKey = userKey;
         userRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + DELIMITER + userKey);
         userGroupsRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + DELIMITER + userKey + DELIMITER + GROUPS_NODE_URL);
     }
 
-    public void observeUserGroupsAddition(Context context, final ObjectReceivedHandler<Group> handler) {
-        // Make sure the local db is initialized
-        if (table == null) {
-            table = new UserGroupsTable();
-        }
+    /**
+     * This function executes a query in the remote DB, searching for records that were updated AFTER lastUpdated parameter.
+     */
+    public void getUserGroupsByLastUpdateDate(Long lastUpdated, final ObjectReceivedHandler<List<String>> handler) {
+        // Observe only if the remote update-time is after the the local
+        // TODO: localUpdateTime.toFirebase()?
+        userRef.orderByChild(LAST_UPDATED_STRING).startAt(lastUpdated).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // If we got groups
+                if (dataSnapshot.exists()) {
+                    Map<String, Object> groupNodeValue = (Map<String, Object>) ((Map<String, Object>) dataSnapshot.getValue()).values();
 
-        // TODO:
-        // Get the last-update time in the local db
-        Long localUpdateTime = null; // stUpdateTable.getLastUpdateDate();
+                    // Create a list containing the relevant group keys.
+                    List<String> groupKeys = getRelevantGroupKeys(groupNodeValue);
 
-        if (localUpdateTime != null) {
-            // -----------------------------
-            // Handler for query observation
-            // -----------------------------
-            // Observe only if the remote update-time is after the the local
-            // TODO: localUpdateTime.toFirebase()?
-            userRef.orderByChild(LAST_UPDATED_STRING).startAt(localUpdateTime).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // Reset the array of groups. We got a new array.
-                    groups.clear();
-
-                    // If we got groups
-                    if (dataSnapshot.exists()) {
-
-                        Map<String, Object> groupNodeValue = (Map<String, Object>) ((Map<String, Object>) dataSnapshot.getValue()).values();
-
-                        // Create a list containing the relevant group keys.
-                        List<String> groupKeys = getRelevantGroupKeys(groupNodeValue);
-
-                        // Handle the groupKeys we received
-                        handleUserGroups(groupKeys, handler);
-                    }
-
-                    // Local DB is up to date - get groups from local.
-                    getGroupsFromLocal(handler);
+                    // Send the received list of GroupKeys to the Model.
+                    handler.onObjectReceived(groupKeys);
                 }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-// TODO:
-                }
-            });
-        }
-        else {
-            // -------------------------------
-            // Handler for regular observation
-            // -------------------------------
-            // Observe all group records from remote group node
-            userGroupsRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    // If we got groups
-                    if (dataSnapshot.exists()) {
-                        // Reset the array of groups. We got a new array.
-                        groups.clear();
-
-                        // Create a list containing the received (relevant) groupKeys
-                        List<String> groupKeys = getRelevantGroupKeys((Map<String, Object>) dataSnapshot.getValue());
-
-                        // Handle the groupKeys we received
-                        handleUserGroups(groupKeys, handler);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-// TODO:
-                }
-            });
-        }
-    }
-
-    private List<String> getRelevantGroupKeys(Map<String, Object> groupsNodeValues) {
-        // Create a list containing the received (relevant) groupKeys
-        List<String> groupKeys = new ArrayList<>();
-
-        // Managing the relevant groups from the current user groups
-        for (Map.Entry<String, Object> entry : groupsNodeValues.entrySet()) {
-            String key = entry.getKey();
-
-            // Check if this group is relevant
-            if (key != null && !key.equals(LAST_UPDATED_STRING) && (Boolean) entry.getValue()) {
-                groupKeys.add(key);
             }
-            else {
-                // TODO: Handle archived groups
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+// TODO:
             }
-        }
-
-        // The list contains the lastUpdated value
-        if (groupKeys.contains(LAST_UPDATED_STRING)) {
-            // Remove it
-            groupKeys.remove(LAST_UPDATED_STRING);
-        }
-
-        return groupKeys;
-    }
-
-    private void getGroupsFromLocal(ObjectReceivedHandler<Group> handler) {
-        // Get the group keys from local db
-        List<String> groupKeys = table.getUserGroupKeys(DatabaseHelper.getInstance().getWritableDatabase() ,userKey);
-
-        // Handle each received group key individually
-        for (String groupKey : groupKeys) {
-            handleUserGroupAddition(groupKey, handler);
-        }
+        });
     }
 
     /**
-     * This function is only for lists received from remote db
+     * This function observes (does NOT query) the remote DB for all Groups.
      */
-    private void handleUserGroups(List<String> groupKeys, ObjectReceivedHandler<Group> handler) {
-        // Handle each received group key individually
-        for (String groupKey : groupKeys) {
-            handleUserGroupAddition(groupKey, handler);
-        }
-
-        // Update local records.
-        table.truncate(DatabaseHelper.getInstance().getWritableDatabase());
-        table.insertGroupKeys(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupKeys);
-
-        // TODO: Update LastUpdateTable
-//        LastUpdateTable.setLastUpdate(database: LocalDb.sharedInstance?.database,
-//                table: UserGroupsTable.TABLE,
-//                key: self.userKey as String,
-//                lastUpdate: Date())
-    }
-
-    private void handleUserGroupAddition(String groupKey, final ObjectReceivedHandler<Group> handler) {
-        ObjectReceivedHandler<Group> receivedGroupHandler = new ObjectReceivedHandler<Group>() {
+    public void getAllUserGroups(final ObjectReceivedHandler<List<String>> handler) {
+        userGroupsRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onObjectReceived(Group group) {
-                // If the group doesn't already exist (Just in case..)
-                if (!containsGroup(group)) {
-                    groups.add(group);
-                    Collections.sort(groups);
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // If we got groups
+                if (dataSnapshot.exists()) {
+                    // Create a list containing the received (relevant) groupKeys
+                    List<String> groupKeys = getRelevantGroupKeys((Map<String, Object>) dataSnapshot.getValue());
+
+                    // Send the received list of GroupKeys to the Model.
+                    handler.onObjectReceived(groupKeys);
                 }
-
-                handler.onObjectReceived(group);
             }
-        };
 
-        // Retrieve the Group object
-        GroupsDB.getInstance().findGroupByKey(groupKey, receivedGroupHandler);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+// TODO:
+            }
+        });
     }
 
-    private Boolean containsGroup(Group group) {
-        // TODO: Synchronized
-        for (Group g : groups) {
-            if (g.getKey().equals(group.getKey())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public void observeUserGroupsDeletion(final ObjectReceivedHandler<Group> handler) {
+    /**
+     * This function observes the remote DB for all deleted Groups.
+     */
+    public void observeUserGroupsDeletion(final ObjectReceivedHandler<String> handler) {
         userGroupsRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {}
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-
-            @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                Integer groupIndex = getGroupIndexByKey(dataSnapshot.getKey());
+                // Extract the group key from the snapshot.
+                String removedGroupKey = dataSnapshot.getKey();
 
-                if (groupIndex != null) {
-                    // Remove the group from memory
-                    Group removedGroup = groups.remove(groupIndex.intValue());
-
-                    handler.onObjectReceived(removedGroup);
-                }
+                // Send the received key to the Model.
+                handler.onObjectReceived(removedGroupKey);
             }
 
             @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {}
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+            @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
-    private Integer getGroupIndexByKey(String groupKey) {
-        for (Group group : groups) {
-            if (group.getKey().equals(groupKey)) {
-                return groups.indexOf(group);
-            }
-        }
-
-        return null;
-    }
-
+    /**
+     * This function adds a group to the user's groups
+     */
     public void addGroupToUser(final String groupKey) {
         ObjectReceivedHandler<Long> timestampHandler = new ObjectReceivedHandler<Long>() {
             @Override
@@ -253,6 +128,9 @@ public class UserGroupsDB {
         DatabaseDateManager.getTimestamp(timestampHandler);
     }
 
+    /**
+     * This function removes a group from the user's group
+     */
     public void removeGroupFromUser(final String groupKey) {
         ObjectReceivedHandler<Long> timestampHandler = new ObjectReceivedHandler<Long>() {
             @Override
@@ -269,29 +147,39 @@ public class UserGroupsDB {
         DatabaseDateManager.getTimestamp(timestampHandler);
     }
 
+    /**
+     * This function gets a Map<String, Object> (extracted from the DataSnapshot)
+     * and returns the List of group keys within it.
+     */
+    private List<String> getRelevantGroupKeys(Map<String, Object> groupsNodeValues) {
+        // Create a list containing the received (relevant) groupKeys
+        List<String> groupKeys = new ArrayList<>();
+
+        // Managing the relevant groups from the current user groups
+        for (Map.Entry<String, Object> entry : groupsNodeValues.entrySet()) {
+            String key = entry.getKey();
+
+            // Check if this group is relevant
+            if (key != null && !key.equals(UserGroupsDB.LAST_UPDATED_STRING) && (Boolean) entry.getValue()) {
+                groupKeys.add(key);
+            }
+            else {
+                // TODO: Handle archived groups
+            }
+        }
+
+        // The list contains the lastUpdated value
+        if (groupKeys.contains(UserGroupsDB.LAST_UPDATED_STRING)) {
+            // Remove it
+            groupKeys.remove(UserGroupsDB.LAST_UPDATED_STRING);
+        }
+
+        return groupKeys;
+    }
+
     // TODO: ?
 //    func removeObservers() {
 //        userRef.removeAllObservers()
 //        userGroupsRef.removeAllObservers()
 //    }
-
-    // --------------------
-    // Container functions
-    // --------------------
-    public int getGroupsCount() {
-        return groups.size();
-    }
-
-    public Group getGroup(int position) {
-        if (position < getGroupsCount()) {
-            return groups.get(position);
-        }
-
-        return null;
-    }
-
-    public List<Group> getAllGroups() {
-        // Create a read-only copy of the list of groups.
-        return Collections.unmodifiableList(groups);
-    }
 }

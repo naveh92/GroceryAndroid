@@ -2,6 +2,7 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.content.Context;
 
+import com.example.admin.myapplication.controller.database.models.UserGroupsModel;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
@@ -15,11 +16,12 @@ import java.util.List;
  */
 public class UserGroceryListsDB {
     private final List<GroceryList> lists = new ArrayList<>();
-    private UserGroupsDB groupsDB;
+//    private UserGroupsDB groupsDB;
+    private UserGroupsModel groupsDBModel;
     private List<GroceryListsByGroupDB> listsDbs = new ArrayList<>();
 
     public UserGroceryListsDB(String userKey) {
-        groupsDB = new UserGroupsDB(userKey);
+        groupsDBModel = new UserGroupsModel(userKey);
     }
 
     public void observeLists(Context context, final ObjectReceivedHandler<GroceryList> listAdded, final ObjectReceivedHandler<GroceryList> listDeleted) {
@@ -95,8 +97,8 @@ public class UserGroceryListsDB {
             }
         };
 
-        groupsDB.observeUserGroupsAddition(context, groupAdded);
-        groupsDB.observeUserGroupsDeletion(groupDeleted);
+        groupsDBModel.observeUserGroupsAddition(context, groupAdded);
+        groupsDBModel.observeUserGroupsDeletion(groupDeleted);
     }
 
     private Boolean containsList(GroceryList list) {
@@ -169,7 +171,7 @@ public class UserGroceryListsDB {
     }
 
     public Boolean doesUserHaveGroup() {
-        return groupsDB.getGroupsCount() > 0;
+        return groupsDBModel.getGroupsCount() > 0;
     }
 
     public GroceryList getGroceryList(int position) {
@@ -183,6 +185,6 @@ public class UserGroceryListsDB {
     }
 
     public List<Group> getAllGroups() {
-        return groupsDB.getAllGroups();
+        return groupsDBModel.getAllGroups();
     }
 }

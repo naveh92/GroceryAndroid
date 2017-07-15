@@ -15,23 +15,19 @@ import com.example.admin.myapplication.controller.database.models.UserModel;
  * Schema master
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
-
     private static DatabaseHelper instance = null;
-
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "database.db";
-
 
     private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public static DatabaseHelper getInstance(){
-        if(instance == null) {
+    public static DatabaseHelper getInstance() {
+        if (instance == null) {
             instance = new DatabaseHelper(GroceryApp.getMyContext());
         }
         return instance;
-
     }
 
     @Override

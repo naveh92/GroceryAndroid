@@ -18,9 +18,6 @@ import com.example.admin.myapplication.controller.authentication.AuthenticationM
 import com.example.admin.myapplication.controller.database.models.GroupMembersModel;
 import com.example.admin.myapplication.controller.database.models.GroupModel;
 import com.example.admin.myapplication.controller.database.models.UserGroupsModel;
-import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
-import com.example.admin.myapplication.controller.database.remote.GroupsDB;
-import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.group.members.GroupMembersTableActivity;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.Group;
@@ -89,6 +86,9 @@ public class GroupFragment extends TableViewFragment {
         // TODO: Maybe just don't user local db if context is null? (though its stupid)
         if (context != null) {
             db.observeUserGroupsAddition(context, groupReceivedHandler);
+
+            // TODO: Is this needed?
+//            db.observeUserGroupsDeletion();
         }
     }
 

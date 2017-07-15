@@ -82,6 +82,10 @@ public class UserGroupsTable {
     }
 
     public void insert(SQLiteDatabase db ,String userKey, String groupKey) {
+        // TODO: Is this ok?
+//        SQLiteDatabase db = DatabaseHelper.getInstance().getWritableDatabase();
+
+
         // TODO: Insert or replace?
 
 
