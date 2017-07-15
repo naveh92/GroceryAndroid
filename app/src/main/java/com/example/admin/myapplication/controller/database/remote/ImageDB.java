@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.admin.myapplication.controller.database.local.LocalImageManager;
+import com.example.admin.myapplication.controller.database.local.files.LocalImageManager;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

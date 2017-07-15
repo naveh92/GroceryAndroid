@@ -12,29 +12,28 @@ import com.example.admin.myapplication.controller.profile.ProfileFragment;
  * Created by admin on 04/04/2017.
  */
 public class TabsPagerAdapter extends FragmentPagerAdapter {
+    private static Fragment[] tabs;
+
     public TabsPagerAdapter(FragmentManager fm) {
         super(fm);
+
+        if (tabs == null) {
+            initTabs();
+        }
+    }
+
+    private void initTabs() {
+        tabs = new Fragment[getCount()];
+
+        tabs[TabsEnum.GROUPS.ordinal()] = new GroupFragment();
+        tabs[TabsEnum.GROCERY.ordinal()] = new GroceryFragment();
+        tabs[TabsEnum.PROFILE.ordinal()] = new ProfileFragment();
     }
 
     @Override
     public Fragment getItem(int i) {
-        if (i < getCount()) {
-            TabsEnum tab = TabsEnum.values()[i];
-
-            switch (tab) {
-                case GROUPS: {
-                    return new GroupFragment();
-                }
-                case GROCERY: {
-                    return new GroceryFragment();
-                }
-                case PROFILE: {
-                    return new ProfileFragment();
-                }
-                default: {
-                    return null;
-                }
-            }
+        if (i >= 0 && i < getCount()) {
+            return tabs[i];
         }
 
         return null;
