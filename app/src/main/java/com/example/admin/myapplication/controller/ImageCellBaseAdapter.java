@@ -9,9 +9,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
-import com.example.admin.myapplication.controller.database.models.UserModel;
+import com.example.admin.myapplication.controller.database.models.UsersModel;
 import com.example.admin.myapplication.controller.database.remote.ImageDB;
-import com.example.admin.myapplication.controller.database.remote.UsersDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 
@@ -74,7 +73,7 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
         };
 
         // Retrieve the user object from the DB.
-        UserModel.getInstance().findUserByKey(userKey, receivedUserHandler);
+        UsersModel.getInstance().findUserByKey(userKey, receivedUserHandler);
     }
 
     protected abstract Context getContext();

@@ -11,9 +11,8 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
-import com.example.admin.myapplication.controller.database.models.UserModel;
+import com.example.admin.myapplication.controller.database.models.UsersModel;
 import com.example.admin.myapplication.controller.database.remote.ImageDB;
-import com.example.admin.myapplication.controller.database.remote.UsersDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 import com.facebook.AccessToken;
@@ -98,7 +97,7 @@ public class LoginActivity extends Activity {
             public void onObjectReceived(User receivedUser) {
                 if (receivedUser == null) {
                     User user = new User(userKey, facebookId, name);
-                    UserModel.getInstance().addNewUser(user);
+                    UsersModel.getInstance().addNewUser(user);
 
                     setUserProfilePic(userKey);
                 }
@@ -128,7 +127,7 @@ public class LoginActivity extends Activity {
             }
         };
 
-        UserModel.getInstance().findUserByKey(userKey, userReceivedHandler);
+        UsersModel.getInstance().findUserByKey(userKey, userReceivedHandler);
     }
 
     private void initFacebookLoginButton() {

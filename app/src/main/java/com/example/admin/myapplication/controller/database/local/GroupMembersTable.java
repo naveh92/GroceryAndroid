@@ -98,7 +98,7 @@ public class GroupMembersTable {
         long newRowId = db.insert(TABLE_NAME, null, values);
     }
 
-    public void delete(SQLiteDatabase db ,String userKey, String groupKey) {
+    public void delete(SQLiteDatabase db ,String groupKey, String userKey) {
 //        // Define 'where' part of query.
 //        String selection = FeedEntry.COLUMN_NAME_TITLE + " LIKE ?";
 //// Specify arguments in placeholder order.
@@ -108,7 +108,7 @@ public class GroupMembersTable {
 
 
         // TODO: SQLInjection
-        String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + GROUP_KEY + " = " + groupKey + " and " + USER_KEY + " = " + userKey;
+        String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + GROUP_KEY + " = '" + groupKey + "' and " + USER_KEY + " = '" + userKey + "'";
 
         // TODO: db.delete()?
         db.execSQL(DELETE_STATEMENT);

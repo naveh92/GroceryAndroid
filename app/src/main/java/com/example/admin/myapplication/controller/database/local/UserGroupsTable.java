@@ -109,7 +109,7 @@ public class UserGroupsTable {
 
 
         // TODO: SQLInjection
-        String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + USER_KEY + " = " + userKey + " and " + GROUP_KEY + " = " + groupKey;
+        String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + USER_KEY + " = '" + userKey + "' and " + GROUP_KEY + " = '" + groupKey + "'";
 
         // TODO: db.delete()?
         db.execSQL(DELETE_STATEMENT);

@@ -37,6 +37,7 @@ public class UserGroupsDB {
      */
     public void getUserGroupsByLastUpdateDate(Long lastUpdated, final ObjectReceivedHandler<List<String>> handler) {
         // Observe only if the remote update-time is after the the local
+        // TODO: Dafuq? User in db only has 1 global lastUpdated
         // TODO: localUpdateTime.toFirebase()?
         userRef.orderByChild(LAST_UPDATED_STRING).startAt(lastUpdated).addValueEventListener(new ValueEventListener() {
             @Override

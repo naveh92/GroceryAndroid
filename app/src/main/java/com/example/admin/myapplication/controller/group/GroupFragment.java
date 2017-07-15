@@ -16,7 +16,7 @@ import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewFragment;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.models.GroupMembersModel;
-import com.example.admin.myapplication.controller.database.models.GroupModel;
+import com.example.admin.myapplication.controller.database.models.GroupsModel;
 import com.example.admin.myapplication.controller.database.models.UserGroupsModel;
 import com.example.admin.myapplication.controller.group.members.GroupMembersTableActivity;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
@@ -121,7 +121,7 @@ public class GroupFragment extends TableViewFragment {
                 String userKey = AuthenticationManager.getInstance().getCurrentUserId();
 
                 // Add the group
-                String groupKey = GroupModel.getInstance().addNewGroup(newGroup);
+                String groupKey = GroupsModel.getInstance().addNewGroup(newGroup);
 
                 // Add the user as a group member
                 new GroupMembersModel(groupKey).addMember(userKey);

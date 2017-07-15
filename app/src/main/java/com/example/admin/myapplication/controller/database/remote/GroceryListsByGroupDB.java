@@ -2,6 +2,7 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.util.Log;
 
+import com.example.admin.myapplication.controller.database.models.ListsModel;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.google.firebase.database.ChildEventListener;
@@ -49,9 +50,7 @@ public class GroceryListsByGroupDB {
             }
 
             @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
@@ -75,9 +74,11 @@ public class GroceryListsByGroupDB {
         return groupKey;
     }
 
-    public void deleteAllListsForGroup() {
+    public static void deleteAllListsForGroup(String deletedGroupKey) {
+        Query q = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL).orderByChild(GroceryList.GROUP_KEY_STRING).equalTo(deletedGroupKey);
+
         // Query all lists for this group
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> listsKeys = new ArrayList<>();
@@ -89,7 +90,7 @@ public class GroceryListsByGroupDB {
 
                 // Delete every list from DB
                 for (String listKey : listsKeys) {
-                    ListsDB.getInstance().deleteList(listKey);
+                    ListsModel.getInstance().deleteList(listKey);
                 }
             }
 

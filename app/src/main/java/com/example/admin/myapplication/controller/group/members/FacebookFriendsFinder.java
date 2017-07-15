@@ -3,8 +3,7 @@ package com.example.admin.myapplication.controller.group.members;
 import android.os.Bundle;
 
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
-import com.example.admin.myapplication.controller.database.models.UserModel;
-import com.example.admin.myapplication.controller.database.remote.UsersDB;
+import com.example.admin.myapplication.controller.database.models.UsersModel;
 import com.example.admin.myapplication.controller.handlers.ObjectHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
@@ -60,7 +59,7 @@ public class FacebookFriendsFinder {
                         // Make sure this user isn't already a member in the group
                         if (!containsFacebookId(currentMembers, currentUserFacebookId)) {
                             // Find the User object corresponding to this facebook-user.
-                            UserModel.getInstance().findUserByFacebookId(currentUserFacebookId, memberReceived);
+                            UsersModel.getInstance().findUserByFacebookId(currentUserFacebookId, memberReceived);
                             noFriendsToAdd = false;
                         }
                     }

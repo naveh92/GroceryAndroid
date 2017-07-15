@@ -17,7 +17,6 @@ public class DatabaseDateManager {
 
     /**
      * This function retrieves the current timestamp from firebase server.
-     * @param handler
      */
     public static void getTimestamp(final ObjectReceivedHandler<Long> handler) {
         ref.setValue(ServerValue.TIMESTAMP);

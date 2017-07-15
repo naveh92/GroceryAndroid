@@ -2,9 +2,7 @@ package com.example.admin.myapplication.controller.database.remote;
 
 import android.util.Log;
 
-import com.example.admin.myapplication.controller.database.models.UserModel;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
-import com.example.admin.myapplication.model.entities.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -45,7 +43,6 @@ public class GroupMembersDB {
 
                 // Extract group member user keys and append them to our user keys array
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-
                     // If the value was not archived (is relevant).
                     if ((Boolean) child.getValue()) {
                         String userKey = child.getKey();

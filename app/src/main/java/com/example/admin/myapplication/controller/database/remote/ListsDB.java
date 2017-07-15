@@ -33,8 +33,6 @@ public class ListsDB {
         String key = listsRef.push().getKey();
         Map<String, Object> postValues = list.toMap();
 
-        // TODO: lastUpdated
-
         // Set the values
         listsRef.child(key).setValue(postValues);
     }
@@ -43,7 +41,5 @@ public class ListsDB {
         Map<String, Object> relevance = new HashMap<String, Object>();
         relevance.put(GroceryList.RELEVANT_STRING , false);
         listsRef.child(listKey).updateChildren(relevance);
-
-        // TODO: Update in localDB as well
     }
 }

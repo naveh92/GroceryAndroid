@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.admin.myapplication.controller.GroceryApp;
-import com.example.admin.myapplication.controller.database.models.UserModel;
 
 /**
  * Created by gun2f on 6/17/2017.
@@ -32,15 +31,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        UserGroupsTable.onCreate(db);
         UsersTable.onCreate(db);
+        GroupsTable.onCreate(db);
+
+        UserGroupsTable.onCreate(db);
+        ListsTable.onCreate(db);
         GroupMembersTable.onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        UserGroupsTable.onUpgrade(db, oldVersion, newVersion);
         UsersTable.onUpgrade(db, oldVersion, newVersion);
+        GroupsTable.onUpgrade(db, oldVersion, newVersion);
+
+        UserGroupsTable.onUpgrade(db, oldVersion, newVersion);
+        ListsTable.onUpgrade(db, oldVersion, newVersion);
         GroupMembersTable.onUpgrade(db, oldVersion, newVersion);
     }
 

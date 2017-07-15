@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
 import com.example.admin.myapplication.controller.database.local.UserGroupsTable;
-import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.Group;
@@ -15,8 +14,10 @@ import java.util.List;
 
 /**
  * Created by gun2f on 6/18/2017.
+ *
+ * This Model fetches the lastUpdatedTime from local, and fetches the records that were updated after that time from remote DB.
+ * It then fetches all other records from local DB, merges the data, and saves to local DB.
  */
-
 public class UserGroupsModel {
     private final String userKey;
     private UserGroupsDB usersGroupDB;
@@ -37,18 +38,20 @@ public class UserGroupsModel {
     }
 
     public void addGroupToUser(String groupKey) {
+        // Remote
         usersGroupDB.addGroupToUser(groupKey);
 
-        // TODO: Add in local
-//        table.insert(???, userKey, groupKey);
+        // Local
+        table.insert(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupKey);
         updateLastUpdatedTable();
     }
 
     public void removeGroupFromUser(final String groupKey) {
+        // Remote
         usersGroupDB.removeGroupFromUser(groupKey);
 
-        // TODO: Remove from local
-//        table.delete(???, userKey, groupKey);
+        // Local
+        table.delete(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupKey);
         updateLastUpdatedTable();
     }
 
@@ -155,7 +158,7 @@ public class UserGroupsModel {
         };
 
         // Retrieve the Group object
-        GroupsDB.getInstance().findGroupByKey(groupKey, receivedGroupHandler);
+        GroupsModel.getInstance().findGroupByKey(groupKey, receivedGroupHandler);
     }
 
     /**

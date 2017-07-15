@@ -2,9 +2,9 @@ package com.example.admin.myapplication.controller.database.models;
 
 import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
 import com.example.admin.myapplication.controller.database.local.GroupMembersTable;
+import com.example.admin.myapplication.controller.database.local.ListsTable;
 import com.example.admin.myapplication.controller.database.remote.GroceryListsByGroupDB;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
-import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
@@ -14,6 +14,11 @@ import java.util.List;
 
 /**
  * Created by gun2f on 6/19/2017.
+ *
+ * This Model's execution:
+ * Fetch the RemoteUpdateTime (Every Group has it's own).
+ * If it is after the localUpdateTime, fetch all records from remote DB, and save to local DB.
+ * If it is before localUpdateTime, fetch all records from local DB.
  */
 
 public class GroupMembersModel {
@@ -36,19 +41,23 @@ public class GroupMembersModel {
     }
 
     public void addMember(String userKey) {
+        // Remote
         groupMembersDB.addMember(userKey);
 
-        // TODO:
-//        table.insert(???, groupKey, userKey);
+        // Local
+        table.insert(DatabaseHelper.getInstance().getWritableDatabase(), groupKey, userKey);
         updateLastUpdatedTable();
     }
 
     public void removeMember(String userKey) {
+        // Remote
         groupMembersDB.removeMember(userKey);
 
-        // TODO:
-//        table.delete(???, groupKey, userKey);
+        // Local
+        table.delete(DatabaseHelper.getInstance().getWritableDatabase(), groupKey, userKey);
         updateLastUpdatedTable();
+
+        // TODO: deleteAllListsForGroup anyway? I just left it
 
         deleteGroupIfEmpty();
     }
@@ -62,10 +71,10 @@ public class GroupMembersModel {
                     // TODO: only call other Models instead of other DBs?
 
                     // Delete the group
-                    GroupsDB.getInstance().deleteGroup(groupKey);
+                    GroupsModel.getInstance().deleteGroup(groupKey);
 
                     // Delete all lists in that group
-                    new GroceryListsByGroupDB(groupKey).deleteAllListsForGroup();
+                    new GroceryListsByGroupModel().deleteAllListsForGroup(groupKey);
                 }
             }
         };
@@ -87,22 +96,27 @@ public class GroupMembersModel {
         final ObjectReceivedHandler<Long> remoteUpdateTimeHandler = new ObjectReceivedHandler<Long>() {
             @Override
             public void onObjectReceived(Long remoteLastUpdateTime) {
+                // Clear the list - we are about to get a new value.
+                members.clear();
+                handler.removeAllObjects();
+
                 // Check if we need to update.
                 if (isLocalDatabaseUpToDate(remoteLastUpdateTime)) {
                     // We don't need to update, fetch only from Local.
+
                     List<String> userKeysFromLocal = fetchGroupMembersFromLocalDB();
                     handleGroupMembers(userKeysFromLocal, handler);
                 }
                 else {
                     // We need to update, fetch from remote and merge with local.
 
-                    // Clear the list - we are about to get a new value.
-                    members.clear();
-                    handler.removeAllObjects();
-
                     ObjectReceivedHandler<List<String>> remoteKeysHandler = new ObjectReceivedHandler<List<String>>() {
                         @Override
                         public void onObjectReceived(List<String> userKeys) {
+                            // Clear the list - we are about to get a new value.
+                            members.clear();
+                            handler.removeAllObjects();
+
                             // Handle the received group members.
                             handleGroupMembers(userKeys, handler);
                         }
@@ -131,9 +145,7 @@ public class GroupMembersModel {
     }
 
     public List<String> fetchGroupMembersFromLocalDB() {
-        // TODO:
-//        return table.getGroupMembers(???, groupKey);
-        return new ArrayList<>();
+        return table.getGroupMembers(DatabaseHelper.getInstance().getReadableDatabase(), groupKey);
     }
 
     /**
@@ -175,7 +187,7 @@ public class GroupMembersModel {
         };
 
         // Retrieve the user object
-        UserModel.getInstance().findUserByKey(userKey, foundUserHandler);
+        UsersModel.getInstance().findUserByKey(userKey, foundUserHandler);
     }
 
     /**
@@ -192,5 +204,16 @@ public class GroupMembersModel {
         }
 
         return null;
+    }
+
+    /**
+     * This inner-class is only needed for deleting all lists for a group when the group is deleted.
+     * It was created to avoid GroupMembersModel calling GroceryListsByGroupDB directly.
+     */
+    private class GroceryListsByGroupModel {
+        private void deleteAllListsForGroup(String groupKey) {
+            GroceryListsByGroupDB.deleteAllListsForGroup(groupKey);
+            new ListsTable().deleteAllListsForGroup(DatabaseHelper.getInstance().getWritableDatabase(), groupKey);
+        }
     }
 }

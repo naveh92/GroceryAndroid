@@ -9,10 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
-import com.example.admin.myapplication.controller.database.models.GroupModel;
-import com.example.admin.myapplication.controller.database.models.UserGroceryLitsModel;
-import com.example.admin.myapplication.controller.database.remote.GroupsDB;
-import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
+import com.example.admin.myapplication.controller.database.models.GroupsModel;
+import com.example.admin.myapplication.controller.database.models.UserGroceryListsModel;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
@@ -22,9 +20,9 @@ import com.example.admin.myapplication.model.entities.Group;
  */
 public class GroceryListTableAdapter extends BaseAdapter {
     private Context mContext;
-    UserGroceryLitsModel db;
+    UserGroceryListsModel db;
 
-    public GroceryListTableAdapter(Context c, UserGroceryLitsModel db) {
+    public GroceryListTableAdapter(Context c, UserGroceryListsModel db) {
         mContext = c;
         this.db = db;
     }
@@ -65,7 +63,7 @@ public class GroceryListTableAdapter extends BaseAdapter {
         };
 
         // Get this lists group, and when finished, set its title.
-        GroupModel.getInstance().findGroupByKey(list.getGroupKey(), groupReceivedHandler);
+        GroupsModel.getInstance().findGroupByKey(list.getGroupKey(), groupReceivedHandler);
 
         // Get the PopupMenu button and set its id to the position.
         ImageView popupButton = (ImageView)view.findViewById(R.id.popupBtn);
