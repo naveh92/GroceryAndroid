@@ -34,12 +34,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         UserGroupsTable.onCreate(db);
         UsersTable.onCreate(db);
+        GroupMembersTable.onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         UserGroupsTable.onUpgrade(db, oldVersion, newVersion);
         UsersTable.onUpgrade(db, oldVersion, newVersion);
+        GroupMembersTable.onUpgrade(db, oldVersion, newVersion);
     }
 
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {

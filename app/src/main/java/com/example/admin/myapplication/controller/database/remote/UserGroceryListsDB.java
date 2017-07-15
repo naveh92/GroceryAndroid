@@ -16,7 +16,6 @@ import java.util.List;
  */
 public class UserGroceryListsDB {
     private final List<GroceryList> lists = new ArrayList<>();
-//    private UserGroupsDB groupsDB;
     private UserGroupsModel groupsDBModel;
     private List<GroceryListsByGroupDB> listsDbs = new ArrayList<>();
 

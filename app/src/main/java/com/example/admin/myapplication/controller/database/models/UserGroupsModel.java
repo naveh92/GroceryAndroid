@@ -21,7 +21,7 @@ public class UserGroupsModel {
     private final String userKey;
     private UserGroupsDB usersGroupDB;
     // TODO: Need to table.close() onDestroy()??
-    private UserGroupsTable table;
+    private static UserGroupsTable table;
 
     // Data-models
     private List<Group> groups = new ArrayList<>();
@@ -41,6 +41,7 @@ public class UserGroupsModel {
 
         // TODO: Add in local
 //        table.insert(???, userKey, groupKey);
+        updateLastUpdatedTable();
     }
 
     public void removeGroupFromUser(final String groupKey) {
@@ -48,6 +49,7 @@ public class UserGroupsModel {
 
         // TODO: Remove from local
 //        table.delete(???, userKey, groupKey);
+        updateLastUpdatedTable();
     }
 
     /**
@@ -79,6 +81,7 @@ public class UserGroupsModel {
 
                     // Merge the keys we received from local & remote.
                     // NOTE: In case there are duplicates, it will be checked when handling each group individually.
+                    //       (We add the remote first, so the local-duplicates will be discarded)
                     groupKeys.addAll(groupKeysFromLocal);
 
                     // Handle the groupKeys we received
@@ -170,10 +173,22 @@ public class UserGroupsModel {
             handleUserGroupAddition(groupKey, handler);
         }
 
+        // After adding all the groups and filtering duplicates, get the new final list of group keys.
+        final List<String> filteredGroupKeys = new ArrayList<>();
+
+        // TODO: Synchronized?
+        for (Group g : groups) {
+            filteredGroupKeys.add(g.getKey());
+        }
+
         // Update local records.
         table.truncate(DatabaseHelper.getInstance().getWritableDatabase());
-        table.insertGroupKeys(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupKeys);
+        table.insertGroupKeys(DatabaseHelper.getInstance().getWritableDatabase(), userKey, filteredGroupKeys);
 
+        updateLastUpdatedTable();
+    }
+
+    private void updateLastUpdatedTable() {
         // TODO: Update LastUpdateTable
 //        LastUpdateTable.setLastUpdate(database: LocalDb.sharedInstance?.database,
 //                table: UserGroupsTable.TABLE,
