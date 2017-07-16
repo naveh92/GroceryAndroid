@@ -180,6 +180,11 @@ public class UserGroupsModel extends AbstractModel {
         groups.clear();
 
         // Make sure all the groups in local are still relevant
+        // Explanation:
+        //     - If group was deleted by us, it shouldn't be in localDB - all good.
+        //     - If group was deleted by someone else, it will be in groupEntries, but it will not be relevant - filter it out later.
+        //     - If group was not deleted, and local is newer, the group will not show up in the remote query - so add it.
+        //     - If group was not deleted, and remote is newer, the group will show up in the remote, so we don't want to overwrite it.
         for (String groupKey : groupKeysFromLocal) {
             if (!groupEntries.containsKey(groupKey)) {
                 // Remote doesn't have this key, which means we should use the local data.
@@ -187,28 +192,23 @@ public class UserGroupsModel extends AbstractModel {
             }
         }
 
+        // Create a list in which only the relevant group keys will be.
+        final List<String> relevantGroupKeys = new ArrayList<>();
+
         // Handle each received group key individually
         for (String groupKey : groupEntries.keySet()) {
             Boolean relevant = groupEntries.get(groupKey);
 
             // Use only the relevant (Non-deleted) records.
             if (relevant != null && relevant) {
+                relevantGroupKeys.add(groupKey);
                 handleUserGroupAddition(groupKey, handler);
             }
         }
 
-        // TODO: ???
-//        // After adding all the groups and filtering duplicates, get the new final list of group keys.
-//        final List<String> filteredGroupKeys = new ArrayList<>();
-//        synchronized (groups) {
-//            for (Group g : groups) {
-//                filteredGroupKeys.add(g.getKey());
-//            }
-//        }
-
         // Update local records.
         table.truncate(DatabaseHelper.getInstance().getWritableDatabase());
-        table.insertGroupKeys(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupEntries.keySet());
+        table.insertGroupKeys(DatabaseHelper.getInstance().getWritableDatabase(), userKey, relevantGroupKeys);
 
         updateLastUpdatedTable();
     }
