@@ -10,12 +10,14 @@ import android.database.sqlite.SQLiteDatabase;
 public class LastUpdatedTable extends AbstractTable {
     private static final String TABLE_NAME = "LAST_UPDATED";
     private static final String TABLE = "TABLE_NAME";
+    private static final String KEY = "TABLE_KEY"; // For UserGroups - it will be userKey. For GroupMembers - it will be the groupKey.
     private static final String LAST_UPDATE_TIME = "LAST_UPDATE_TIME";
 
     private static final String CREATE_TABLE_STATEMENT =
-            "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + TABLE + " TEXT," +
+            "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + TABLE + " TEXT, " +
+                                                                KEY + " TEXT, " +
                     "                                       " + LAST_UPDATE_TIME + " LONG, " +
-                    " PRIMARY KEY (" + TABLE + "));";
+                    " PRIMARY KEY (" + TABLE + "," + KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
     static public void onCreate(SQLiteDatabase db) {
@@ -29,10 +31,16 @@ public class LastUpdatedTable extends AbstractTable {
         onCreate(db);
     }
 
-    public void setLastUpdateTime(SQLiteDatabase db, String tableName, Long updateTime) {
+    /**
+     * @param key - The Parameter specifying the entity's key.
+     *              Ex: For UserGroups - it will be userKey.
+     *                  For GroupMembers - it will be the groupKey.
+     */
+    public void setLastUpdateTime(SQLiteDatabase db, String tableName, String key, Long updateTime) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(TABLE, tableName);
+        values.put(KEY, key);
         values.put(LAST_UPDATE_TIME, updateTime);
 
         // Insert the new row, returning the primary key value of the new row
@@ -40,7 +48,7 @@ public class LastUpdatedTable extends AbstractTable {
         db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public Long getLastUpdateTime(SQLiteDatabase db, String tableName) {
+    public Long getLastUpdateTime(SQLiteDatabase db, String tableName, String key) {
         Long lastUpdateTime = 0L;
 
         // Define a projection that specifies which columns from the database
@@ -48,8 +56,8 @@ public class LastUpdatedTable extends AbstractTable {
         String[] projection = {LAST_UPDATE_TIME};
 
         // Filter results WHERE TABLE = tableName
-        String selection = TABLE + " = ?";
-        String[] selectionArgs = {tableName};
+        String selection = TABLE + " = ? and " + KEY + " = ?";
+        String[] selectionArgs = {tableName, key};
 
         // Sort the result Cursor
         String sortOrder = TABLE + " DESC";

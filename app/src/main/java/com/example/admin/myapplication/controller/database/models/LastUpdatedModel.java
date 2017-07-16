@@ -23,11 +23,11 @@ public class LastUpdatedModel {
         return instance;
     }
 
-    public void setLastUpdateTime(String tableName, Long updateTime) {
-        table.setLastUpdateTime(DatabaseHelper.getInstance().getWritableDatabase(), tableName, updateTime);
+    public void setLastUpdateTime(String tableName, String entityKey, Long updateTime) {
+        table.setLastUpdateTime(DatabaseHelper.getInstance().getWritableDatabase(), tableName, entityKey, updateTime);
     }
-    public Long getLastUpdateTime(String tableName) {
-        return table.getLastUpdateTime(DatabaseHelper.getInstance().getReadableDatabase(), tableName);
+    public Long getLastUpdateTime(String tableName, String entityKey) {
+        return table.getLastUpdateTime(DatabaseHelper.getInstance().getReadableDatabase(), tableName, entityKey);
     }
     public void releaseCache() {
         table.truncate(DatabaseHelper.getInstance().getWritableDatabase());

@@ -50,6 +50,7 @@ public class ListsModel extends AbstractModel {
      * Local DB Functions
      */
     private void updateLastUpdateTime() {
-        updateLastUpdatedTable(table.getTableName());
+        // Send something that is general to all Lists as the entityKey (In this case: "LISTS").
+        updateLastUpdatedTable(table.getTableName(), table.getTableName());
     }
 }

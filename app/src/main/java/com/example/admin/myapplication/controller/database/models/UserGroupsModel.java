@@ -62,7 +62,7 @@ public class UserGroupsModel extends AbstractModel {
      */
     public void observeUserGroupsAddition(final ObjectReceivedHandler<Group> handler) {
         // Get the last-update time from the local db
-        Long localUpdateTime = LastUpdatedModel.getInstance().getLastUpdateTime(table.getTableName());
+        Long localUpdateTime = LastUpdatedModel.getInstance().getLastUpdateTime(table.getTableName(), userKey);
 
         if (localUpdateTime != null && localUpdateTime != 0L) {
             // -----------------------------
@@ -242,7 +242,7 @@ public class UserGroupsModel extends AbstractModel {
     }
 
     private void updateLastUpdatedTable() {
-        updateLastUpdatedTable(table.getTableName());
+        updateLastUpdatedTable(table.getTableName(), userKey);
     }
 
     private Integer getGroupIndexByKey(String groupKey) {

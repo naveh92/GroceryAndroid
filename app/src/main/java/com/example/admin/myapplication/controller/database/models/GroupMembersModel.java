@@ -139,12 +139,12 @@ public class GroupMembersModel extends AbstractModel {
      */
 
     private void updateLastUpdateTime() {
-        updateLastUpdatedTable(table.getTableName());
+        updateLastUpdatedTable(table.getTableName(), groupKey);
     }
 
     private boolean isLocalDatabaseUpToDate(Long remoteLastUpdateDate) {
         // Get the lastUpdateTime for this table from the LastUpdateTable in local DB.
-        Long localLastUpdateDate = LastUpdatedModel.getInstance().getLastUpdateTime(table.getTableName());
+        Long localLastUpdateDate = LastUpdatedModel.getInstance().getLastUpdateTime(table.getTableName(), groupKey);
         return localLastUpdateDate >= remoteLastUpdateDate;
     }
 
