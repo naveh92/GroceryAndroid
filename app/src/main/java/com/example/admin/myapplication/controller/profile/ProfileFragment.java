@@ -67,6 +67,7 @@ public class ProfileFragment extends Fragment {
             }
         };
 
+        // TODO: Create an ImageModel instaed of calling ImageDB directly..
         ImageDB.getInstance().downloadImage(getContext(), userKey, imageReceivedHandler);
     }
 
@@ -86,6 +87,7 @@ public class ProfileFragment extends Fragment {
 
             Bitmap bitmap = imageView.getDrawingCache();
 
+            // TODO: Create an ImageModel instaed of calling ImageDB directly..
             // Save the new image to the DB
             ImageDB.getInstance().storeImage(context, bitmap, AuthenticationManager.getInstance().getCurrentUserId());
         }

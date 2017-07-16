@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 
-public class GroupMembersTable {
+public class GroupMembersTable extends AbstractTable {
     // TODO: For all statements - compile first!
 
     private static final String TABLE_NAME = "GROUP_MEMBERS";
@@ -81,10 +81,6 @@ public class GroupMembersTable {
     }
 
     public void insert(SQLiteDatabase db ,String groupKey, String memberKey) {
-        // TODO: Is this ok?
-//        SQLiteDatabase db = DatabaseHelper.getInstance().getWritableDatabase();
-
-
         // TODO: Insert or replace?
 
 
@@ -99,23 +95,18 @@ public class GroupMembersTable {
     }
 
     public void delete(SQLiteDatabase db ,String groupKey, String userKey) {
-//        // Define 'where' part of query.
-//        String selection = FeedEntry.COLUMN_NAME_TITLE + " LIKE ?";
-//// Specify arguments in placeholder order.
-//        String[] selectionArgs = { "MyTitle" };
-//// Issue SQL statement.
-//        db.delete(FeedEntry.TABLE_NAME, selection, selectionArgs);
+        // Define 'where' part of query.
+        String selection = GROUP_KEY + " = ? and " + USER_KEY + " = ?";
 
+        // Specify arguments in placeholder order.
+        String[] selectionArgs = { groupKey, userKey };
 
-        // TODO: SQLInjection
-        String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + GROUP_KEY + " = '" + groupKey + "' and " + USER_KEY + " = '" + userKey + "'";
-
-        // TODO: db.delete()?
-        db.execSQL(DELETE_STATEMENT);
+        // Issue SQL statement.
+        db.delete(TABLE_NAME, selection, selectionArgs);
     }
 
-    public void truncate(SQLiteDatabase db) {
-        db.execSQL("DELETE FROM " + TABLE_NAME);
-        db.execSQL("VACUUM");
+    @Override
+    public String getTableName() {
+        return TABLE_NAME;
     }
 }

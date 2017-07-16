@@ -11,9 +11,8 @@ import com.example.admin.myapplication.model.entities.GroceryList;
  * This Model just passes arguments to the DBs.
  */
 
-public class ListsModel {
+public class ListsModel extends AbstractModel {
     private static ListsModel instance;
-    // TODO: Should this be here?
     private static ListsTable table;
 
     private ListsModel() {
@@ -34,7 +33,8 @@ public class ListsModel {
 
         // Local
         table.addNewList(DatabaseHelper.getInstance().getWritableDatabase(), list);
-        // TODO: LastUpdatedTable!! (LISTS)
+        updateLastUpdateTime();
+
     }
 
     public void deleteList(String listKey) {
@@ -43,6 +43,13 @@ public class ListsModel {
 
         // Local
         table.deleteList(DatabaseHelper.getInstance().getWritableDatabase(), listKey);
-        // TODO: LastUpdatedTable!! (LISTS)
+        updateLastUpdateTime();
+    }
+
+    /**
+     * Local DB Functions
+     */
+    private void updateLastUpdateTime() {
+        updateLastUpdatedTable(table.getTableName());
     }
 }

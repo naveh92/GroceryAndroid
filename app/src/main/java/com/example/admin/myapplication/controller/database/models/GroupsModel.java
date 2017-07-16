@@ -12,7 +12,7 @@ import com.example.admin.myapplication.model.entities.Group;
  * This Model tries to get the Group from local DB first,
  * and if it doesn't exist, fetches it from Remote DB and adds it to local.
  */
-public class GroupsModel {
+public class GroupsModel extends AbstractModel {
     private static GroupsModel instance;
     private static GroupsTable table;
     private GroupsModel() {
@@ -43,7 +43,7 @@ public class GroupsModel {
 
         // Local
         table.deleteGroup(DatabaseHelper.getInstance().getWritableDatabase(), groupKey);
-//      TODO: LastUpdatedTable? We don't really need this..
+//      TODO: LastUpdatedTable? We don't really use this..
     }
 
     public void findGroupByKey(String groupKey, final ObjectReceivedHandler<Group> handler) {
@@ -74,6 +74,6 @@ public class GroupsModel {
 
     private void addNewGroupToLocal(Group group) {
         table.addNewGroup(DatabaseHelper.getInstance().getWritableDatabase(), group);
-//      TODO: LastUpdatedTable? We don't really need this..
+//      TODO: LastUpdatedTable? We don't really use this..
     }
 }

@@ -1,7 +1,5 @@
 package com.example.admin.myapplication.controller.database.models;
 
-import android.content.Context;
-
 import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
 import com.example.admin.myapplication.controller.database.local.UserGroupsTable;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
@@ -18,14 +16,14 @@ import java.util.List;
  * This Model fetches the lastUpdatedTime from local, and fetches the records that were updated after that time from remote DB.
  * It then fetches all other records from local DB, merges the data, and saves to local DB.
  */
-public class UserGroupsModel {
+public class UserGroupsModel extends AbstractModel {
     private final String userKey;
     private UserGroupsDB usersGroupDB;
     // TODO: Need to table.close() onDestroy()??
     private static UserGroupsTable table;
 
     // Data-models
-    private List<Group> groups = new ArrayList<>();
+    private final List<Group> groups = new ArrayList<>();
 
     public UserGroupsModel(String userKey) {
         this.userKey = userKey;
@@ -60,13 +58,11 @@ public class UserGroupsModel {
      *      Access to DB
      * -----------------------
      */
-// TODO: Do we need context for localDB?
-    public void observeUserGroupsAddition(Context context, final ObjectReceivedHandler<Group> handler) {
-        // TODO: LastUpdatedTable?
-        // Get the last-update time in the local db
-        Long localUpdateTime = null; // stUpdateTable.getLastUpdateDate();
+    public void observeUserGroupsAddition(final ObjectReceivedHandler<Group> handler) {
+        // Get the last-update time from the local db
+        Long localUpdateTime = LastUpdatedModel.getInstance().getLastUpdateTime(table.getTableName());
 
-        if (localUpdateTime != null) {
+        if (localUpdateTime != null && localUpdateTime != 0L) {
             // -----------------------------
             // Handler for query observation
             // -----------------------------
@@ -75,6 +71,7 @@ public class UserGroupsModel {
             ObjectReceivedHandler<List<String>> queryHandler = new ObjectReceivedHandler<List<String>>() {
                 @Override
                 public void onObjectReceived(List<String> groupKeys) {
+                    // TODO: If we are up to date, nothing comes back from Remote so this method isn't called..
                     // Reset the array of groups. We got a new array.
                     groups.clear();
 
@@ -179,9 +176,10 @@ public class UserGroupsModel {
         // After adding all the groups and filtering duplicates, get the new final list of group keys.
         final List<String> filteredGroupKeys = new ArrayList<>();
 
-        // TODO: Synchronized?
-        for (Group g : groups) {
-            filteredGroupKeys.add(g.getKey());
+        synchronized (groups) {
+            for (Group g : groups) {
+                filteredGroupKeys.add(g.getKey());
+            }
         }
 
         // Update local records.
@@ -192,17 +190,15 @@ public class UserGroupsModel {
     }
 
     private void updateLastUpdatedTable() {
-        // TODO: Update LastUpdateTable
-//        LastUpdateTable.setLastUpdate(database: LocalDb.sharedInstance?.database,
-//                table: UserGroupsTable.TABLE,
-//                key: self.userKey as String,
-//                lastUpdate: Date())
+        updateLastUpdatedTable(table.getTableName());
     }
 
     private Integer getGroupIndexByKey(String groupKey) {
-        for (Group group : groups) {
-            if (group.getKey().equals(groupKey)) {
-                return groups.indexOf(group);
+        synchronized (groups) {
+            for (Group group : groups) {
+                if (group.getKey().equals(groupKey)) {
+                    return groups.indexOf(group);
+                }
             }
         }
 
@@ -233,10 +229,11 @@ public class UserGroupsModel {
     }
 
     private Boolean containsGroup(Group group) {
-        // TODO: Synchronized
-        for (Group g : groups) {
-            if (g.getKey().equals(group.getKey())) {
-                return true;
+        synchronized (groups) {
+            for (Group g : groups) {
+                if (g.getKey().equals(group.getKey())) {
+                    return true;
+                }
             }
         }
 

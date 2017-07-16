@@ -31,6 +31,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        LastUpdatedTable.onCreate(db);
+
         UsersTable.onCreate(db);
         GroupsTable.onCreate(db);
 
@@ -41,6 +43,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        LastUpdatedTable.onUpgrade(db, oldVersion, newVersion);
+
         UsersTable.onUpgrade(db, oldVersion, newVersion);
         GroupsTable.onUpgrade(db, oldVersion, newVersion);
 

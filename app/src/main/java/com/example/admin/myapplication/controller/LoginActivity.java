@@ -117,6 +117,7 @@ public class LoginActivity extends Activity {
                         // If succeeded, save it to storage.
                         if (userProfilePic != null) {
                             Log.d(TAG, "Downloaded user Facebook profile pic. Storing...");
+                            // TODO: Create an ImageModel instaed of calling ImageDB directly..
                             ImageDB.getInstance().storeImage(LoginActivity.this, userProfilePic, userKey);
                         }
                     }

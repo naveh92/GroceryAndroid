@@ -12,7 +12,7 @@ import java.util.List;
  * Created by admin on 6/24/2017.
  */
 
-public class ListsTable {
+public class ListsTable extends AbstractTable {
     private static final String TABLE_NAME = "LISTS";
     private static final String LIST_KEY = "LIST_KEY";
     private static final String GROUP_KEY = "GROUP_KEY";
@@ -46,11 +46,25 @@ public class ListsTable {
     }
 
     public void deleteList(SQLiteDatabase db, String listKey) {
-        // TODO: SQLInjection
-        String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + LIST_KEY + " = " + listKey;
+        // Define 'where' part of query.
+        String selection = LIST_KEY + " = ?";
 
-        // TODO: db.delete()?
-        db.execSQL(DELETE_STATEMENT);
+        // Specify arguments in placeholder order.
+        String[] selectionArgs = { listKey };
+
+        // Issue SQL statement.
+        db.delete(TABLE_NAME, selection, selectionArgs);
+    }
+
+    public void deleteAllListsForGroup(SQLiteDatabase db,String groupKey) {
+        // Define 'where' part of query.
+        String selection = GROUP_KEY + " = ?";
+
+        // Specify arguments in placeholder order.
+        String[] selectionArgs = { groupKey };
+
+        // Issue SQL statement.
+        db.delete(TABLE_NAME, selection, selectionArgs);
     }
 
     public List<GroceryList> getListsByGroupKey(SQLiteDatabase db, String groupKey) {
@@ -77,8 +91,6 @@ public class ListsTable {
                 sortOrder                                 // The sort order
         );
 
-
-
         // Check the results
         if (cursor.moveToNext()) {
             // Extract the data
@@ -95,11 +107,8 @@ public class ListsTable {
         return lists;
     }
 
-    public void deleteAllListsForGroup(SQLiteDatabase db,String groupKey) {
-        // TODO: SQLInjection
-        String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + GROUP_KEY + " = '" + groupKey + "'";
-
-        // TODO: db.delete()?
-        db.execSQL(DELETE_STATEMENT);
+    @Override
+    public String getTableName() {
+        return TABLE_NAME;
     }
 }

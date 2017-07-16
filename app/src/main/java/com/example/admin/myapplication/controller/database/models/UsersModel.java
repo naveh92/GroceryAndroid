@@ -12,7 +12,7 @@ import com.example.admin.myapplication.model.entities.User;
  * This Model tries to get the User from local DB first,
  * and if it doesn't exist, fetches it from Remote DB and adds it to local.
  */
-public class UsersModel {
+public class UsersModel extends AbstractModel {
     private static UsersModel instance;
     private UsersDB usersDB;
     private static UsersTable table;
@@ -92,6 +92,6 @@ public class UsersModel {
 
     private void addNewUserToLocal(User user) {
         table.addNewUser(DatabaseHelper.getInstance().getWritableDatabase(), user);
-//        TODO: LastUpdatedTable? We don't really need this..
+//        TODO: LastUpdatedTable? We don't really use this..
     }
 }

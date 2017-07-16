@@ -181,7 +181,7 @@ public class GroceryFragment extends TableViewFragment {
 
         // TODO: ??
         if (db != null) {
-            db.observeLists(getActivity(), listReceivedHandler, groupListDeletedHandler);
+            db.observeLists(listReceivedHandler, groupListDeletedHandler);
         }
     }
 }

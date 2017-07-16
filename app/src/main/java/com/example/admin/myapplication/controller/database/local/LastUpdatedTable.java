@@ -4,27 +4,23 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.admin.myapplication.model.entities.Group;
-
 /**
- * Created by admin on 6/24/2017.
+ * Created by admin on 16/07/2017.
  */
+public class LastUpdatedTable extends AbstractTable {
+    private static final String TABLE_NAME = "LAST_UPDATED";
+    private static final String TABLE = "TABLE_NAME";
+    private static final String LAST_UPDATE_TIME = "LAST_UPDATE_TIME";
 
-public class GroupsTable extends AbstractTable {
-    private static final String TABLE_NAME = "GROUPS";
-    private static final String GROUP_KEY = "GROUP_KEY";
-    private static final String TITLE = "TITLE";
-
+    // TODO: LONG instead of Text for lastUpdated
     private static final String CREATE_TABLE_STATEMENT =
-            "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + GROUP_KEY + " TEXT," +
-                    "                                       " + TITLE + " TEXT);";
+            "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + TABLE + " TEXT," +
+                    "                                       " + LAST_UPDATE_TIME + " LONG);";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
-
 
     static public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_STATEMENT);
     }
-
 
     static public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
@@ -33,41 +29,29 @@ public class GroupsTable extends AbstractTable {
         onCreate(db);
     }
 
-    public void addNewGroup(SQLiteDatabase db, Group group) {
+    public void setLastUpdateTime(SQLiteDatabase db, String tableName, Long updateTime) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(GROUP_KEY, group.getKey());
-        values.put(TITLE, group.getTitle());
+        values.put(TABLE, tableName);
+        values.put(LAST_UPDATE_TIME, updateTime);
 
         // Insert the new row, returning the primary key value of the new row
         db.insert(TABLE_NAME, null, values);
     }
 
-    public void deleteGroup(SQLiteDatabase db, String groupKey) {
-        // Define 'where' part of query.
-        String selection = GROUP_KEY + " = ?";
-
-        // Specify arguments in placeholder order.
-        String[] selectionArgs = { groupKey };
-
-        // Issue SQL statement.
-        db.delete(TABLE_NAME, selection, selectionArgs);
-
-    }
-
-    public Group getGroupByKey(SQLiteDatabase db, String groupKey) {
-        Group group = null;
+    public Long getLastUpdateTime(SQLiteDatabase db, String tableName) {
+        Long lastUpdateTime = 0L;
 
         // Define a projection that specifies which columns from the database
         // we will actually use after this query.
-        String[] projection = {GROUP_KEY, TITLE};
+        String[] projection = {LAST_UPDATE_TIME};
 
-        // Filter results WHERE GROUP_KEY = groupKey
-        String selection = GROUP_KEY + " = ?";
-        String[] selectionArgs = {groupKey};
+        // Filter results WHERE TABLE = tableName
+        String selection = TABLE + " = ?";
+        String[] selectionArgs = {tableName};
 
         // Sort the result Cursor
-        String sortOrder = TITLE + " DESC";
+        String sortOrder = TABLE + " DESC";
 
         Cursor cursor = db.query(
                 TABLE_NAME,                               // The table to query
@@ -81,14 +65,13 @@ public class GroupsTable extends AbstractTable {
 
         // Check the results
         if (cursor.moveToNext()) {
-            String key = cursor.getString(cursor.getColumnIndexOrThrow(GROUP_KEY));
-            String title = cursor.getString(cursor.getColumnIndexOrThrow(TITLE));
-
-            group = new Group(key, title);
+            // Extract the data
+            lastUpdateTime = Long.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(LAST_UPDATE_TIME)));
         }
         cursor.close();
 
-        return group;
+        return lastUpdateTime;
+
     }
 
     @Override
@@ -96,3 +79,4 @@ public class GroupsTable extends AbstractTable {
         return TABLE_NAME;
     }
 }
+

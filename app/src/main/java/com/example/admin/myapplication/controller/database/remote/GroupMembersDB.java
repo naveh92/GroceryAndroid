@@ -98,7 +98,7 @@ public class GroupMembersDB {
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
-                Log.w(TAG, "Failed to read group mmebers count value.", error.toException());
+                Log.w(TAG, "Failed to read group members count value.", error.toException());
             }
         });
     }

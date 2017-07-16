@@ -13,7 +13,7 @@ import java.util.List;
  * Created by admin on 6/24/2017.
  */
 
-public class UsersTable {
+public class UsersTable extends AbstractTable {
 
     private static final String TABLE_NAME = "USERS";
     private static final String USER_KEY = "USER_KEY";
@@ -122,5 +122,10 @@ public class UsersTable {
         cursor.close();
 
         return user;
+    }
+
+    @Override
+    protected String getTableName() {
+        return TABLE_NAME;
     }
 }

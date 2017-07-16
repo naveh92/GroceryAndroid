@@ -13,15 +13,15 @@ import java.util.List;
  * Created by gun2f on 6/18/2017.
  */
 
-public class UserGroceryListsModel {
+public class UserGroceryListsModel extends AbstractModel {
     private UserGroceryListsDB userGroceryListsDB;
 
     public UserGroceryListsModel(String userKey){
         userGroceryListsDB = new UserGroceryListsDB(userKey);
     }
 
-    public void observeLists(Context context, final ObjectReceivedHandler<GroceryList> listAdded, final ObjectReceivedHandler<GroceryList> listDeleted) {
-        userGroceryListsDB.observeLists(context, listAdded, listDeleted);
+    public void observeLists(final ObjectReceivedHandler<GroceryList> listAdded, final ObjectReceivedHandler<GroceryList> listDeleted) {
+        userGroceryListsDB.observeLists(listAdded, listDeleted);
     }
 
     public int getListsCount(){

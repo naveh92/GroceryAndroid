@@ -20,8 +20,6 @@ import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.models.GroupMembersModel;
 import com.example.admin.myapplication.controller.database.models.UserGroupsModel;
-import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
-import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.Group;

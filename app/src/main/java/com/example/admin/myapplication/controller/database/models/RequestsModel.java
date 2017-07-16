@@ -8,7 +8,7 @@ import com.example.admin.myapplication.model.entities.GroceryRequest;
  * Created by gun2f on 6/18/2017.
  */
 
-public class RequestsModel {
+public class RequestsModel extends AbstractModel {
     private RequestsDB requestsDB;
     public RequestsModel(String listKey){
         requestsDB = new RequestsDB(listKey);

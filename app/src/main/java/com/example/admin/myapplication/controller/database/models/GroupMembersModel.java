@@ -21,7 +21,7 @@ import java.util.List;
  * If it is before localUpdateTime, fetch all records from local DB.
  */
 
-public class GroupMembersModel {
+public class GroupMembersModel extends AbstractModel {
     private final GroupMembersDB groupMembersDB;
     // TODO: Need to table.close() onDestroy()??
     private static GroupMembersTable table;
@@ -46,7 +46,7 @@ public class GroupMembersModel {
 
         // Local
         table.insert(DatabaseHelper.getInstance().getWritableDatabase(), groupKey, userKey);
-        updateLastUpdatedTable();
+        updateLastUpdateTime();
     }
 
     public void removeMember(String userKey) {
@@ -55,9 +55,7 @@ public class GroupMembersModel {
 
         // Local
         table.delete(DatabaseHelper.getInstance().getWritableDatabase(), groupKey, userKey);
-        updateLastUpdatedTable();
-
-        // TODO: deleteAllListsForGroup anyway? I just left it
+        updateLastUpdateTime();
 
         deleteGroupIfEmpty();
     }
@@ -68,7 +66,7 @@ public class GroupMembersModel {
             public void onObjectReceived(Integer count) {
                 // If there are no more members in the group
                 if (count == 0) {
-                    // TODO: only call other Models instead of other DBs?
+                    // Only call other Models instead of other DBs
 
                     // Delete the group
                     GroupsModel.getInstance().deleteGroup(groupKey);
@@ -138,13 +136,17 @@ public class GroupMembersModel {
      * ----------------------
      */
 
-    private boolean isLocalDatabaseUpToDate(long remoteLastUpdateDate) {
-        // TODO:
-        Long localLastUpdateDate = 0l; // LastUpdateTable....
+    private void updateLastUpdateTime() {
+        updateLastUpdatedTable(table.getTableName());
+    }
+
+    private boolean isLocalDatabaseUpToDate(Long remoteLastUpdateDate) {
+        // Get the lastUpdateTime for this table from the LastUpdateTable in local DB.
+        Long localLastUpdateDate = LastUpdatedModel.getInstance().getLastUpdateTime(table.getTableName());
         return localLastUpdateDate >= remoteLastUpdateDate;
     }
 
-    public List<String> fetchGroupMembersFromLocalDB() {
+    private List<String> fetchGroupMembersFromLocalDB() {
         return table.getGroupMembers(DatabaseHelper.getInstance().getReadableDatabase(), groupKey);
     }
 
@@ -164,15 +166,7 @@ public class GroupMembersModel {
         table.truncate(DatabaseHelper.getInstance().getWritableDatabase());
         table.insertGroupMembers(DatabaseHelper.getInstance().getWritableDatabase(), groupKey, userKeys);
 
-        updateLastUpdatedTable();
-    }
-
-    private void updateLastUpdatedTable() {
-        // TODO: Update LastUpdateTable
-//        LastUpdateTable.setLastUpdate(database: LocalDb.sharedInstance?.database,
-//                table: GroupMembersTable.TABLE,
-//                key: self.groupKey as String,
-//                lastUpdate: Date())
+        updateLastUpdateTime();
     }
 
     private void handleGroupMemberAddition(String userKey, final ObjectReceivedHandler<User> handler) {

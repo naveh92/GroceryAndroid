@@ -23,7 +23,7 @@ public class UserGroceryListsDB {
         groupsDBModel = new UserGroupsModel(userKey);
     }
 
-    public void observeLists(Context context, final ObjectReceivedHandler<GroceryList> listAdded, final ObjectReceivedHandler<GroceryList> listDeleted) {
+    public void observeLists(final ObjectReceivedHandler<GroceryList> listAdded, final ObjectReceivedHandler<GroceryList> listDeleted) {
         final ObjectReceivedHandler<GroceryList> privateListAdded = new ObjectReceivedHandler<GroceryList>() {
             @Override
             public void onObjectReceived(GroceryList addedList) {
@@ -96,7 +96,7 @@ public class UserGroceryListsDB {
             }
         };
 
-        groupsDBModel.observeUserGroupsAddition(context, groupAdded);
+        groupsDBModel.observeUserGroupsAddition(groupAdded);
         groupsDBModel.observeUserGroupsDeletion(groupDeleted);
     }
 

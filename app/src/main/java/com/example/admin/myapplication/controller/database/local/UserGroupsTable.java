@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 
-public class UserGroupsTable {
+public class UserGroupsTable extends AbstractTable {
     // TODO: For all statements - compile first!
 
     private static final String TABLE_NAME = "USER_GROUPS";
@@ -40,8 +40,6 @@ public class UserGroupsTable {
     }
 
     public List<String> getUserGroupKeys(SQLiteDatabase db ,String userKey) {
-
-
         // Define a projection that specifies which columns from the database
         // we will actually use after this query.
         String[] projection = { GROUP_KEY };
@@ -82,12 +80,7 @@ public class UserGroupsTable {
     }
 
     public void insert(SQLiteDatabase db ,String userKey, String groupKey) {
-        // TODO: Is this ok?
-//        SQLiteDatabase db = DatabaseHelper.getInstance().getWritableDatabase();
-
-
         // TODO: Insert or replace?
-
 
 
         // Create a new map of values, where column names are the keys
@@ -100,23 +93,18 @@ public class UserGroupsTable {
     }
 
     public void delete(SQLiteDatabase db ,String userKey, String groupKey) {
-//        // Define 'where' part of query.
-//        String selection = FeedEntry.COLUMN_NAME_TITLE + " LIKE ?";
-//// Specify arguments in placeholder order.
-//        String[] selectionArgs = { "MyTitle" };
-//// Issue SQL statement.
-//        db.delete(FeedEntry.TABLE_NAME, selection, selectionArgs);
+        // Define 'where' part of query.
+        String selection = USER_KEY + " = ? and " + GROUP_KEY + " = ?";
 
+        // Specify arguments in placeholder order.
+        String[] selectionArgs = { userKey, groupKey };
 
-        // TODO: SQLInjection
-        String DELETE_STATEMENT = "DELETE FROM " + TABLE_NAME + " WHERE " + USER_KEY + " = '" + userKey + "' and " + GROUP_KEY + " = '" + groupKey + "'";
-
-        // TODO: db.delete()?
-        db.execSQL(DELETE_STATEMENT);
+        // Issue SQL statement.
+        db.delete(TABLE_NAME, selection, selectionArgs);
     }
 
-    public void truncate(SQLiteDatabase db) {
-        db.execSQL("DELETE FROM " + TABLE_NAME);
-        db.execSQL("VACUUM");
+    @Override
+    public String getTableName() {
+        return TABLE_NAME;
     }
 }

@@ -81,15 +81,10 @@ public class GroupFragment extends TableViewFragment {
             db = new UserGroupsModel(AuthenticationManager.getInstance().getCurrentUserId());
         }
 
-        Context context = getContext();
+        db.observeUserGroupsAddition(groupReceivedHandler);
 
-        // TODO: Maybe just don't user local db if context is null? (though its stupid)
-        if (context != null) {
-            db.observeUserGroupsAddition(context, groupReceivedHandler);
-
-            // TODO: Is this needed?
-//            db.observeUserGroupsDeletion();
-        }
+        // TODO: Is this needed?
+//      db.observeUserGroupsDeletion();
     }
 
     @Override
