@@ -10,18 +10,14 @@ import java.util.List;
 /**
  * Created by admin on 15/04/2017.
  */
-
-
 public class GroupMembersTable extends AbstractTable {
-    // TODO: For all statements - compile first!
-
     private static final String TABLE_NAME = "GROUP_MEMBERS";
     private static final String GROUP_KEY = "GROUP_KEY";
     private static final String USER_KEY = "USER_KEY";
 
-    // TODO: Primary key as both values
     private static final String CREATE_TABLE_STATEMENT =
-                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + GROUP_KEY + " TEXT, " + USER_KEY + " TEXT);";
+                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + GROUP_KEY + " TEXT, " + USER_KEY + " TEXT, " +
+                "PRIMARY KEY (" + GROUP_KEY + ", " + USER_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
 
@@ -91,7 +87,8 @@ public class GroupMembersTable extends AbstractTable {
         values.put(USER_KEY, memberKey);
 
         // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(TABLE_NAME, null, values);
+        // This will insert if record is new, update otherwise
+        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public void delete(SQLiteDatabase db ,String groupKey, String userKey) {
@@ -108,5 +105,16 @@ public class GroupMembersTable extends AbstractTable {
     @Override
     public String getTableName() {
         return TABLE_NAME;
+    }
+
+    public void deleteAllGroupMembers(SQLiteDatabase db, String groupKey) {
+        // Define 'where' part of query.
+        String selection = GROUP_KEY + " = ?";
+
+        // Specify arguments in placeholder order.
+        String[] selectionArgs = { groupKey };
+
+        // Issue SQL statement.
+        db.delete(TABLE_NAME, selection, selectionArgs);
     }
 }

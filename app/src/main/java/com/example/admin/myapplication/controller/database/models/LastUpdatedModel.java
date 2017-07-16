@@ -5,6 +5,8 @@ import com.example.admin.myapplication.controller.database.local.LastUpdatedTabl
 
 /**
  * Created by admin on 16/07/2017.
+ *
+ * This Model manages the cache-relevance and saves the date in which every Table was last updated.
  */
 public class LastUpdatedModel {
     private static LastUpdatedModel instance;

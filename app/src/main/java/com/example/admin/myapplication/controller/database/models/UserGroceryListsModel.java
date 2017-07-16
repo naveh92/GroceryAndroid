@@ -1,7 +1,5 @@
 package com.example.admin.myapplication.controller.database.models;
 
-import android.content.Context;
-
 import com.example.admin.myapplication.controller.database.remote.UserGroceryListsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;

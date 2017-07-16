@@ -83,11 +83,11 @@ public class UsersModel extends AbstractModel {
     }
 
     public void addNewUser(User user) {
-        // Add to remote
-        usersDB.addNewUser(user);
-
         // Add to local
         addNewUserToLocal(user);
+
+        // Add to remote
+        usersDB.addNewUser(user);
     }
 
     private void addNewUserToLocal(User user) {

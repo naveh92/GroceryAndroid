@@ -9,6 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class UserGroupsDB {
     /**
      * This function executes a query in the remote DB, searching for records that were updated AFTER lastUpdated parameter.
      */
-    public void getUserGroupsByLastUpdateDate(Long lastUpdated, final ObjectReceivedHandler<List<String>> handler) {
+    public void getUserGroupsByLastUpdateDate(Long lastUpdated, final ObjectReceivedHandler<Map<String, Boolean>> handler) {
         // Observe only if the remote update-time is after the the local
         // TODO: Dafuq? User in db only has 1 global lastUpdated
         // TODO: localUpdateTime.toFirebase()?
@@ -44,13 +45,16 @@ public class UserGroupsDB {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // If we got groups
                 if (dataSnapshot.exists()) {
-                    Map<String, Object> groupNodeValue = (Map<String, Object>) ((Map<String, Object>) dataSnapshot.getValue()).values();
+                    Map<String, Object> groupNodeValue = (Map<String, Object>) ((Map<String, Object>) dataSnapshot.getValue()).get(GROUPS_NODE_URL);
 
-                    // Create a list containing the relevant group keys.
-                    List<String> groupKeys = getRelevantGroupKeys(groupNodeValue);
+                    Map<String, Boolean> groupEntries = extractEntries(groupNodeValue);
+
+//                    // Create a list containing the relevant group keys.
+//                    List<String> groupKeys = getRelevantGroupKeys(groupNodeValue);
 
                     // Send the received list of GroupKeys to the Model.
-                    handler.onObjectReceived(groupKeys);
+//                    handler.onObjectReceived(groupKeys);
+                    handler.onObjectReceived(groupEntries);
                 }
             }
 
@@ -152,6 +156,19 @@ public class UserGroupsDB {
      * This function gets a Map<String, Object> (extracted from the DataSnapshot)
      * and returns the List of group keys within it.
      */
+    private Map<String, Boolean> extractEntries(Map<String, Object> groupsNodeValues) {
+        // Create a list containing the received (relevant) groupKeys
+        Map<String, Boolean> groupKeys = new HashMap<>();
+
+        for (String key : groupsNodeValues.keySet()) {
+            if (!UserGroupsDB.LAST_UPDATED_STRING.equals(key)) {
+                Boolean relevant = (Boolean) groupsNodeValues.get(key);
+                groupKeys.put(key, relevant);
+            }
+        }
+
+        return groupKeys;
+    }
     private List<String> getRelevantGroupKeys(Map<String, Object> groupsNodeValues) {
         // Create a list containing the received (relevant) groupKeys
         List<String> groupKeys = new ArrayList<>();

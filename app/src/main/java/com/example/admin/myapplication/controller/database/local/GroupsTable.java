@@ -9,7 +9,6 @@ import com.example.admin.myapplication.model.entities.Group;
 /**
  * Created by admin on 6/24/2017.
  */
-
 public class GroupsTable extends AbstractTable {
     private static final String TABLE_NAME = "GROUPS";
     private static final String GROUP_KEY = "GROUP_KEY";
@@ -17,7 +16,8 @@ public class GroupsTable extends AbstractTable {
 
     private static final String CREATE_TABLE_STATEMENT =
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + GROUP_KEY + " TEXT," +
-                    "                                       " + TITLE + " TEXT);";
+                    "                                       " + TITLE + " TEXT, " +
+                    " PRIMARY KEY (" + GROUP_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
 
@@ -39,8 +39,8 @@ public class GroupsTable extends AbstractTable {
         values.put(GROUP_KEY, group.getKey());
         values.put(TITLE, group.getTitle());
 
-        // Insert the new row, returning the primary key value of the new row
-        db.insert(TABLE_NAME, null, values);
+        // This will insert if record is new, update otherwise
+        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public void deleteGroup(SQLiteDatabase db, String groupKey) {
@@ -52,7 +52,6 @@ public class GroupsTable extends AbstractTable {
 
         // Issue SQL statement.
         db.delete(TABLE_NAME, selection, selectionArgs);
-
     }
 
     public Group getGroupByKey(SQLiteDatabase db, String groupKey) {

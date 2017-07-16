@@ -28,22 +28,22 @@ public class GroupsModel extends AbstractModel {
     }
 
     public String addNewGroup(Group group) {
-        // Remote
-        String newGroupKey = GroupsDB.getInstance().addNewGroup(group);
-
         // Local
         addNewGroupToLocal(group);
+
+        // Remote
+        String newGroupKey = GroupsDB.getInstance().addNewGroup(group);
 
         return newGroupKey;
     }
 
     public void deleteGroup(String groupKey) {
-        // Remote
-        GroupsDB.getInstance().deleteGroup(groupKey);
-
         // Local
         table.deleteGroup(DatabaseHelper.getInstance().getWritableDatabase(), groupKey);
 //      TODO: LastUpdatedTable? We don't really use this..
+
+        // Remote
+        GroupsDB.getInstance().deleteGroup(groupKey);
     }
 
     public void findGroupByKey(String groupKey, final ObjectReceivedHandler<Group> handler) {

@@ -12,9 +12,7 @@ import java.util.List;
 /**
  * Created by admin on 6/24/2017.
  */
-
 public class UsersTable extends AbstractTable {
-
     private static final String TABLE_NAME = "USERS";
     private static final String USER_KEY = "USER_KEY";
     private static final String FACEBOOK_KEY = "FACEBOOK_KEY";
@@ -23,7 +21,8 @@ public class UsersTable extends AbstractTable {
     private static final String CREATE_TABLE_STATEMENT =
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + USER_KEY + " TEXT," +
                     "                                       " + FACEBOOK_KEY + " TEXT," +
-                    "                                       " + NAME + " TEXT);";
+                    "                                       " + NAME + " TEXT, " +
+                    " PRIMARY KEY (" + USER_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
 
@@ -47,7 +46,8 @@ public class UsersTable extends AbstractTable {
         values.put(NAME, user.getName());
 
         // Insert the new row, returning the primary key value of the new row
-        db.insert(TABLE_NAME, null, values);
+        // This will insert if record is new, update otherwise
+        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public User getUserByKey(SQLiteDatabase db , String userKey) {

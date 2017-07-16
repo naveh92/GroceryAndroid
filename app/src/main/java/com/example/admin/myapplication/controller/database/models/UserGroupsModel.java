@@ -9,6 +9,7 @@ import com.example.admin.myapplication.model.entities.Group;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gun2f on 6/18/2017.
@@ -24,6 +25,7 @@ public class UserGroupsModel extends AbstractModel {
 
     // Data-models
     private final List<Group> groups = new ArrayList<>();
+    private List<String> groupKeysFromLocal = new ArrayList<>();
 
     public UserGroupsModel(String userKey) {
         this.userKey = userKey;
@@ -36,21 +38,21 @@ public class UserGroupsModel extends AbstractModel {
     }
 
     public void addGroupToUser(String groupKey) {
-        // Remote
-        usersGroupDB.addGroupToUser(groupKey);
-
         // Local
         table.insert(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupKey);
         updateLastUpdatedTable();
+
+        // Remote
+        usersGroupDB.addGroupToUser(groupKey);
     }
 
     public void removeGroupFromUser(final String groupKey) {
-        // Remote
-        usersGroupDB.removeGroupFromUser(groupKey);
-
         // Local
         table.delete(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupKey);
         updateLastUpdatedTable();
+
+        // Remote
+        usersGroupDB.removeGroupFromUser(groupKey);
     }
 
     /**
@@ -68,26 +70,30 @@ public class UserGroupsModel extends AbstractModel {
             // -----------------------------
 
             // Receives a List of Group-keys
-            ObjectReceivedHandler<List<String>> queryHandler = new ObjectReceivedHandler<List<String>>() {
+            ObjectReceivedHandler<Map<String, Boolean>> queryHandler = new ObjectReceivedHandler<Map<String,Boolean>>() {
                 @Override
-                public void onObjectReceived(List<String> groupKeys) {
-                    // TODO: If we are up to date, nothing comes back from Remote so this method isn't called..
-                    // Reset the array of groups. We got a new array.
-                    groups.clear();
-
-                    // We got the new Groups from remote.
-                    // Get the old Groups from local.
-                    List<String> groupKeysFromLocal = getGroupsFromLocal();
-
-                    // Merge the keys we received from local & remote.
-                    // NOTE: In case there are duplicates, it will be checked when handling each group individually.
-                    //       (We add the remote first, so the local-duplicates will be discarded)
-                    groupKeys.addAll(groupKeysFromLocal);
+                public void onObjectReceived(Map<String, Boolean> groupEntries) {
+                    // NOTE: If we are up to date, nothing comes back from Remote so this method isn't called..
 
                     // Handle the groupKeys we received
-                    handleUserGroups(groupKeys, handler);
+                    handleUserGroups(groupEntries, handler);
                 }
             };
+
+            // Reset the array of groups. We got a new array.
+            groups.clear();
+
+            // Retrieve from local DB before remote DB.
+            // Get the old Groups from local.
+            List<String> groupKeysFromLocal = getGroupsFromLocal();
+
+            // Merge the keys we received from local & remote.
+            // NOTE: In case there are duplicates, it will be checked when handling each group individually.
+            //       (We add the remote first, so the local-duplicates will be discarded)
+
+            // Handle the groupKeys we received from local
+            handleUserGroupsFromLocal(groupKeysFromLocal, handler);
+
             // Observe only if the remote update-time is after the the local
             usersGroupDB.getUserGroupsByLastUpdateDate(localUpdateTime, queryHandler);
         }
@@ -102,7 +108,7 @@ public class UserGroupsModel extends AbstractModel {
                     groups.clear();
 
                     // Handle the groupKeys we received
-                    handleUserGroups(groupKeys, handler);
+                    handleUserGroupsFromRemote(groupKeys, handler);
                 }
             };
 
@@ -145,6 +151,7 @@ public class UserGroupsModel extends AbstractModel {
             @Override
             public void onObjectReceived(Group group) {
                 // If the group doesn't already exist (Just in case..)
+                // TODO: First the Local comes, then the remote. think about checking if contains and replacing. (instead of discarding)
                 if (!containsGroup(group)) {
                     groups.add(group);
                     Collections.sort(groups);
@@ -165,28 +172,73 @@ public class UserGroupsModel extends AbstractModel {
      */
 
     /**
-     * This function is only for lists received from remote db
+     * This function is only for lists received from remote db, AFTER the lists have arrived from the local db.
+     * The function merges the data from remote & local.
      */
-    private void handleUserGroups(List<String> groupKeys, ObjectReceivedHandler<Group> handler) {
+    private void handleUserGroups(Map<String, Boolean> groupEntries, ObjectReceivedHandler<Group> handler) {
+        // Merge the local & remote into a clean list
+        groups.clear();
+
+        // Make sure all the groups in local are still relevant
+        for (String groupKey : groupKeysFromLocal) {
+            if (!groupEntries.containsKey(groupKey)) {
+                // Remote doesn't have this key, which means we should use the local data.
+                groupEntries.put(groupKey, true);
+            }
+        }
+
+        // Handle each received group key individually
+        for (String groupKey : groupEntries.keySet()) {
+            Boolean relevant = groupEntries.get(groupKey);
+
+            // Use only the relevant (Non-deleted) records.
+            if (relevant != null && relevant) {
+                handleUserGroupAddition(groupKey, handler);
+            }
+        }
+
+        // TODO: ???
+//        // After adding all the groups and filtering duplicates, get the new final list of group keys.
+//        final List<String> filteredGroupKeys = new ArrayList<>();
+//        synchronized (groups) {
+//            for (Group g : groups) {
+//                filteredGroupKeys.add(g.getKey());
+//            }
+//        }
+
+        // Update local records.
+        table.truncate(DatabaseHelper.getInstance().getWritableDatabase());
+        table.insertGroupKeys(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupEntries.keySet());
+
+        updateLastUpdatedTable();
+    }
+
+    /**
+     * This function is only for lists received from remote db, when we ONLY QUERY from remote DB.
+     */
+    private void handleUserGroupsFromRemote(List<String> groupKeys, ObjectReceivedHandler<Group> handler) {
         // Handle each received group key individually
         for (String groupKey : groupKeys) {
             handleUserGroupAddition(groupKey, handler);
         }
 
-        // After adding all the groups and filtering duplicates, get the new final list of group keys.
-        final List<String> filteredGroupKeys = new ArrayList<>();
-
-        synchronized (groups) {
-            for (Group g : groups) {
-                filteredGroupKeys.add(g.getKey());
-            }
-        }
-
         // Update local records.
         table.truncate(DatabaseHelper.getInstance().getWritableDatabase());
-        table.insertGroupKeys(DatabaseHelper.getInstance().getWritableDatabase(), userKey, filteredGroupKeys);
+        table.insertGroupKeys(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupKeys);
 
         updateLastUpdatedTable();
+    }
+
+    /**
+     * This function is only for lists received from local db
+     */
+    private void handleUserGroupsFromLocal(List<String> groupKeys, ObjectReceivedHandler<Group> handler) {
+        groupKeysFromLocal = groupKeys;
+
+        // Handle each received group key individually
+        for (String groupKey : groupKeys) {
+            handleUserGroupAddition(groupKey, handler);
+        }
     }
 
     private void updateLastUpdatedTable() {

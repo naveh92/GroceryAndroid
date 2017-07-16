@@ -41,21 +41,21 @@ public class GroupMembersModel extends AbstractModel {
     }
 
     public void addMember(String userKey) {
-        // Remote
-        groupMembersDB.addMember(userKey);
-
         // Local
         table.insert(DatabaseHelper.getInstance().getWritableDatabase(), groupKey, userKey);
         updateLastUpdateTime();
+
+        // Remote
+        groupMembersDB.addMember(userKey);
     }
 
     public void removeMember(String userKey) {
-        // Remote
-        groupMembersDB.removeMember(userKey);
-
         // Local
         table.delete(DatabaseHelper.getInstance().getWritableDatabase(), groupKey, userKey);
         updateLastUpdateTime();
+
+        // Remote
+        groupMembersDB.removeMember(userKey);
 
         deleteGroupIfEmpty();
     }
@@ -103,7 +103,7 @@ public class GroupMembersModel extends AbstractModel {
                     // We don't need to update, fetch only from Local.
 
                     List<String> userKeysFromLocal = fetchGroupMembersFromLocalDB();
-                    handleGroupMembers(userKeysFromLocal, handler);
+                    handleGroupMembersFromLocal(userKeysFromLocal, handler);
                 }
                 else {
                     // We need to update, fetch from remote and merge with local.
@@ -111,6 +111,8 @@ public class GroupMembersModel extends AbstractModel {
                     ObjectReceivedHandler<List<String>> remoteKeysHandler = new ObjectReceivedHandler<List<String>>() {
                         @Override
                         public void onObjectReceived(List<String> userKeys) {
+
+                            // TODO: Shouldn't ALL the clears be BEFORE the query? Ex: If no userKeys return from the remote, this function will not be called..
                             // Clear the list - we are about to get a new value.
                             members.clear();
                             handler.removeAllObjects();
@@ -163,10 +165,18 @@ public class GroupMembersModel extends AbstractModel {
         }
 
         // Update local records.
-        table.truncate(DatabaseHelper.getInstance().getWritableDatabase());
+        // Don't truncate, only delete all group members for this groupKey
+        table.deleteAllGroupMembers(DatabaseHelper.getInstance().getWritableDatabase(), groupKey);
         table.insertGroupMembers(DatabaseHelper.getInstance().getWritableDatabase(), groupKey, userKeys);
 
         updateLastUpdateTime();
+    }
+
+    private void handleGroupMembersFromLocal(List<String> userKeys, final ObjectHandler<User> handler) {
+        for (String userKey : userKeys) {
+            // Handle each member fetched independently
+            handleGroupMemberAddition(userKey, handler);
+        }
     }
 
     private void handleGroupMemberAddition(String userKey, final ObjectReceivedHandler<User> handler) {
@@ -206,8 +216,9 @@ public class GroupMembersModel extends AbstractModel {
      */
     private class GroceryListsByGroupModel {
         private void deleteAllListsForGroup(String groupKey) {
-            GroceryListsByGroupDB.deleteAllListsForGroup(groupKey);
+            // No need to update LastUpdatedTable, because we won't be using this group anymore.
             new ListsTable().deleteAllListsForGroup(DatabaseHelper.getInstance().getWritableDatabase(), groupKey);
+            GroceryListsByGroupDB.deleteAllListsForGroup(groupKey);
         }
     }
 }

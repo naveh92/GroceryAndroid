@@ -11,7 +11,6 @@ import java.util.List;
 /**
  * Created by admin on 6/24/2017.
  */
-
 public class ListsTable extends AbstractTable {
     private static final String TABLE_NAME = "LISTS";
     private static final String LIST_KEY = "LIST_KEY";
@@ -21,7 +20,8 @@ public class ListsTable extends AbstractTable {
     private static final String CREATE_TABLE_STATEMENT =
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + LIST_KEY + " TEXT," +
                     "                                       " + GROUP_KEY + " TEXT," +
-                    "                                       " + TITLE + " TEXT);";
+                    "                                       " + TITLE + " TEXT, " +
+                    " PRIMARY KEY (" + LIST_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
     static public void onCreate(SQLiteDatabase db) {
@@ -42,7 +42,8 @@ public class ListsTable extends AbstractTable {
         values.put(TITLE, list.getTitle());
 
         // Insert the new row, returning the primary key value of the new row
-        db.insert(TABLE_NAME, null, values);
+        // This will insert if record is new, update otherwise
+        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public void deleteList(SQLiteDatabase db, String listKey) {

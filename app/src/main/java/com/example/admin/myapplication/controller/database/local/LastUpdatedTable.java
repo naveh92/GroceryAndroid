@@ -12,10 +12,10 @@ public class LastUpdatedTable extends AbstractTable {
     private static final String TABLE = "TABLE_NAME";
     private static final String LAST_UPDATE_TIME = "LAST_UPDATE_TIME";
 
-    // TODO: LONG instead of Text for lastUpdated
     private static final String CREATE_TABLE_STATEMENT =
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + TABLE + " TEXT," +
-                    "                                       " + LAST_UPDATE_TIME + " LONG);";
+                    "                                       " + LAST_UPDATE_TIME + " LONG, " +
+                    " PRIMARY KEY (" + TABLE + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
     static public void onCreate(SQLiteDatabase db) {
@@ -36,7 +36,8 @@ public class LastUpdatedTable extends AbstractTable {
         values.put(LAST_UPDATE_TIME, updateTime);
 
         // Insert the new row, returning the primary key value of the new row
-        db.insert(TABLE_NAME, null, values);
+        // This will insert if record is new, update otherwise
+        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public Long getLastUpdateTime(SQLiteDatabase db, String tableName) {
