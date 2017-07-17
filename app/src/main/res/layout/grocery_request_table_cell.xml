@@ -11,11 +11,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/userImageView"
         android:src="@drawable/user"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:scaleType="fitXY"
         android:layout_toStartOf="@+id/itemName"
         android:visibility="invisible"
+        android:layout_alignTop="@+id/pleaseWait"
         android:layout_alignEnd="@+id/pleaseWait"
         android:layout_alignBottom="@+id/pleaseWait"
         android:contentDescription="@string/user_image" />
@@ -49,9 +49,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/pleaseWait"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/v"
         android:layout_alignBottom="@+id/userName"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:indeterminate="false"/>
 
     <EditText
@@ -65,8 +67,7 @@
         android:layout_toEndOf="@+id/userImageView"
         android:layout_toStartOf="@+id/v"
         android:layout_centerVertical="true"
-        android:layout_marginTop="-10dp"
-        android:layout_marginBottom="10dp" />
+ />
 
     <ImageButton
         android:layout_width="wrap_content"
