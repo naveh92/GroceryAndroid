@@ -59,6 +59,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/editText"
         android:visibility="invisible"
+        android:layout_alignTop="@+id/itemName"
         android:gravity="center"
         android:singleLine="true"
         android:layout_toEndOf="@+id/userImageView"
