@@ -151,7 +151,6 @@ public class UserGroupsModel extends AbstractModel {
             @Override
             public void onObjectReceived(Group group) {
                 // If the group doesn't already exist (Just in case..)
-                // TODO: First the Local comes, then the remote. think about checking if contains and replacing. (instead of discarding)
                 if (!containsGroup(group)) {
                     groups.add(group);
                     Collections.sort(groups);

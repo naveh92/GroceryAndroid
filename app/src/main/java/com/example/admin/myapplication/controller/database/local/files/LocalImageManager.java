@@ -19,7 +19,6 @@ import java.util.Map;
  */
 public class LocalImageManager {
     private static final String TAG = "LocalImageManager";
-    private static final String FORMAT_SUFFIX = ".jpg";
     private static final String PATH_PREFIX = "/Android/data/";
     private static final String PATH_SUFFIX = "/Files";
 
@@ -29,19 +28,19 @@ public class LocalImageManager {
      */
     private static Map<String, Bitmap> cache = new HashMap<>();
 
-    public Bitmap loadImageFromStorage(Context context, String userKey) {
+    public Bitmap loadImageFromStorage(Context context, String userKey, String imageName) {
         // Check if we already read it from storage
         if (cache.containsKey(userKey)) {
             return cache.get(userKey);
         }
 
         Bitmap bitmapFromFile = null;
-        File file = getMediaFile(context, userKey);
+        File file = getMediaFile(context, imageName);
 
         try {
             if (file != null) {
                 bitmapFromFile = BitmapFactory.decodeStream(new FileInputStream(file));
-                Log.d(TAG, "Successfully loaded image " + getImageName(userKey) + " from local storage.");
+                Log.d(TAG, "Successfully loaded image " + imageName + " from local storage.");
 
                 // Save it in cache
                 saveImageInMemoryCache(userKey, bitmapFromFile);
@@ -54,8 +53,8 @@ public class LocalImageManager {
         return bitmapFromFile;
     }
 
-    public void saveToInternalStorage(Context context, String userKey, Bitmap bitmap, int compressionFactor) {
-        File file = getMediaFile(context, userKey);
+    public void saveToInternalStorage(Context context, String userKey, String imageName, Bitmap bitmap, int compressionFactor) {
+        File file = getMediaFile(context, imageName);
         FileOutputStream fos = null;
 
         try {
@@ -64,7 +63,7 @@ public class LocalImageManager {
 
                 // Use the compress method on the BitMap object to write image to the OutputStream
                 bitmap.compress(Bitmap.CompressFormat.PNG, compressionFactor, fos);
-                Log.d(TAG, "Successfully saved image " + getImageName(userKey) + " to local storage.");
+                Log.d(TAG, "Successfully saved image " + imageName + " to local storage.");
 
                 // Save it in cache
                 saveImageInMemoryCache(userKey, bitmap);
@@ -86,7 +85,7 @@ public class LocalImageManager {
     }
 
     /** Create a File for saving an image or video */
-    private  File getMediaFile(Context context, String userKey) {
+    private File getMediaFile(Context context, String imageName) {
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
         File mediaStorageDir = new File(Environment.getExternalStorageDirectory()
@@ -102,12 +101,7 @@ public class LocalImageManager {
         }
 
         // Create a media file name
-        String mImageName = getImageName(userKey);
-        return new File(mediaStorageDir.getPath() + File.separator + mImageName);
-    }
-
-    private String getImageName(String userKey) {
-        return userKey + FORMAT_SUFFIX;
+        return new File(mediaStorageDir.getPath() + File.separator + imageName);
     }
 
     private void saveImageInMemoryCache(String userKey, Bitmap bitmapFromFile) {
@@ -117,9 +111,9 @@ public class LocalImageManager {
         }
     }
 
-    public Long getUpdateTime(Context context, String userKey) {
+    public Long getUpdateTime(Context context, String imageName) {
         Long lastUpdated = null;
-        File file = getMediaFile(context, userKey);
+        File file = getMediaFile(context, imageName);
 
         if (file != null && file.exists()) {
             lastUpdated = file.lastModified();

@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.models.ImageModel;
 import com.example.admin.myapplication.controller.database.models.UsersModel;
-import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 
@@ -67,8 +67,7 @@ public class ProfileFragment extends Fragment {
             }
         };
 
-        // TODO: Create an ImageModel instaed of calling ImageDB directly..
-        ImageDB.getInstance().downloadImage(getContext(), userKey, imageReceivedHandler);
+        ImageModel.getInstance().downloadImage(getContext(), userKey, imageReceivedHandler);
     }
 
     public void changeImageDialog(Context context) {
@@ -87,9 +86,8 @@ public class ProfileFragment extends Fragment {
 
             Bitmap bitmap = imageView.getDrawingCache();
 
-            // TODO: Create an ImageModel instaed of calling ImageDB directly..
             // Save the new image to the DB
-            ImageDB.getInstance().storeImage(context, bitmap, AuthenticationManager.getInstance().getCurrentUserId());
+            ImageModel.getInstance().storeImage(context, bitmap, AuthenticationManager.getInstance().getCurrentUserId());
         }
     }
 }

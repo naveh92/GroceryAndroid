@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
+import com.example.admin.myapplication.controller.database.models.ImageModel;
 import com.example.admin.myapplication.controller.database.models.UsersModel;
-import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 import com.facebook.AccessToken;
@@ -117,8 +117,7 @@ public class LoginActivity extends Activity {
                         // If succeeded, save it to storage.
                         if (userProfilePic != null) {
                             Log.d(TAG, "Downloaded user Facebook profile pic. Storing...");
-                            // TODO: Create an ImageModel instaed of calling ImageDB directly..
-                            ImageDB.getInstance().storeImage(LoginActivity.this, userProfilePic, userKey);
+                            ImageModel.getInstance().storeImage(LoginActivity.this, userProfilePic, userKey);
                         }
                     }
                 };

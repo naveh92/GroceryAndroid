@@ -9,8 +9,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.admin.myapplication.R;
+import com.example.admin.myapplication.controller.database.models.ImageModel;
 import com.example.admin.myapplication.controller.database.models.UsersModel;
-import com.example.admin.myapplication.controller.database.remote.ImageDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.User;
 
@@ -48,10 +48,10 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
         // Check if this is the first time getting the relevant images.
         if (!images.containsKey(userKey)) {
             // Retrieve the user image from storage.
-            ImageDB.getInstance().downloadImage(getContext(), userKey, receivedImageHandler);
+            ImageModel.getInstance().downloadImage(getContext(), userKey, receivedImageHandler);
 
             // Register this callback for when the image changes.
-            ImageDB.getInstance().registerCallback(receivedImageHandler);
+            ImageModel.getInstance().registerCallback(receivedImageHandler);
         }
         else {
             // Pass the image we previously received.
