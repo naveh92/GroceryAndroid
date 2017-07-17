@@ -1,10 +1,8 @@
 package com.example.admin.myapplication.controller.database.local;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,8 +17,10 @@ public class UserGroupsTable extends AbstractTable {
     private static final String GROUP_KEY = "GROUP_KEY";
 
     private static final String CREATE_TABLE_STATEMENT =
-                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + USER_KEY + " TEXT, " + GROUP_KEY + " TEXT, " +
-                "PRIMARY KEY (" + USER_KEY + ", " + GROUP_KEY + "));";
+                "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + USER_KEY + " TEXT, " +
+                                                                    GROUP_KEY + " TEXT, " +
+                                                                    " PRIMARY KEY (" + USER_KEY + ", " +
+                                                                                       GROUP_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
     static public void onCreate(SQLiteDatabase db) {

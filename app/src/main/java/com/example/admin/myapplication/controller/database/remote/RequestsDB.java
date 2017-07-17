@@ -33,22 +33,15 @@ public class RequestsDB {
     // --------------
     //    Requests
     // --------------
-    public void observeRequestsAddition(final ObjectHandler<GroceryRequest> handler) {
-        // Read from the database
-        requestsRef.addValueEventListener(new ValueEventListener() {
+    /**
+     * This function executes a query in the remote DB, searching for records that were updated AFTER lastUpdated parameter.
+     */
+    public void observeRequestsByLastUpdateDate(Long localUpdateTime, final ObjectHandler<GroceryRequest> handler) {
+        // Observe only if the remote update-time is after the the local
+        requestsRef.orderByChild(LAST_UPDATED_STRING).startAt(localUpdateTime).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                handler.removeAllObjects();
-
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    // Extract the object from the map
-                    Map<String, Object> values = ((Map<String, Object>)child.getValue());
-                    GroceryRequest request = mapToRequest(child.getKey(), values);
-
-                    handler.onObjectReceived(request);
-                }
+                handleDataSnapshot(dataSnapshot, handler);
             }
 
             @Override
@@ -57,6 +50,37 @@ public class RequestsDB {
                 Log.w(TAG, "Failed to read grocery-lists value.", error.toException());
             }
         });
+    }
+
+    public void observeAllRequests(final ObjectHandler<GroceryRequest> handler) {
+        // Read from the database
+        requestsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // TODO: Every time we get an update from remote, this will remove all objects?
+//                // This method is called once with the initial value and again
+//                // whenever data at this location is updated.
+//                handler.removeAllObjects();
+
+                handleDataSnapshot(dataSnapshot, handler);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read grocery-lists value.", error.toException());
+            }
+        });
+    }
+
+    private void handleDataSnapshot(DataSnapshot incomingSnapshot, ObjectHandler<GroceryRequest> handler) {
+        for (DataSnapshot child : incomingSnapshot.getChildren()) {
+            // Extract the object from the map
+            Map<String, Object> values = ((Map<String, Object>)child.getValue());
+            GroceryRequest request = mapToRequest(child.getKey(), values);
+
+            handler.onObjectReceived(request);
+        }
     }
 
     private GroceryRequest mapToRequest(String requestKey, Map<String, Object> values) {
@@ -68,7 +92,7 @@ public class RequestsDB {
         return new GroceryRequest(requestKey, userKey, itemName, purchased);
     }
 
-    public void addNewRequest(final GroceryRequest request) {
+    public void addNewRequest(final GroceryRequest request, final ObjectReceivedHandler<String> generatedKeyHandler) {
         ObjectReceivedHandler<Long> timestampHandler = new ObjectReceivedHandler<Long>() {
             @Override
             public void onObjectReceived(Long currentRemoteDate) {
@@ -80,6 +104,9 @@ public class RequestsDB {
 
                 // Set the values
                 requestsRef.child(key).setValue(postValues);
+
+                generatedKeyHandler.onObjectReceived(key);
+
             }
         };
 

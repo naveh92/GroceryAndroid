@@ -35,6 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         UsersTable.onCreate(db);
         GroupsTable.onCreate(db);
+        RequestsTable.onCreate(db);
 
         UserGroupsTable.onCreate(db);
         ListsTable.onCreate(db);
@@ -47,6 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         UsersTable.onUpgrade(db, oldVersion, newVersion);
         GroupsTable.onUpgrade(db, oldVersion, newVersion);
+        RequestsTable.onUpgrade(db, oldVersion, newVersion);
 
         UserGroupsTable.onUpgrade(db, oldVersion, newVersion);
         ListsTable.onUpgrade(db, oldVersion, newVersion);

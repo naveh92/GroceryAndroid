@@ -16,8 +16,9 @@ public class LastUpdatedTable extends AbstractTable {
     private static final String CREATE_TABLE_STATEMENT =
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + TABLE + " TEXT, " +
                                                                 KEY + " TEXT, " +
-                    "                                       " + LAST_UPDATE_TIME + " LONG, " +
-                    " PRIMARY KEY (" + TABLE + "," + KEY + "));";
+                                                                LAST_UPDATE_TIME + " LONG, " +
+                                                                " PRIMARY KEY (" + TABLE + "," +
+                                                                                   KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
     static public void onCreate(SQLiteDatabase db) {

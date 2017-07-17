@@ -19,9 +19,9 @@ public class ListsTable extends AbstractTable {
 
     private static final String CREATE_TABLE_STATEMENT =
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + LIST_KEY + " TEXT," +
-                    "                                       " + GROUP_KEY + " TEXT," +
-                    "                                       " + TITLE + " TEXT, " +
-                    " PRIMARY KEY (" + LIST_KEY + "));";
+                                                                GROUP_KEY + " TEXT," +
+                                                                TITLE + " TEXT, " +
+                                                                " PRIMARY KEY (" + LIST_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
     static public void onCreate(SQLiteDatabase db) {
@@ -68,6 +68,7 @@ public class ListsTable extends AbstractTable {
         db.delete(TABLE_NAME, selection, selectionArgs);
     }
 
+    // TODO: Use this from GroupLists or something
     public List<GroceryList> getListsByGroupKey(SQLiteDatabase db, String groupKey) {
         List<GroceryList> lists = new ArrayList<>();
 

@@ -16,8 +16,8 @@ public class GroupsTable extends AbstractTable {
 
     private static final String CREATE_TABLE_STATEMENT =
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + GROUP_KEY + " TEXT," +
-                    "                                       " + TITLE + " TEXT, " +
-                    " PRIMARY KEY (" + GROUP_KEY + "));";
+                                                                TITLE + " TEXT, " +
+                                                                " PRIMARY KEY (" + GROUP_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
 

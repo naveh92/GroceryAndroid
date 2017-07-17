@@ -138,13 +138,31 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
     }
 
     public void onRequestReceived(GroceryRequest request) {
-        groceryRequests.add(request);
+        // Check if this is an update and not a new request being added.
+        Integer index = getIndex(request.getKey());
+        if (index != null) {
+            groceryRequests.set(index, request);
+        }
+        else {
+            groceryRequests.add(request);
+        }
+
         Collections.sort(groceryRequests);
 
         // TODO: Invalidated or changed?
         // TODO: Changed queries everything again..
         super.notifyDataSetInvalidated();
 //        notifyDataSetChanged();
+    }
+
+    private Integer getIndex(String key) {
+        for (int i = 0; i<groceryRequests.size(); i++) {
+            GroceryRequest current = groceryRequests.get(i);
+            if (current != null && current.getKey() != null && current.getKey().equals(key)) {
+                return i;
+            }
+        }
+        return null;
     }
 
     public void removeAllRequests() {

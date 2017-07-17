@@ -6,9 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.admin.myapplication.model.entities.User;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by admin on 6/24/2017.
  */
@@ -20,9 +17,9 @@ public class UsersTable extends AbstractTable {
 
     private static final String CREATE_TABLE_STATEMENT =
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + USER_KEY + " TEXT," +
-                    "                                       " + FACEBOOK_KEY + " TEXT," +
-                    "                                       " + NAME + " TEXT, " +
-                    " PRIMARY KEY (" + USER_KEY + "));";
+                                                                FACEBOOK_KEY + " TEXT," +
+                                                                NAME + " TEXT, " +
+                                                                " PRIMARY KEY (" + USER_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
 

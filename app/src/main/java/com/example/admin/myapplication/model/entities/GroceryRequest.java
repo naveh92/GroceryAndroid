@@ -29,6 +29,11 @@ public class GroceryRequest implements Comparable<GroceryRequest> {
     }
     public Boolean getPurchased() { return purchased; }
 
+    // For saving to local after generating a key in remote.
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public GroceryRequest(String itemName, String userKey) {
         this.itemName = itemName;
         this.userKey = userKey;
