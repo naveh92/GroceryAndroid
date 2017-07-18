@@ -20,15 +20,13 @@ import com.example.admin.myapplication.model.entities.Group;
  */
 public class GroceryListTableAdapter extends BaseAdapter {
     private Context mContext;
-    UserGroceryListsModel db;
 
-    public GroceryListTableAdapter(Context c, UserGroceryListsModel db) {
+    public GroceryListTableAdapter(Context c) {
         mContext = c;
-        this.db = db;
     }
 
     public int getCount() {
-        return db.getListsCount();
+        return UserGroceryListsModel.getInstance().getListsCount();
     }
 
     public Object getItem(int position) {
@@ -46,7 +44,7 @@ public class GroceryListTableAdapter extends BaseAdapter {
         final View view = inflater.inflate(R.layout.grocery_list_table_cell, parent, false);
 
         // Get the relevant grocery-list
-        GroceryList list = db.getGroceryList(position);
+        GroceryList list = UserGroceryListsModel.getInstance().getGroceryList(position);
         String listTitle = list.getTitle();
 
         // Get the Title TextView, and set its text.

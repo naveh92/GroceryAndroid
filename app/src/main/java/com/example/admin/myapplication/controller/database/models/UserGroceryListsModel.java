@@ -1,5 +1,6 @@
 package com.example.admin.myapplication.controller.database.models;
 
+import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
@@ -19,9 +20,28 @@ public class UserGroceryListsModel extends AbstractModel {
     private UserGroupsModel groupsDBModel;
     private final List<GroceryList> lists = new ArrayList<>();
     private List<GroceryListsByGroupModel> listsDbs = new ArrayList<>();
+    private static UserGroceryListsModel instance;
 
-    public UserGroceryListsModel(String userKey) {
+    private UserGroceryListsModel(String userKey) {
         groupsDBModel = new UserGroupsModel(userKey);
+    }
+
+    /**
+     * The instance we are creating is specific for the current userKey.
+     */
+    public static UserGroceryListsModel getInstance() {
+        if (instance == null) {
+            instance = new UserGroceryListsModel(AuthenticationManager.getInstance().getCurrentUserId());
+        }
+        return instance;
+    }
+
+    /**
+     * When logging-out, we should discard the current instance,
+     * because we may login to a different user later.
+     */
+    public static void destroyInstance() {
+        instance = null;
     }
 
     public void observeLists(final ObjectReceivedHandler<GroceryList> listAdded, final ObjectReceivedHandler<GroceryList> listDeleted) {
@@ -134,7 +154,7 @@ public class UserGroceryListsModel extends AbstractModel {
         return false;
     }
 
-    private void removeGroupLists(String groupKey, ObjectReceivedHandler<GroceryList> listRemovedHandler) {
+    public void removeGroupLists(String groupKey, ObjectReceivedHandler<GroceryList> listRemovedHandler) {
         List<GroceryList> listsToRemove = new ArrayList<>();
 
         synchronized (lists) {
@@ -143,11 +163,10 @@ public class UserGroceryListsModel extends AbstractModel {
                     listsToRemove.add(list);
                 }
             }
-            // TODO: Close the synchronized here?
 
             for (GroceryList list : listsToRemove) {
                 // Remove all the lists we found
-                lists.remove(listsToRemove);
+                lists.remove(list);
 
                 // Notify the callback for every list removed.
                 listRemovedHandler.onObjectReceived(list);

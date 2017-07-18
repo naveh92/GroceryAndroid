@@ -19,6 +19,7 @@ import android.widget.PopupMenu;
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.models.LastUpdatedModel;
+import com.example.admin.myapplication.controller.database.models.UserGroceryListsModel;
 import com.example.admin.myapplication.controller.grocery.list.GroceryFragment;
 import com.example.admin.myapplication.controller.profile.ProfileFragment;
 import com.facebook.login.LoginManager;
@@ -127,6 +128,9 @@ public class MainActivity extends FragmentActivity {
 
         // Clear the LastUpdatedTable cache.
         LastUpdatedModel.getInstance().releaseCache();
+
+        // Destroy the singleton instance that is associated with this user.
+        UserGroceryListsModel.destroyInstance();
 
         // Once we logged-out, go back to LoginActivity.
         Intent intent = new Intent(this, LoginActivity.class);

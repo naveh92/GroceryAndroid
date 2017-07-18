@@ -17,7 +17,6 @@ import android.widget.Spinner;
 
 import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewFragment;
-import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.models.ListsModel;
 import com.example.admin.myapplication.controller.database.models.UserGroceryListsModel;
 import com.example.admin.myapplication.controller.grocery.request.GroceryRequestsTableActivity;
@@ -32,7 +31,6 @@ import com.example.admin.myapplication.model.entities.Group;
  */
 public class GroceryFragment extends TableViewFragment {
     // TODO: static? test this.. (If having problems with refresh)
-    private static UserGroceryListsModel db;
     private static GroceryListTableAdapter adapter;
 
     @Override
@@ -40,15 +38,11 @@ public class GroceryFragment extends TableViewFragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.table_view, container, false);
 
-        if (db == null) {
-            db = new UserGroceryListsModel(AuthenticationManager.getInstance().getCurrentUserId());
-        }
-
         // Save the add button for animations later
         addNewButton = (ImageButton) view.findViewById(R.id.add_new_object_button);
 
         GridView gridview = (GridView) view.findViewById(R.id.gridview);
-        adapter = new GroceryListTableAdapter(getActivity(), db);
+        adapter = new GroceryListTableAdapter(getActivity());
         gridview.setAdapter(adapter);
 
         // Register the animations when gridview is touched.
@@ -59,7 +53,7 @@ public class GroceryFragment extends TableViewFragment {
                 // Open an activity for the list that was clicked. need to show all requests in it.
                 Intent intent = new Intent(getActivity(), GroceryRequestsTableActivity.class);
 
-                GroceryList list = db.getGroceryList(position);
+                GroceryList list = UserGroceryListsModel.getInstance().getGroceryList(position);
                 intent.putExtra(GroceryList.LIST_KEY_STRING, list.getKey()); // Add the listKey for the next activity.
                 intent.putExtra(GroceryList.TITLE_STRING, list.getTitle()); // Add the listTitle for the next activity.
 
@@ -74,7 +68,7 @@ public class GroceryFragment extends TableViewFragment {
 
     @Override
     public void newObjectDialog(Context context) {
-        if (db.doesUserHaveGroup()) {
+        if (UserGroceryListsModel.getInstance().doesUserHaveGroup()) {
             // Open a dialog.
             final Dialog dialog = new Dialog(context);
             dialog.setContentView(R.layout.new_list_dialog);
@@ -87,7 +81,7 @@ public class GroceryFragment extends TableViewFragment {
             final Spinner groupComboBox = (Spinner) dialog.findViewById(R.id.spinner);
             GroupComboBoxAdapter comboBoxAdapter = new GroupComboBoxAdapter(context,
                     android.R.layout.simple_spinner_item,
-                    db.getAllGroups());
+                    UserGroceryListsModel.getInstance().getAllGroups());
             groupComboBox.setAdapter(comboBoxAdapter);
 
             ImageButton confirmButton = (ImageButton) dialog.findViewById(R.id.confirm);
@@ -143,7 +137,7 @@ public class GroceryFragment extends TableViewFragment {
     }
 
     public void deleteList(int position) {
-        GroceryList list = db.getGroceryList(position);
+        GroceryList list = UserGroceryListsModel.getInstance().getGroceryList(position);
 
         if (list != null) {
             String listKey = list.getKey();
@@ -174,14 +168,6 @@ public class GroceryFragment extends TableViewFragment {
             }
         };
 
-        // TODO: ??
-//        if (db == null) {
-//            db = new UserGroceryListsDB(AuthenticationManager.getInstance().getCurrentUserId());
-//        }
-
-        // TODO: ??
-        if (db != null) {
-            db.observeLists(listReceivedHandler, groupListDeletedHandler);
-        }
+        UserGroceryListsModel.getInstance().observeLists(listReceivedHandler, groupListDeletedHandler);
     }
 }

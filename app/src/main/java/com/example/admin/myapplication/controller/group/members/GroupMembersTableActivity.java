@@ -19,9 +19,11 @@ import com.example.admin.myapplication.R;
 import com.example.admin.myapplication.controller.TableViewActivity;
 import com.example.admin.myapplication.controller.authentication.AuthenticationManager;
 import com.example.admin.myapplication.controller.database.models.GroupMembersModel;
+import com.example.admin.myapplication.controller.database.models.UserGroceryListsModel;
 import com.example.admin.myapplication.controller.database.models.UserGroupsModel;
 import com.example.admin.myapplication.controller.handlers.ObjectHandler;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
+import com.example.admin.myapplication.model.entities.GroceryList;
 import com.example.admin.myapplication.model.entities.Group;
 import com.example.admin.myapplication.model.entities.User;
 
@@ -112,6 +114,13 @@ public class GroupMembersTableActivity extends TableViewActivity {
 
                                 // Remove the user from the group.
                                 db.removeMember(userKey);
+
+                                ObjectReceivedHandler<GroceryList> listRemovedHandler = new ObjectReceivedHandler<GroceryList>() {
+                                    @Override
+                                    public void onObjectReceived(GroceryList obj) {}
+                                };
+                                // Get the UserGroceryListsModel of this user and call removeGroupLists()?
+                                UserGroceryListsModel.getInstance().removeGroupLists(groupKey, listRemovedHandler);
 
                                 // Remove the group from the users list of groups.
                                 new UserGroupsModel(AuthenticationManager.getInstance().getCurrentUserId()).removeGroupFromUser(groupKey);
