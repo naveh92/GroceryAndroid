@@ -1,5 +1,6 @@
 package com.example.admin.myapplication.controller.database.remote;
 
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -11,6 +12,7 @@ import java.util.Map;
  * Created by admin on 04/04/2017.
  */
 public class ListsDB {
+    private static final String LAST_UPDATED_STRING = "lastUpdated";
     private static String TAG = "ListsDB";
     private static ListsDB instance;
 
@@ -28,13 +30,24 @@ public class ListsDB {
         return instance;
     }
 
-    public void addNewList(GroceryList list) {
-        // Generate a key for the new list
-        String key = listsRef.push().getKey();
-        Map<String, Object> postValues = list.toMap();
+    public void addNewList(final GroceryList list, final ObjectReceivedHandler<String> generatedKeyHandler) {
+        ObjectReceivedHandler<Long> timestampHandler = new ObjectReceivedHandler<Long>() {
+            @Override
+            public void onObjectReceived(Long currentRemoteDate) {
+                // Generate a key for the new list
+                String key = listsRef.push().getKey();
+                Map<String, Object> postValues = list.toMap();
+                postValues.put(LAST_UPDATED_STRING, currentRemoteDate);
 
-        // Set the values
-        listsRef.child(key).setValue(postValues);
+                // Set the values
+                listsRef.child(key).setValue(postValues);
+
+                generatedKeyHandler.onObjectReceived(key);
+            }
+        };
+
+        // Fetch the timestamp from the firebase server.
+        DatabaseDateManager.getTimestamp(timestampHandler);
     }
 
     public void deleteList(String listKey) {

@@ -30,6 +30,13 @@ public class GroceryList implements Comparable<GroceryList> {
     }
 
     /**
+     * This setter is for when we add a new list and the key is generated in remote DB.
+     */
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    /**
      * This constructor is only called when a user creates a new GroceryList.
      * It will always be relevant at first.
      */

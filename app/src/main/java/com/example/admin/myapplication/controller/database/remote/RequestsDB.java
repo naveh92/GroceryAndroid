@@ -96,7 +96,7 @@ public class RequestsDB {
         ObjectReceivedHandler<Long> timestampHandler = new ObjectReceivedHandler<Long>() {
             @Override
             public void onObjectReceived(Long currentRemoteDate) {
-                // Generate a key for the new list
+                // Generate a key for the new request
                 String key = requestsRef.push().getKey();
                 Map<String, Object> postValues = request.toMap();
 

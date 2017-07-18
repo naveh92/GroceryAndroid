@@ -68,7 +68,6 @@ public class ListsTable extends AbstractTable {
         db.delete(TABLE_NAME, selection, selectionArgs);
     }
 
-    // TODO: Use this from GroupLists or something
     public List<GroceryList> getListsByGroupKey(SQLiteDatabase db, String groupKey) {
         List<GroceryList> lists = new ArrayList<>();
 

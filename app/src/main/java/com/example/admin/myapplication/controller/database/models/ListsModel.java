@@ -3,6 +3,7 @@ package com.example.admin.myapplication.controller.database.models;
 import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
 import com.example.admin.myapplication.controller.database.local.ListsTable;
 import com.example.admin.myapplication.controller.database.remote.ListsDB;
+import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
 import com.example.admin.myapplication.model.entities.GroceryList;
 
 /**
@@ -27,30 +28,37 @@ public class ListsModel extends AbstractModel {
         return instance;
     }
 
-    public void addNewList(GroceryList list) {
-        // Remote
-        ListsDB.getInstance().addNewList(list);
+    public void addNewList(final GroceryList list) {
+        // Handler for when we receive the key (After we receive the timestamp from server).
+        ObjectReceivedHandler<String> generatedKeyHandler = new ObjectReceivedHandler<String>() {
+            @Override
+            public void onObjectReceived(String generatedKey) {
+                list.setKey(generatedKey);
 
-        // Local
-        table.addNewList(DatabaseHelper.getInstance().getWritableDatabase(), list);
-        updateLastUpdateTime();
+                // Local
+                table.addNewList(DatabaseHelper.getInstance().getWritableDatabase(), list);
+                updateLastUpdateTime(list.getGroupKey());
+            }
+        };
 
+        // Remote - After key is generated, we store in local.
+        ListsDB.getInstance().addNewList(list, generatedKeyHandler);
     }
 
-    public void deleteList(String listKey) {
+    public void deleteList(String listKey, String groupKey) {
         // Remote
         ListsDB.getInstance().deleteList(listKey);
 
         // Local
         table.deleteList(DatabaseHelper.getInstance().getWritableDatabase(), listKey);
-        updateLastUpdateTime();
+        updateLastUpdateTime(groupKey);
     }
 
     /**
      * Local DB Functions
      */
-    private void updateLastUpdateTime() {
-        // Send something that is general to all Lists as the entityKey (In this case: "LISTS").
-        updateLastUpdatedTable(table.getTableName(), table.getTableName());
+    private void updateLastUpdateTime(String groupKey) {
+        // Save the update-time associated with the group's lists.
+        updateLastUpdatedTable(table.getTableName(), groupKey);
     }
 }
