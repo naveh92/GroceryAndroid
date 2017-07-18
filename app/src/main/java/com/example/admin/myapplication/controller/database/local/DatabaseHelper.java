@@ -38,7 +38,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         RequestsTable.onCreate(db);
 
         UserGroupsTable.onCreate(db);
-        ListsTable.onCreate(db);
         GroupMembersTable.onCreate(db);
     }
 
@@ -51,7 +50,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         RequestsTable.onUpgrade(db, oldVersion, newVersion);
 
         UserGroupsTable.onUpgrade(db, oldVersion, newVersion);
-        ListsTable.onUpgrade(db, oldVersion, newVersion);
         GroupMembersTable.onUpgrade(db, oldVersion, newVersion);
     }
 

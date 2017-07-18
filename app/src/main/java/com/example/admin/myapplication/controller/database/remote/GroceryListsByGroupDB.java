@@ -18,44 +18,18 @@ import java.util.Map;
 
 /**
  * Created by admin on 07/04/2017.
+ *
+ * NOTE: We cannot create a query to fetch by updateTime, because Firebase doesn't allow 2 filters.
+ *       Therefore, there is no "observeListsByLastUpdateTime()" function.
  */
 public class GroceryListsByGroupDB {
     private static final String LISTS_NODE_URL = "grocery-lists";
-    public static final String LAST_UPDATED_STRING = "lastUpdated";
     private static final String TAG = "GroceryListsByGroupDB";
     private Query query;
 
     public GroceryListsByGroupDB(String groupKey) {
         query = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL).orderByChild(GroceryList.GROUP_KEY_STRING).equalTo(groupKey);
     }
-
-//    /**
-//     * Observe only lists that were updated after lastUpdatedTime.
-//     */
-//    public void observeListsByLastUpdateTime(final Long lastUpdatedTime,
-//                                             final ObjectReceivedHandler<GroceryList> listAddedHandler,
-//                                             final ObjectReceivedHandler<GroceryList> listRemovedHandler) {
-//        query.orderByChild(LAST_UPDATED_STRING).startAt(lastUpdatedTime).addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                receivedChildAdded(dataSnapshot, listAddedHandler);
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//                receivedChildChanged(dataSnapshot, listRemovedHandler);
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot dataSnapshot) {}
-//            @Override
-//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.d(TAG, "Failed to retrieve Grocery-lists..");
-//            }
-//        });
-//    }
 
     /**
      * Observe all lists for this group.
@@ -99,7 +73,7 @@ public class GroceryListsByGroupDB {
 
                 // Delete every list from DB
                 for (String listKey : listsKeys) {
-                    ListsModel.getInstance().deleteList(listKey, deletedGroupKey);
+                    ListsModel.getInstance().deleteList(listKey);
                 }
             }
 

@@ -147,8 +147,7 @@ public class GroceryFragment extends TableViewFragment {
 
         if (list != null) {
             String listKey = list.getKey();
-            String groupKey = list.getGroupKey();
-            ListsModel.getInstance().deleteList(listKey, groupKey);
+            ListsModel.getInstance().deleteList(listKey);
         }
 
         notifyDataSetChanged();

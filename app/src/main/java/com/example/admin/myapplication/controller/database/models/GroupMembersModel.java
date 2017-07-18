@@ -2,7 +2,6 @@ package com.example.admin.myapplication.controller.database.models;
 
 import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
 import com.example.admin.myapplication.controller.database.local.GroupMembersTable;
-import com.example.admin.myapplication.controller.database.local.ListsTable;
 import com.example.admin.myapplication.controller.database.remote.GroceryListsByGroupDB;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
 import com.example.admin.myapplication.controller.handlers.ObjectHandler;
@@ -216,8 +215,6 @@ public class GroupMembersModel extends AbstractModel {
      */
     private class GroceryListsByGroupModel {
         private void deleteAllListsForGroup(String groupKey) {
-            // No need to update LastUpdatedTable, because we won't be using this group anymore.
-            new ListsTable().deleteAllListsForGroup(DatabaseHelper.getInstance().getWritableDatabase(), groupKey);
             GroceryListsByGroupDB.deleteAllListsForGroup(groupKey);
         }
     }
