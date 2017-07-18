@@ -33,6 +33,18 @@ public class GroupMembersTableActivity extends TableViewActivity {
     private String groupKey;
     private GroupMembersTableAdapter groupMembersAdapter;
 
+    private final ObjectHandler<User> memberReceivedHandler = new ObjectHandler<User>() {
+        @Override
+        public void onObjectReceived(User member) {
+            groupMembersAdapter.onMemberReceived(member);
+        }
+
+        @Override
+        public void removeAllObjects() {
+            groupMembersAdapter.removeAllMembers();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +68,13 @@ public class GroupMembersTableActivity extends TableViewActivity {
         // Register the animations when gridview is touched.
         super.createHideViewsWhenScroll(gridview);
 
-        ObjectHandler<User> memberReceivedHandler = new ObjectHandler<User>() {
+        // Create a new GroupMembersDB specific to this Group.
+        db = new GroupMembersModel(groupKey);
+        fetchGroupMembers();
+    }
+
+    private void fetchGroupMembers() {
+        final ObjectHandler<User> memberReceivedHandler = new ObjectHandler<User>() {
             @Override
             public void onObjectReceived(User member) {
                 groupMembersAdapter.onMemberReceived(member);
@@ -68,8 +86,6 @@ public class GroupMembersTableActivity extends TableViewActivity {
             }
         };
 
-        // Create a new GroupMembersDB specific to this Group.
-        db = new GroupMembersModel(groupKey);
         db.observeGroupMembers(memberReceivedHandler);
     }
 
@@ -144,6 +160,9 @@ public class GroupMembersTableActivity extends TableViewActivity {
 
                     // Add the group to the users list of groups
                     new UserGroupsModel(user.getKey()).addGroupToUser(groupKey);
+
+                    // Refresh the group members
+                    fetchGroupMembers();
             }
         });
 

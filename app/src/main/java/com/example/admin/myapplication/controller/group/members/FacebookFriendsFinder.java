@@ -33,7 +33,7 @@ public class FacebookFriendsFinder {
             public void onCompleted(GraphResponse response) {
                 memberReceived.removeAllObjects();
 
-                Boolean noFriendsToAdd = true;
+                final Boolean[] noFriendsToAdd = {true};
                 // TODO: Switch case on success code?
                 JSONArray users = null;
                 try {
@@ -58,16 +58,24 @@ public class FacebookFriendsFinder {
 
                         // Make sure this user isn't already a member in the group
                         if (!containsFacebookId(currentMembers, currentUserFacebookId)) {
+                            // Mark that there are members ONLY when we get a member.
+                            ObjectReceivedHandler<User> userReceived = new ObjectReceivedHandler<User>() {
+                                @Override
+                                public void onObjectReceived(User member) {
+                                    noFriendsToAdd[0] = false;
+                                    memberReceived.onObjectReceived(member);
+                                }
+                            };
+
                             // Find the User object corresponding to this facebook-user.
-                            UsersModel.getInstance().findUserByFacebookId(currentUserFacebookId, memberReceived);
-                            noFriendsToAdd = false;
+                            UsersModel.getInstance().findUserByFacebookId(currentUserFacebookId, userReceived);
                         }
                     }
                 }
 
                 // Notify the caller whether there are friends to add
                 // (If there are, the caller should be waiting..)
-                whenFinishedHandler.onObjectReceived(noFriendsToAdd);
+                whenFinishedHandler.onObjectReceived(noFriendsToAdd[0]);
             }
         });
 
