@@ -15,10 +15,9 @@ import java.util.List;
  *
  * This Model's execution:
  * Fetch the RemoteUpdateTime (Every Group has it's own).
- * If it is after the localUpdateTime, fetch all records from remote DB, and save to local DB.
+ * If it is after the localUpdateTime, observe all records from remote DB, and save to local DB.
  * If it is before localUpdateTime, fetch all records from local DB.
  */
-
 public class GroupMembersModel extends AbstractModel {
     private final GroupMembersDB groupMembersDB;
     // TODO: Need to table.close() onDestroy()??
@@ -86,7 +85,7 @@ public class GroupMembersModel extends AbstractModel {
      */
 
     /**
-     * This function fetches from Local (If up-to-date) or from Remote (If not up-to-date).
+     * This function fetches from Local (If up-to-date) or observes Remote (If not up-to-date).
      */
     public void observeGroupMembers(final ObjectHandler<User> handler) {
         final ObjectReceivedHandler<Long> remoteUpdateTimeHandler = new ObjectReceivedHandler<Long>() {
