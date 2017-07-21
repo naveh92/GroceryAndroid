@@ -3,8 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
-    android:padding="5dp" >
+    android:background="@color/background_cell"
+    android:padding="@dimen/padding_cell" >
 
     <ImageView
         android:layout_width="wrap_content"
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text=""
+        android:text="@string/empty_string"
         android:id="@+id/itemName"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
@@ -37,13 +37,13 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/userName"
-        android:textColor="#999999"
+        android:textColor="@color/cell_text_color"
         android:layout_gravity="right"
         android:gravity="left"
         android:singleLine="true"
         android:layout_below="@+id/editText"
         android:layout_alignEnd="@+id/v"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="@dimen/tv_margin_top" />
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -52,8 +52,8 @@
         android:layout_alignParentStart="true"
         android:layout_alignTop="@+id/v"
         android:layout_alignBottom="@+id/userName"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="@dimen/progress_bar_margin_top"
+        android:layout_marginBottom="@dimen/progress_bar_margin_bottom"
         android:indeterminate="false"/>
 
     <EditText
@@ -66,8 +66,7 @@
         android:singleLine="true"
         android:layout_toEndOf="@+id/userImageView"
         android:layout_toStartOf="@+id/v"
-        android:layout_centerVertical="true"
- />
+        android:layout_centerVertical="true" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -80,6 +79,6 @@
         android:onClick="finishedEditing"
         android:visibility="invisible"
         android:layout_above="@+id/userName"
-        android:layout_marginTop="0dp" />
+        android:contentDescription="@string/done" />
 
 </RelativeLayout>

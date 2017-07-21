@@ -12,7 +12,7 @@
         android:src="@android:drawable/ic_menu_camera"
         android:onClick="camera"
         android:background="@null"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="@dimen/camera_margin_top"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/camera" />
 
@@ -23,10 +23,10 @@
         android:onClick="gallery"
         android:background="@null"
         android:src="@android:drawable/ic_menu_gallery"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="@dimen/gallery_margin_top"
         android:layout_below="@+id/cameraBtn"
         android:layout_alignStart="@+id/cameraBtn"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="@dimen/gallery_margin_bottom"
         android:contentDescription="@string/gallery" />
 
 </RelativeLayout>

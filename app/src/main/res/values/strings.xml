@@ -46,6 +46,8 @@
     <string name="right_soger">)</string>
     <string name="dot">.</string>
     <string name="description_limiter">,</string>
-    <string name="three_dots">...</string>
+    <string name="three_dots">…</string>
+    <string name="empty_string"></string>
+    <string name="done">Done</string>
 
 </resources>

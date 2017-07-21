@@ -3,8 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
-    android:padding="5dp" >
+    android:background="@color/background_cell"
+    android:padding="@dimen/padding_cell" >
 
     <TextView
         android:layout_width="wrap_content"
@@ -31,7 +31,7 @@
         android:layout_alignBottom="@+id/groupName"
         android:layout_alignParentEnd="true"
         android:layout_alignTop="@+id/listTitle"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="@dimen/popup_margin_right"
         android:clickable="true"
         android:onClick="showListPopup"
         android:contentDescription="@string/menu" />
