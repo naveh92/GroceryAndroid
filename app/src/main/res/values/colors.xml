@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="background_cell">#000000</color>
     <color name="cell_text_color">#999999</color>
+    <color name="grid_view_background">#55e5e5e5</color>
 </resources>

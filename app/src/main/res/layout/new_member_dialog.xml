@@ -9,13 +9,13 @@
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:columnWidth="90dp"
+        android:columnWidth="@dimen/grid_view_column_width"
         android:numColumns="1"
-        android:verticalSpacing="1dp"
-        android:horizontalSpacing="1dp"
+        android:verticalSpacing="@dimen/grid_view_vertical_spacing"
+        android:horizontalSpacing="@dimen/grid_view_horizontal_spacing"
         android:stretchMode="columnWidth"
         android:gravity="center"
-        android:background="#55e5e5e5"
+        android:background="@color/grid_view_background"
         android:layout_alignParentEnd="true" />
 
     <ProgressBar

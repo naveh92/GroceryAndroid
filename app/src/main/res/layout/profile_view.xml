@@ -12,8 +12,8 @@
         android:id="@+id/userNameTV"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:fontFamily="sans-serif-light"
+        android:layout_marginTop="@dimen/profile_user_name_tv_margin_top"
+        android:fontFamily="@string/profile_user_name_tv_font_family"
         android:gravity="center"
         android:singleLine="true" />
 
@@ -23,9 +23,9 @@
         android:id="@+id/imageView"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/userNameTV"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginLeft="@dimen/profile_image_margin_left"
+        android:layout_marginRight="@dimen/profile_image_margin_right"
+        android:layout_marginTop="@dimen/profile_image_margin_top"
         android:src="@drawable/user"
         android:visibility="invisible"
         android:layout_above="@+id/logout"
@@ -39,9 +39,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="75dp"
-        android:layout_marginRight="75dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="@dimen/logout_btn_margin_left"
+        android:layout_marginRight="@dimen/logout_btn_margin_right"
+        android:layout_marginBottom="@dimen/logout_btn_margin_bottom"
         android:background="@null"
         android:src="@drawable/logout"
         android:scaleType="fitCenter"
@@ -69,18 +69,5 @@
         android:layout_alignTop="@+id/imageView"
         android:layout_alignEnd="@+id/imageView"
         android:contentDescription="@string/change_image" />
-
-
-    <!--        <com.facebook.login.widget.LoginButton
-                android:id="@+id/button_facebook_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="75dp"
-                android:layout_marginLeft="75dp"
-                android:layout_marginBottom="30dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerHorizontal="true" />-->
 
 </RelativeLayout>

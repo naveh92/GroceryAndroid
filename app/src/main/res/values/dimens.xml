@@ -13,4 +13,22 @@
     <dimen name="tv_margin_top">10dp</dimen>
     <dimen name="progress_bar_margin_top">5dp</dimen>
     <dimen name="progress_bar_margin_bottom">5dp</dimen>
+    <dimen name="confirm_btn_margin_top">40dp</dimen>
+    <dimen name="confirm_btn_margin_bottom">10dp</dimen>
+    <dimen name="input_tv_margin_top">30dp</dimen>
+    <dimen name="input_tv_margin_left">10dp</dimen>
+    <dimen name="input_et_margin_right">10dp</dimen>
+    <dimen name="input_et_margin_left">10dp</dimen>
+    <dimen name="combo_box_margin_top">40dp</dimen>
+    <dimen name="grid_view_column_width">90dp</dimen>
+    <dimen name="grid_view_vertical_spacing">1dp</dimen>
+    <dimen name="grid_view_horizontal_spacing">1dp</dimen>
+    <dimen name="profile_user_name_tv_margin_top">10dp</dimen>
+    <dimen name="profile_image_margin_left">20dp</dimen>
+    <dimen name="profile_image_margin_right">20dp</dimen>
+    <dimen name="profile_image_margin_top">20dp</dimen>
+    <dimen name="logout_btn_margin_left">75dp</dimen>
+    <dimen name="logout_btn_margin_right">75dp</dimen>
+    <dimen name="logout_btn_margin_bottom">20dp</dimen>
+    <dimen name="add_new_object_btn_margin_bottom">5dp</dimen>
 </resources>

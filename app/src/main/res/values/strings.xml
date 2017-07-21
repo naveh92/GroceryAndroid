@@ -49,5 +49,6 @@
     <string name="three_dots">…</string>
     <string name="empty_string"></string>
     <string name="done">Done</string>
+    <string name="profile_user_name_tv_font_family">sans-serif-light</string>
 
 </resources>
