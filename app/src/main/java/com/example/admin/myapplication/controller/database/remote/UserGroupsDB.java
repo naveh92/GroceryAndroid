@@ -78,32 +78,6 @@ public class UserGroupsDB {
     }
 
     /**
-     * This function observes the remote DB for all deleted Groups.
-     */
-    // TODO: Who used to call this?
-    public void observeUserGroupsDeletion(final ObjectReceivedHandler<String> handler) {
-        userGroupsRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                // Extract the group key from the snapshot.
-                String removedGroupKey = dataSnapshot.getKey();
-
-                // Send the received key to the Model.
-                handler.onObjectReceived(removedGroupKey);
-            }
-
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {}
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
-    }
-
-    /**
      * This function adds a group to the user's groups
      */
     public void addGroupToUser(final String groupKey) {
