@@ -1,6 +1,5 @@
 package com.example.admin.myapplication.controller.database.models;
 
-import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
 import com.example.admin.myapplication.controller.database.local.GroupsTable;
 import com.example.admin.myapplication.controller.database.remote.GroupsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
@@ -33,13 +32,12 @@ public class GroupsModel extends AbstractModel {
 
         // Remote
         String newGroupKey = GroupsDB.getInstance().addNewGroup(group);
-
         return newGroupKey;
     }
 
     public void deleteGroup(String groupKey) {
         // Local
-        table.deleteGroup(DatabaseHelper.getInstance().getWritableDatabase(), groupKey);
+        table.deleteGroup(groupKey);
 //      TODO: LastUpdatedTable? We don't really use this..
 
         // Remote
@@ -48,7 +46,7 @@ public class GroupsModel extends AbstractModel {
 
     public void findGroupByKey(String groupKey, final ObjectReceivedHandler<Group> handler) {
         // Try to get the group from the local DB.
-        Group group = table.getGroupByKey(DatabaseHelper.getInstance().getReadableDatabase(), groupKey);
+        Group group = table.getGroupByKey(groupKey);
 
         if (group != null) {
             handler.onObjectReceived(group);
@@ -73,7 +71,7 @@ public class GroupsModel extends AbstractModel {
     }
 
     private void addNewGroupToLocal(Group group) {
-        table.addNewGroup(DatabaseHelper.getInstance().getWritableDatabase(), group);
+        table.addNewGroup(group);
 //      TODO: LastUpdatedTable? We don't really use this..
     }
 }

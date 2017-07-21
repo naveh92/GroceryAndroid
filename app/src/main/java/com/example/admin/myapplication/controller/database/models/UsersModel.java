@@ -1,6 +1,6 @@
 package com.example.admin.myapplication.controller.database.models;
 
-import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
+
 import com.example.admin.myapplication.controller.database.local.UsersTable;
 import com.example.admin.myapplication.controller.database.remote.UsersDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
@@ -34,7 +34,7 @@ public class UsersModel extends AbstractModel {
 
     public void findUserByKey(final String userKey, final ObjectReceivedHandler<User> handler) {
         // Try to get the user from the local DB.
-        User user = table.getUserByKey(DatabaseHelper.getInstance().getReadableDatabase(), userKey);
+        User user = table.getUserByKey(userKey);
 
         if (user != null) {
             handler.onObjectReceived(user);
@@ -60,7 +60,7 @@ public class UsersModel extends AbstractModel {
 
     public void findUserByFacebookId(final String facebookId, final ObjectReceivedHandler<User> handler) {
         // Try to get the user from the local DB.
-        User user = table.getUserByFacebookId(DatabaseHelper.getInstance().getReadableDatabase(), facebookId);
+        User user = table.getUserByFacebookId(facebookId);
 
         if (user != null) {
             handler.onObjectReceived(user);
@@ -91,7 +91,7 @@ public class UsersModel extends AbstractModel {
     }
 
     private void addNewUserToLocal(User user) {
-        table.addNewUser(DatabaseHelper.getInstance().getWritableDatabase(), user);
+        table.addNewUser(user);
 //        TODO: LastUpdatedTable? We don't really use this..
     }
 }

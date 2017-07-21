@@ -13,19 +13,16 @@ public class GroupsTable extends AbstractTable {
     private static final String TABLE_NAME = "GROUPS";
     private static final String GROUP_KEY = "GROUP_KEY";
     private static final String TITLE = "TITLE";
-
     private static final String CREATE_TABLE_STATEMENT =
             "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + GROUP_KEY + " TEXT," +
                                                                 TITLE + " TEXT, " +
                                                                 " PRIMARY KEY (" + GROUP_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-
-    static public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE_STATEMENT);
-    }
-
-
+    /**
+     * These functions may happen before writableDB is initialized.
+     */
+    static public void onCreate(SQLiteDatabase db) { db.execSQL(CREATE_TABLE_STATEMENT); }
     static public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
@@ -33,17 +30,17 @@ public class GroupsTable extends AbstractTable {
         onCreate(db);
     }
 
-    public void addNewGroup(SQLiteDatabase db, Group group) {
+    public void addNewGroup(Group group) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(GROUP_KEY, group.getKey());
         values.put(TITLE, group.getTitle());
 
         // This will insert if record is new, update otherwise
-        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        writableDB.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public void deleteGroup(SQLiteDatabase db, String groupKey) {
+    public void deleteGroup(String groupKey) {
         // Define 'where' part of query.
         String selection = GROUP_KEY + " = ?";
 
@@ -51,10 +48,10 @@ public class GroupsTable extends AbstractTable {
         String[] selectionArgs = { groupKey };
 
         // Issue SQL statement.
-        db.delete(TABLE_NAME, selection, selectionArgs);
+        writableDB.delete(TABLE_NAME, selection, selectionArgs);
     }
 
-    public Group getGroupByKey(SQLiteDatabase db, String groupKey) {
+    public Group getGroupByKey(String groupKey) {
         Group group = null;
 
         // Define a projection that specifies which columns from the database
@@ -68,7 +65,7 @@ public class GroupsTable extends AbstractTable {
         // Sort the result Cursor
         String sortOrder = TITLE + " DESC";
 
-        Cursor cursor = db.query(
+        Cursor cursor = readableDB.query(
                 TABLE_NAME,                               // The table to query
                 projection,                               // The columns to return
                 selection,                                // The columns for the WHERE clause

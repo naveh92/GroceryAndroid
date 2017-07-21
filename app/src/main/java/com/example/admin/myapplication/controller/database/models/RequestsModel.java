@@ -1,6 +1,5 @@
 package com.example.admin.myapplication.controller.database.models;
 
-import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
 import com.example.admin.myapplication.controller.database.local.RequestsTable;
 import com.example.admin.myapplication.controller.database.remote.RequestsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectHandler;
@@ -80,13 +79,13 @@ public class RequestsModel extends AbstractModel {
     }
 
     private void addRequestToLocal(GroceryRequest request) {
-        table.addNewRequest(DatabaseHelper.getInstance().getWritableDatabase(), listKey, request);
+        table.addNewRequest(listKey, request);
         updateLastUpdateTime();
     }
 
     private void fetchRequestsFromLocal(ObjectHandler<GroceryRequest> handler) {
         // Get the requests from local db
-        List<GroceryRequest> requestsFromLocal = table.getRequestsByListKey(DatabaseHelper.getInstance().getReadableDatabase(), listKey);
+        List<GroceryRequest> requestsFromLocal = table.getRequestsByListKey(listKey);
 
         // Handle each request individually
         for (GroceryRequest r : requestsFromLocal) {
@@ -114,7 +113,7 @@ public class RequestsModel extends AbstractModel {
         requestsDB.togglePurchased(requestKey, currentPurchasedValue);
 
         // Local
-        table.togglePurchased(DatabaseHelper.getInstance().getWritableDatabase(), requestKey, currentPurchasedValue);
+        table.togglePurchased(requestKey, currentPurchasedValue);
         updateLastUpdateTime();
     }
 
@@ -122,7 +121,7 @@ public class RequestsModel extends AbstractModel {
         requestsDB.updateItemName(requestKey, newItemName);
 
         // Local
-        table.updateItemName(DatabaseHelper.getInstance().getWritableDatabase(), requestKey, newItemName);
+        table.updateItemName(requestKey, newItemName);
         updateLastUpdateTime();
     }
 

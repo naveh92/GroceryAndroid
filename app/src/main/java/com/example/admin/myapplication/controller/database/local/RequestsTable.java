@@ -3,6 +3,7 @@ package com.example.admin.myapplication.controller.database.local;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
 import com.example.admin.myapplication.model.entities.GroceryRequest;
 
 import java.util.ArrayList;
@@ -28,9 +29,10 @@ public class RequestsTable extends AbstractTable {
                                                                 " PRIMARY KEY (" + REQUEST_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-    static public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE_STATEMENT);
-    }
+    /**
+     * These functions may happen before writableDB is initialized.
+     */
+    static public void onCreate(SQLiteDatabase db) { db.execSQL(CREATE_TABLE_STATEMENT); }
     static public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
@@ -38,7 +40,7 @@ public class RequestsTable extends AbstractTable {
         onCreate(db);
     }
 
-    public void addNewRequest(SQLiteDatabase db, String listKey, GroceryRequest request) {
+    public void addNewRequest(String listKey, GroceryRequest request) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(REQUEST_KEY, request.getKey());
@@ -49,10 +51,10 @@ public class RequestsTable extends AbstractTable {
 
         // Insert the new row, returning the primary key value of the new row
         // This will insert if record is new, update otherwise
-        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        writableDB.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public void togglePurchased(SQLiteDatabase db, String requestKey, Boolean currentValue) {
+    public void togglePurchased(String requestKey, Boolean currentValue) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(PURCHASED, boolToInt(!currentValue));
@@ -62,10 +64,10 @@ public class RequestsTable extends AbstractTable {
         String[] selectionArgs = {requestKey};
 
         // Update the existing row
-        db.update(TABLE_NAME, values, selection, selectionArgs);
+        writableDB.update(TABLE_NAME, values, selection, selectionArgs);
     }
 
-    public void updateItemName(SQLiteDatabase db, String requestKey, String newItemName) {
+    public void updateItemName(String requestKey, String newItemName) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(ITEM_NAME, newItemName);
@@ -75,10 +77,10 @@ public class RequestsTable extends AbstractTable {
         String[] selectionArgs = {requestKey};
 
         // Update the existing row
-        db.update(TABLE_NAME, values, selection, selectionArgs);
+        writableDB.update(TABLE_NAME, values, selection, selectionArgs);
     }
 
-    public List<GroceryRequest> getRequestsByListKey(SQLiteDatabase db, String listKey) {
+    public List<GroceryRequest> getRequestsByListKey(String listKey) {
         List<GroceryRequest> requests = new ArrayList<>();
 
         // Define a projection that specifies which columns from the database
@@ -92,7 +94,7 @@ public class RequestsTable extends AbstractTable {
         // Sort the result Cursor
         String sortOrder = ITEM_NAME + " DESC";
 
-        Cursor cursor = db.query(
+        Cursor cursor = readableDB.query(
                 TABLE_NAME,                               // The table to query
                 projection,                               // The columns to return
                 selection,                                // The columns for the WHERE clause

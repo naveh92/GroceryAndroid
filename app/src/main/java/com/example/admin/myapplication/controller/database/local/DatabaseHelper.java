@@ -8,9 +8,6 @@ import com.example.admin.myapplication.controller.GroceryApp;
 
 /**
  * Created by gun2f on 6/17/2017.
- */
-
-/***
  * Schema master
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -53,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         GroupMembersTable.onUpgrade(db, oldVersion, newVersion);
     }
 
+    @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }

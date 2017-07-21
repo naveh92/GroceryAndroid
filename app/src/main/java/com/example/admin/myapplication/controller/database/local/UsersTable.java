@@ -22,12 +22,10 @@ public class UsersTable extends AbstractTable {
                                                                 " PRIMARY KEY (" + USER_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-
-    static public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE_STATEMENT);
-    }
-
-
+    /**
+     * These functions may happen before writableDB is initialized.
+     */
+    static public void onCreate(SQLiteDatabase db) { db.execSQL(CREATE_TABLE_STATEMENT); }
     static public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
@@ -35,7 +33,7 @@ public class UsersTable extends AbstractTable {
         onCreate(db);
     }
 
-    public void addNewUser(SQLiteDatabase db, User user) {
+    public void addNewUser(User user) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(USER_KEY, user.getKey());
@@ -44,10 +42,10 @@ public class UsersTable extends AbstractTable {
 
         // Insert the new row, returning the primary key value of the new row
         // This will insert if record is new, update otherwise
-        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        writableDB.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public User getUserByKey(SQLiteDatabase db , String userKey) {
+    public User getUserByKey(String userKey) {
         User user = null;
 
         // Define a projection that specifies which columns from the database
@@ -61,7 +59,7 @@ public class UsersTable extends AbstractTable {
         // Sort the result Cursor
         String sortOrder = NAME + " DESC";
 
-        Cursor cursor = db.query(
+        Cursor cursor = readableDB.query(
                 TABLE_NAME,                               // The table to query
                 projection,                               // The columns to return
                 selection,                                // The columns for the WHERE clause
@@ -84,7 +82,7 @@ public class UsersTable extends AbstractTable {
         return user;
     }
 
-    public User getUserByFacebookId(SQLiteDatabase db, String facebookId) {
+    public User getUserByFacebookId(String facebookId) {
         User user = null;
 
         // Define a projection that specifies which columns from the database
@@ -98,7 +96,7 @@ public class UsersTable extends AbstractTable {
         // Sort the result Cursor
         String sortOrder = NAME + " DESC";
 
-        Cursor cursor = db.query(
+        Cursor cursor = readableDB.query(
                 TABLE_NAME,                               // The table to query
                 projection,                               // The columns to return
                 selection,                                // The columns for the WHERE clause

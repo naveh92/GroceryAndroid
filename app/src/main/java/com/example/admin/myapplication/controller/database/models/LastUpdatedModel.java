@@ -1,6 +1,5 @@
 package com.example.admin.myapplication.controller.database.models;
 
-import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
 import com.example.admin.myapplication.controller.database.local.LastUpdatedTable;
 
 /**
@@ -24,12 +23,12 @@ public class LastUpdatedModel {
     }
 
     public void setLastUpdateTime(String tableName, String entityKey, Long updateTime) {
-        table.setLastUpdateTime(DatabaseHelper.getInstance().getWritableDatabase(), tableName, entityKey, updateTime);
+        table.setLastUpdateTime(tableName, entityKey, updateTime);
     }
     public Long getLastUpdateTime(String tableName, String entityKey) {
-        return table.getLastUpdateTime(DatabaseHelper.getInstance().getReadableDatabase(), tableName, entityKey);
+        return table.getLastUpdateTime(tableName, entityKey);
     }
     public void releaseCache() {
-        table.truncate(DatabaseHelper.getInstance().getWritableDatabase());
+        table.truncate();
     }
 }

@@ -1,6 +1,5 @@
 package com.example.admin.myapplication.controller.database.models;
 
-import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
 import com.example.admin.myapplication.controller.database.local.UserGroupsTable;
 import com.example.admin.myapplication.controller.database.remote.UserGroupsDB;
 import com.example.admin.myapplication.controller.handlers.ObjectReceivedHandler;
@@ -39,7 +38,7 @@ public class UserGroupsModel extends AbstractModel {
 
     public void addGroupToUser(String groupKey) {
         // Local
-        table.insert(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupKey);
+        table.insert(userKey, groupKey);
         updateLastUpdatedTable();
 
         // Remote
@@ -48,7 +47,7 @@ public class UserGroupsModel extends AbstractModel {
 
     public void removeGroupFromUser(final String groupKey) {
         // Local
-        table.delete(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupKey);
+        table.delete(userKey, groupKey);
         updateLastUpdatedTable();
 
         // Remote
@@ -143,7 +142,7 @@ public class UserGroupsModel extends AbstractModel {
 
     private List<String> getGroupsFromLocal() {
         // Get the group keys from local db
-        return table.getUserGroupKeys(DatabaseHelper.getInstance().getWritableDatabase(), userKey);
+        return table.getUserGroupKeys(userKey);
     }
 
     private void handleUserGroupAddition(String groupKey, final ObjectReceivedHandler<Group> handler) {
@@ -206,8 +205,8 @@ public class UserGroupsModel extends AbstractModel {
         }
 
         // Update local records.
-        table.truncate(DatabaseHelper.getInstance().getWritableDatabase());
-        table.insertGroupKeys(DatabaseHelper.getInstance().getWritableDatabase(), userKey, relevantGroupKeys);
+        table.truncate();
+        table.insertGroupKeys(userKey, relevantGroupKeys);
 
         updateLastUpdatedTable();
     }
@@ -222,8 +221,8 @@ public class UserGroupsModel extends AbstractModel {
         }
 
         // Update local records.
-        table.truncate(DatabaseHelper.getInstance().getWritableDatabase());
-        table.insertGroupKeys(DatabaseHelper.getInstance().getWritableDatabase(), userKey, groupKeys);
+        table.truncate();
+        table.insertGroupKeys(userKey, groupKeys);
 
         updateLastUpdatedTable();
     }

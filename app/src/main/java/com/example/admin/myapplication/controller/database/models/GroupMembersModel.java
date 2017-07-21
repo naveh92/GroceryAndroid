@@ -1,6 +1,5 @@
 package com.example.admin.myapplication.controller.database.models;
 
-import com.example.admin.myapplication.controller.database.local.DatabaseHelper;
 import com.example.admin.myapplication.controller.database.local.GroupMembersTable;
 import com.example.admin.myapplication.controller.database.remote.GroceryListsByGroupDB;
 import com.example.admin.myapplication.controller.database.remote.GroupMembersDB;
@@ -41,7 +40,7 @@ public class GroupMembersModel extends AbstractModel {
 
     public void addMember(String userKey) {
         // Local
-        table.insert(DatabaseHelper.getInstance().getWritableDatabase(), groupKey, userKey);
+        table.insert(groupKey, userKey);
         updateLastUpdateTime();
 
         // Remote
@@ -50,7 +49,7 @@ public class GroupMembersModel extends AbstractModel {
 
     public void removeMember(String userKey) {
         // Local
-        table.delete(DatabaseHelper.getInstance().getWritableDatabase(), groupKey, userKey);
+        table.delete(groupKey, userKey);
         updateLastUpdateTime();
 
         // Remote
@@ -148,7 +147,7 @@ public class GroupMembersModel extends AbstractModel {
     }
 
     private List<String> fetchGroupMembersFromLocalDB() {
-        return table.getGroupMembers(DatabaseHelper.getInstance().getReadableDatabase(), groupKey);
+        return table.getGroupMembers(groupKey);
     }
 
     /**
@@ -165,8 +164,8 @@ public class GroupMembersModel extends AbstractModel {
 
         // Update local records.
         // Don't truncate, only delete all group members for this groupKey
-        table.deleteAllGroupMembers(DatabaseHelper.getInstance().getWritableDatabase(), groupKey);
-        table.insertGroupMembers(DatabaseHelper.getInstance().getWritableDatabase(), groupKey, userKeys);
+        table.deleteAllGroupMembers(groupKey);
+        table.insertGroupMembers(groupKey, userKeys);
 
         updateLastUpdateTime();
     }

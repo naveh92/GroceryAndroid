@@ -14,7 +14,6 @@ public class GroupMembersTable extends AbstractTable {
     private static final String TABLE_NAME = "GROUP_MEMBERS";
     private static final String GROUP_KEY = "GROUP_KEY";
     private static final String USER_KEY = "USER_KEY";
-
     private static final String CREATE_TABLE_STATEMENT =
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + GROUP_KEY + " TEXT, " +
                                                                     USER_KEY + " TEXT, " +
@@ -22,12 +21,10 @@ public class GroupMembersTable extends AbstractTable {
                                                                                       USER_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-
-    static public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE_STATEMENT);
-    }
-
-
+    /**
+     * These functions may happen before writableDB is initialized.
+     */
+    static public void onCreate(SQLiteDatabase db) { db.execSQL(CREATE_TABLE_STATEMENT); }
     static public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
@@ -35,8 +32,7 @@ public class GroupMembersTable extends AbstractTable {
         onCreate(db);
     }
 
-    public List<String> getGroupMembers(SQLiteDatabase db ,String groupKey) {
-
+    public List<String> getGroupMembers(String groupKey) {
         // Define a projection that specifies which columns from the database
         // we will actually use after this query.
         String[] projection = { USER_KEY };
@@ -48,7 +44,7 @@ public class GroupMembersTable extends AbstractTable {
         // Sort the result Cursor
         String sortOrder = USER_KEY + " DESC";
 
-        Cursor cursor = db.query(
+        Cursor cursor = readableDB.query(
                 TABLE_NAME,                               // The table to query
                 projection,                               // The columns to return
                 selection,                                // The columns for the WHERE clause
@@ -71,18 +67,14 @@ public class GroupMembersTable extends AbstractTable {
         return groupMembersKeys;
     }
 
-    public void insertGroupMembers(SQLiteDatabase db ,String groupKey, List<String> groupMembers) {
+    public void insertGroupMembers(String groupKey, List<String> groupMembers) {
         // Insert every memberKey individually.
         for (String memberKey : groupMembers) {
-            insert(db, groupKey, memberKey);
+            insert(groupKey, memberKey);
         }
     }
 
-    public void insert(SQLiteDatabase db ,String groupKey, String memberKey) {
-        // TODO: Insert or replace?
-
-
-
+    public void insert(String groupKey, String memberKey) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(GROUP_KEY, groupKey);
@@ -90,10 +82,10 @@ public class GroupMembersTable extends AbstractTable {
 
         // Insert the new row, returning the primary key value of the new row
         // This will insert if record is new, update otherwise
-        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        writableDB.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public void delete(SQLiteDatabase db ,String groupKey, String userKey) {
+    public void delete(String groupKey, String userKey) {
         // Define 'where' part of query.
         String selection = GROUP_KEY + " = ? and " + USER_KEY + " = ?";
 
@@ -101,7 +93,7 @@ public class GroupMembersTable extends AbstractTable {
         String[] selectionArgs = { groupKey, userKey };
 
         // Issue SQL statement.
-        db.delete(TABLE_NAME, selection, selectionArgs);
+        writableDB.delete(TABLE_NAME, selection, selectionArgs);
     }
 
     @Override
@@ -109,7 +101,7 @@ public class GroupMembersTable extends AbstractTable {
         return TABLE_NAME;
     }
 
-    public void deleteAllGroupMembers(SQLiteDatabase db, String groupKey) {
+    public void deleteAllGroupMembers(String groupKey) {
         // Define 'where' part of query.
         String selection = GROUP_KEY + " = ?";
 
@@ -117,6 +109,6 @@ public class GroupMembersTable extends AbstractTable {
         String[] selectionArgs = { groupKey };
 
         // Issue SQL statement.
-        db.delete(TABLE_NAME, selection, selectionArgs);
+        writableDB.delete(TABLE_NAME, selection, selectionArgs);
     }
 }

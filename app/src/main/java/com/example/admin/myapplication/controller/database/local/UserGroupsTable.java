@@ -23,10 +23,10 @@ public class UserGroupsTable extends AbstractTable {
                                                                                        GROUP_KEY + "));";
     private static final String DROP_TABLE_STATEMENT = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-    static public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE_STATEMENT);
-    }
-
+    /**
+     * These functions may happen before writableDB is initialized.
+     */
+    static public void onCreate(SQLiteDatabase db) { db.execSQL(CREATE_TABLE_STATEMENT); }
     static public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
@@ -34,7 +34,7 @@ public class UserGroupsTable extends AbstractTable {
         onCreate(db);
     }
 
-    public List<String> getUserGroupKeys(SQLiteDatabase db ,String userKey) {
+    public List<String> getUserGroupKeys(String userKey) {
         // Define a projection that specifies which columns from the database
         // we will actually use after this query.
         String[] projection = { GROUP_KEY };
@@ -46,7 +46,7 @@ public class UserGroupsTable extends AbstractTable {
         // Sort the result Cursor
         String sortOrder = GROUP_KEY + " DESC";
 
-        Cursor cursor = db.query(
+        Cursor cursor = readableDB.query(
                 TABLE_NAME,                               // The table to query
                 projection,                               // The columns to return
                 selection,                                // The columns for the WHERE clause
@@ -67,14 +67,14 @@ public class UserGroupsTable extends AbstractTable {
         return groupKeys;
     }
 
-    public void insertGroupKeys(SQLiteDatabase db ,String userKey, Collection<String> groupKeys) {
+    public void insertGroupKeys(String userKey, Collection<String> groupKeys) {
         // Insert every groupKey individually.
         for (String groupKey : groupKeys) {
-            insert(db ,userKey, groupKey);
+            insert(userKey, groupKey);
         }
     }
 
-    public void insert(SQLiteDatabase db ,String userKey, String groupKey) {
+    public void insert(String userKey, String groupKey) {
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(USER_KEY, userKey);
@@ -82,10 +82,10 @@ public class UserGroupsTable extends AbstractTable {
 
         // Insert the new row, returning the primary key value of the new row
         // This will insert if record is new, update otherwise
-        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        writableDB.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
     }
 
-    public void delete(SQLiteDatabase db ,String userKey, String groupKey) {
+    public void delete(String userKey, String groupKey) {
         // Define 'where' part of query.
         String selection = USER_KEY + " = ? and " + GROUP_KEY + " = ?";
 
@@ -93,7 +93,7 @@ public class UserGroupsTable extends AbstractTable {
         String[] selectionArgs = { userKey, groupKey };
 
         // Issue SQL statement.
-        db.delete(TABLE_NAME, selection, selectionArgs);
+        writableDB.delete(TABLE_NAME, selection, selectionArgs);
     }
 
     @Override
