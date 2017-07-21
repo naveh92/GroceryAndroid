@@ -92,6 +92,8 @@ public class GroupMembersModel extends AbstractModel {
             @Override
             public void onObjectReceived(Long remoteLastUpdateTime) {
                 // Clear the list - we are about to get a new value.
+                // Ex: If we fetch only from remote, and no userKeys return from the remote,
+                //     the handler function will not be called, but we still need to clear all of the members (Re-fetch).
                 members.clear();
                 handler.removeAllObjects();
 
@@ -108,8 +110,6 @@ public class GroupMembersModel extends AbstractModel {
                     ObjectReceivedHandler<List<String>> remoteKeysHandler = new ObjectReceivedHandler<List<String>>() {
                         @Override
                         public void onObjectReceived(List<String> userKeys) {
-
-                            // TODO: Shouldn't ALL the clears be BEFORE the query? Ex: If no userKeys return from the remote, this function will not be called..
                             // Clear the list - we are about to get a new value.
                             members.clear();
                             handler.removeAllObjects();

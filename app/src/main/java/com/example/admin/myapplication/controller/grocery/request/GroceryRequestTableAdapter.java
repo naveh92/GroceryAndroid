@@ -151,10 +151,8 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
             Collections.sort(groceryRequests);
         }
 
-        // TODO: Invalidated or changed?
-        // TODO: Changed queries everything again..
+        // notifyDataSetChanged queries all data again, so just use Invalidated.
         super.notifyDataSetInvalidated();
-//        notifyDataSetChanged();
     }
 
     private Integer getIndex(String key) {
@@ -178,8 +176,7 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
     public void startEditing(int index) {
         editingRequestKey = getRequest(index).getKey();
 
-        // TODO: Invalidated or changed?
-        // TODO: Changed queries everything again..
+        // notifyDataSetChanged queries all data again, so just use Invalidated.
         super.notifyDataSetInvalidated();
     }
 
@@ -188,8 +185,7 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
         newItemName = null;
         edited = false;
 
-        // TODO: Invalidated or changed?
-        // TODO: Changed queries everything again..
+        // notifyDataSetChanged queries all data again, so just use Invalidated.
         super.notifyDataSetInvalidated();
     }
 

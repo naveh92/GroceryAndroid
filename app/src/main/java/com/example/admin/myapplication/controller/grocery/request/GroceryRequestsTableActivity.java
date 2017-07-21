@@ -70,8 +70,6 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
                 if (AuthenticationManager.getInstance().getCurrentUserId().equals(createdBy)) {
                     adapter.startEditing(i);
 
-                    // TODO: scroll to the position? (doesn't work)
-
                     View focus = getCurrentFocus();
 
                     if (focus != null) {

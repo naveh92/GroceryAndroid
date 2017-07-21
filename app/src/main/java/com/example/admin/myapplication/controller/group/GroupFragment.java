@@ -82,9 +82,6 @@ public class GroupFragment extends TableViewFragment {
         }
 
         db.observeUserGroupsAddition(groupReceivedHandler);
-
-        // TODO: Is this needed?
-//      db.observeUserGroupsDeletion();
     }
 
     @Override
@@ -143,8 +140,6 @@ public class GroupFragment extends TableViewFragment {
     @Override
     public void notifyDataSetChanged() {
         if (adapter != null) {
-            // TODO: Which?
-            adapter.notifyDataSetInvalidated();
             adapter.notifyDataSetChanged();
         }
     }

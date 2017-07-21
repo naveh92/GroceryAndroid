@@ -33,8 +33,8 @@ public class FacebookFriendsFinder {
             public void onCompleted(GraphResponse response) {
                 memberReceived.removeAllObjects();
 
+                // Final array for access from an inner class later.
                 final Boolean[] noFriendsToAdd = {true};
-                // TODO: Switch case on success code?
                 JSONArray users = null;
                 try {
                     users = (JSONArray) response.getJSONObject().get("data");

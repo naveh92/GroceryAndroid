@@ -30,8 +30,7 @@ import com.example.admin.myapplication.model.entities.Group;
  * Created by admin on 04/04/2017.
  */
 public class GroceryFragment extends TableViewFragment {
-    // TODO: static? test this.. (If having problems with refresh)
-    private static GroceryListTableAdapter adapter;
+    private GroceryListTableAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -116,8 +115,6 @@ public class GroceryFragment extends TableViewFragment {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             dialog.dismiss();
 
-                            // TODO: Move to group fragment?
-//                            getFragmentManager()
                         }}).show();
         }
     }
@@ -130,8 +127,6 @@ public class GroceryFragment extends TableViewFragment {
     @Override
     public void notifyDataSetChanged() {
         if (adapter != null) {
-            // TODO: Which one?
-            adapter.notifyDataSetInvalidated();
             adapter.notifyDataSetChanged();
         }
     }
@@ -156,7 +151,6 @@ public class GroceryFragment extends TableViewFragment {
 
             @Override
             public void removeAllObjects() {
-                // TODO: Delete this? Check if it is even being called..
                 notifyDataSetChanged();
             }
         };
