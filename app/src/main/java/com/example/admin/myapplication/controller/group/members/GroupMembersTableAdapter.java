@@ -24,7 +24,6 @@ import java.util.List;
 public class GroupMembersTableAdapter extends ImageCellBaseAdapter {
     private final List<User> members = new ArrayList<>();
     private Context mContext;
-    private ProgressBar progressBar;
 
     public GroupMembersTableAdapter(Context c) {
         mContext = c;

@@ -103,7 +103,12 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    protected void newObjectDialog(View view) {
+    /**
+     * -----------------
+     * OnClick functions
+     * -----------------
+     */
+    public void newObjectDialog(View view) {
         Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
 
         if (fragment instanceof TableViewFragment) {
@@ -111,7 +116,7 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    protected void changeImageDialog(View view) {
+    public void changeImageDialog(View view) {
         Fragment fragment = adapter.getItem(mViewPager.getCurrentItem());
 
         if (fragment instanceof ProfileFragment) {
@@ -119,7 +124,7 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    protected void logout(View view) {
+    public void logout(View view) {
         LoginManager.getInstance().logOut();
         AuthenticationManager.getInstance().logOut();
 
@@ -140,7 +145,7 @@ public class MainActivity extends FragmentActivity {
         finish();
     }
 
-    protected void showListPopup(View v) {
+    public void showListPopup(View v) {
         // Get the position of the list that has been clicked.
         final int position = v.getId();
 

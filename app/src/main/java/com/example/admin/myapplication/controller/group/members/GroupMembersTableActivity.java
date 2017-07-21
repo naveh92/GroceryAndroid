@@ -76,18 +76,6 @@ public class GroupMembersTableActivity extends TableViewActivity {
     }
 
     private void fetchGroupMembers() {
-        final ObjectHandler<User> memberReceivedHandler = new ObjectHandler<User>() {
-            @Override
-            public void onObjectReceived(User member) {
-                groupMembersAdapter.onMemberReceived(member);
-            }
-
-            @Override
-            public void removeAllObjects() {
-                groupMembersAdapter.removeAllMembers();
-            }
-        };
-
         db.observeGroupMembers(memberReceivedHandler);
     }
 
@@ -140,7 +128,7 @@ public class GroupMembersTableActivity extends TableViewActivity {
         return true;
     }
 
-    protected void newObjectDialog(View view) {
+    public void newObjectDialog(View view) {
         this.newObjectDialog(this);
     }
 

@@ -137,7 +137,7 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
         }
     }
 
-    protected void newObjectDialog(View view) {
+    public void newObjectDialog(View view) {
         this.newObjectDialog(this);
     }
 
