@@ -35,13 +35,13 @@ public class GroupsDB {
 
     public String addNewGroup(Group group) {
         // Generate a key for the new group
-        String key = groupsRef.push().getKey();
+        String generatedKey = groupsRef.push().getKey();
         Map<String, Object> postValues = group.toMap();
 
         // Set the values
-        groupsRef.child(key).setValue(postValues);
+        groupsRef.child(generatedKey).setValue(postValues);
 
-        return key;
+        return generatedKey;
     }
 
     public void deleteGroup(String key) {

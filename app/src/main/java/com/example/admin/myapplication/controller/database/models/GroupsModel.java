@@ -8,6 +8,8 @@ import com.example.admin.myapplication.model.entities.Group;
 /**
  * Created by gun2f on 6/19/2017.
  *
+ * Group title, key, etc. never changes. Only its members do.
+ *
  * This Model tries to get the Group from local DB first,
  * and if it doesn't exist, fetches it from Remote DB and adds it to local.
  */
@@ -26,19 +28,21 @@ public class GroupsModel extends AbstractModel {
         return instance;
     }
 
+    /**
+     * @returns The generated key of the new Group in the Remote DB.
+     */
     public String addNewGroup(Group group) {
         // Local
         addNewGroupToLocal(group);
 
         // Remote
-        String newGroupKey = GroupsDB.getInstance().addNewGroup(group);
-        return newGroupKey;
+        return GroupsDB.getInstance().addNewGroup(group);
     }
 
     public void deleteGroup(String groupKey) {
         // Local
         table.deleteGroup(groupKey);
-//      TODO: LastUpdatedTable? We don't really use this..
+        // No need to update LastUpdatedTable, because we won't check the update time.
 
         // Remote
         GroupsDB.getInstance().deleteGroup(groupKey);
@@ -72,6 +76,6 @@ public class GroupsModel extends AbstractModel {
 
     private void addNewGroupToLocal(Group group) {
         table.addNewGroup(group);
-//      TODO: LastUpdatedTable? We don't really use this..
+        // No need to update LastUpdatedTable, because we won't check the update time.
     }
 }

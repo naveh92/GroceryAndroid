@@ -116,30 +116,6 @@ public class UserGroupsModel extends AbstractModel {
         }
     }
 
-    public void observeUserGroupsDeletion(final ObjectReceivedHandler<Group> handler) {
-        // ----------------------------
-        //  Handler for Group deletion
-        // ----------------------------
-
-        // Receives the removed Group-Key.
-        ObjectReceivedHandler<String> groupDeletedHanlder = new ObjectReceivedHandler<String>() {
-            @Override
-            public void onObjectReceived(String groupKey) {
-                Integer groupIndex = getGroupIndexByKey(groupKey);
-
-                if (groupIndex != null) {
-                    // Remove the group from memory
-                    Group removedGroup = groups.remove(groupIndex.intValue());
-
-                    handler.onObjectReceived(removedGroup);
-                }
-            }
-        };
-
-        // Observe all removed groups from remote group node.
-        usersGroupDB.observeUserGroupsDeletion(groupDeletedHanlder);
-    }
-
     private List<String> getGroupsFromLocal() {
         // Get the group keys from local db
         return table.getUserGroupKeys(userKey);

@@ -78,7 +78,7 @@ public class GroceryFragment extends TableViewFragment {
             listTitleText.requestFocus();
 
             final Spinner groupComboBox = (Spinner) dialog.findViewById(R.id.spinner);
-            GroupComboBoxAdapter comboBoxAdapter = new GroupComboBoxAdapter(context,
+            GroupComboBoxAdapter<Group> comboBoxAdapter = new GroupComboBoxAdapter<>(context,
                     android.R.layout.simple_spinner_item,
                     UserGroceryListsModel.getInstance().getAllGroups());
             groupComboBox.setAdapter(comboBoxAdapter);

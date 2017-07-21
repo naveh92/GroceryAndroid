@@ -113,23 +113,10 @@ public class UserGroceryListsModel extends AbstractModel {
                 }
             }
         };
-        // Remove
-        // TODO: Need this? because we registered to listAdded and listDeleted up
-        ObjectReceivedHandler<Group> groupDeleted = new ObjectReceivedHandler<Group>() {
-            @Override
-            public void onObjectReceived(Group deletedGroup) {
-                // TODO: ?
-//        removeGroupObserver(groupKey: deletedGroup.key)
-
-                removeGroupLists(deletedGroup.getKey(), privateListDeleted);
-            }
-        };
-
 
         // Observe the groups in which the user is in.
         // For each incoming group, we will fetch all lists associated with it.
         groupsDBModel.observeUserGroupsAddition(groupAdded);
-        groupsDBModel.observeUserGroupsDeletion(groupDeleted);
     }
 
     private Boolean containsList(GroceryList list) {
@@ -203,7 +190,7 @@ public class UserGroceryListsModel extends AbstractModel {
         return groupsDBModel.getAllGroups();
     }
 
-    // TODO: ?
+    // TODO: Remove group observer when leaving a group
 //    private func removeGroupObserver(groupKey: NSString) {
 //        guard let dbIndex = listsDb.index(where: { $0.groupKey == groupKey }) else { return }
 //
