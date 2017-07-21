@@ -9,7 +9,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,8 +37,6 @@ public class UserGroupsDB {
      */
     public void getUserGroupsByLastUpdateDate(Long lastUpdated, final ObjectReceivedHandler<Map<String, Boolean>> handler) {
         // Observe only if the remote update-time is after the the local
-        // TODO: Dafuq? User in db only has 1 global lastUpdated
-        // TODO: localUpdateTime.toFirebase()?
         userRef.orderByChild(LAST_UPDATED_STRING).startAt(lastUpdated).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -47,22 +44,15 @@ public class UserGroupsDB {
                 if (dataSnapshot.exists()) {
                     Map<String, Object> groupNodeValue = (Map<String, Object>) ((Map<String, Object>) dataSnapshot.getValue()).get(GROUPS_NODE_URL);
 
+                    // Extract the entries (GroupKey, Relevant) from the Map.
                     Map<String, Boolean> groupEntries = extractEntries(groupNodeValue);
-
-//                    // Create a list containing the relevant group keys.
-//                    List<String> groupKeys = getRelevantGroupKeys(groupNodeValue);
-
-                    // Send the received list of GroupKeys to the Model.
-//                    handler.onObjectReceived(groupKeys);
                     handler.onObjectReceived(groupEntries);
                 }
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-// TODO:
-            }
-        });
+            public void onCancelled(DatabaseError databaseError) {}
+        })
     }
 
     /**
@@ -83,15 +73,14 @@ public class UserGroupsDB {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-// TODO:
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
     /**
      * This function observes the remote DB for all deleted Groups.
      */
+    // TODO: Who used to call this?
     public void observeUserGroupsDeletion(final ObjectReceivedHandler<String> handler) {
         userGroupsRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -177,12 +166,9 @@ public class UserGroupsDB {
         for (Map.Entry<String, Object> entry : groupsNodeValues.entrySet()) {
             String key = entry.getKey();
 
-            // Check if this group is relevant
+            // Add this group only if it's relevant.
             if (key != null && !key.equals(UserGroupsDB.LAST_UPDATED_STRING) && (Boolean) entry.getValue()) {
                 groupKeys.add(key);
-            }
-            else {
-                // TODO: Handle archived groups
             }
         }
 
@@ -195,7 +181,7 @@ public class UserGroupsDB {
         return groupKeys;
     }
 
-    // TODO: ?
+    // TODO: Remove observers when destroyed
 //    func removeObservers() {
 //        userRef.removeAllObservers()
 //        userGroupsRef.removeAllObservers()

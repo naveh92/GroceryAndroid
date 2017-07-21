@@ -111,7 +111,7 @@ public class GroceryListsByGroupDB {
         return new GroceryList(key, groupKey, title , relevant);
     }
 
-    // TODO: ?
+    // TODO: Remove observers
 //    func removeObservers() {
 //        query.removeAllObservers()
 //    }

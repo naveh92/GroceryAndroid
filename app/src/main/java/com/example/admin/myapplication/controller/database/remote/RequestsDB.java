@@ -57,11 +57,8 @@ public class RequestsDB {
         requestsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // TODO: Every time we get an update from remote, this will remove all objects?
-//                // This method is called once with the initial value and again
-//                // whenever data at this location is updated.
-//                handler.removeAllObjects();
-
+                // No need to remove all requests and then add them back -
+                // We perform a merge between the old & new data in the Adapter tier.
                 handleDataSnapshot(dataSnapshot, handler);
             }
 

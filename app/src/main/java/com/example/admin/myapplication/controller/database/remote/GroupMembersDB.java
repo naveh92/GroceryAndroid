@@ -70,9 +70,7 @@ public class GroupMembersDB {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // TODO:
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
@@ -109,16 +107,14 @@ public class GroupMembersDB {
 
         databaseRef.updateChildren(newValues);
 
-        // TODO: When finished?
-        // We updated the members value, so we should set the last updated time.
+        // We finished updating the members value, so we should set the last updated time.
         updateLastUpdatedTime();
     }
 
     public void removeMember(String userKey) {
         databaseRef.child(userKey).setValue(false);
 
-        // TODO: When finished?
-        // We updated the members value, so we should set the last updated time.
+        // We finished updating the members value, so we should set the last updated time.
         updateLastUpdatedTime();
     }
 

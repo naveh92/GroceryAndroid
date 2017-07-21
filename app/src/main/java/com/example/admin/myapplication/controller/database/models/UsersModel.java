@@ -8,6 +8,7 @@ import com.example.admin.myapplication.model.entities.User;
 
 /**
  * Created by gun2f on 6/17/2017.
+ * A User object never changes: Its name, key, etc.
  *
  * This Model tries to get the User from local DB first,
  * and if it doesn't exist, fetches it from Remote DB and adds it to local.
@@ -92,6 +93,6 @@ public class UsersModel extends AbstractModel {
 
     private void addNewUserToLocal(User user) {
         table.addNewUser(user);
-//        TODO: LastUpdatedTable? We don't really use this..
+        // No need to update LastUpdatedTable, because we won't use it.
     }
 }

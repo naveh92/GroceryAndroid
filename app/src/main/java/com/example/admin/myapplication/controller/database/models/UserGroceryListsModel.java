@@ -190,7 +190,7 @@ public class UserGroceryListsModel extends AbstractModel {
         return groupsDBModel.getAllGroups();
     }
 
-    // TODO: Remove group observer when leaving a group
+    // TODO: Remove group observer when leaving a group (Could be called from removeGroupLists maybe?)
 //    private func removeGroupObserver(groupKey: NSString) {
 //        guard let dbIndex = listsDb.index(where: { $0.groupKey == groupKey }) else { return }
 //
