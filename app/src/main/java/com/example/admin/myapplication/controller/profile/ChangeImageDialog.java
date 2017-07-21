@@ -21,7 +21,7 @@ public class ChangeImageDialog extends Dialog {
     public ChangeImageDialog(Context context) {
         super(context);
 
-        activity = (Activity)context;
+        activity = (Activity) context;
 
         setContentView(R.layout.change_image_dialog);
         setTitle(context.getString(R.string.choose_media));
