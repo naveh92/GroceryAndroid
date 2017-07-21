@@ -52,7 +52,7 @@ public class UserGroupsDB {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {}
-        })
+        });
     }
 
     /**
@@ -76,6 +76,7 @@ public class UserGroupsDB {
             public void onCancelled(DatabaseError databaseError) {}
         });
     }
+
 
     /**
      * This function adds a group to the user's groups
