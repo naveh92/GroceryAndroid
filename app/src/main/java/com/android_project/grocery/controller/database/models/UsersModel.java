@@ -70,8 +70,11 @@ public class UsersModel extends AbstractModel {
             final ObjectReceivedHandler<User> remoteUserReceivedHandler = new ObjectReceivedHandler<User>() {
                 @Override
                 public void onObjectReceived(User user) {
-                    // Save the remote user to the local db.
-                    addNewUserToLocal(user);
+                    // If an actual user has been returned
+                    if (user != null) {
+                        // Save the remote user to the local db.
+                        addNewUserToLocal(user);
+                    }
 
                     // Pass it on.
                     handler.onObjectReceived(user);

@@ -71,6 +71,10 @@ public class UsersDB {
                         break;
                     }
                 }
+                // In case we couldn't find the user, send null
+                else {
+                    handler.onObjectReceived(null);
+                }
             }
 
             @Override
