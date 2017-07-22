@@ -48,36 +48,38 @@ public class UsersTable extends AbstractTable {
     public User getUserByKey(String userKey) {
         User user = null;
 
-        // Define a projection that specifies which columns from the database
-        // we will actually use after this query.
-        String[] projection = { USER_KEY, FACEBOOK_KEY, NAME };
+        if (userKey != null) {
+            // Define a projection that specifies which columns from the database
+            // we will actually use after this query.
+            String[] projection = {USER_KEY, FACEBOOK_KEY, NAME};
 
-        // Filter results WHERE USER_KEY = userKey
-        String selection = USER_KEY + " = ?";
-        String[] selectionArgs = { userKey };
+            // Filter results WHERE USER_KEY = userKey
+            String selection = USER_KEY + " = ?";
+            String[] selectionArgs = {userKey};
 
-        // Sort the result Cursor
-        String sortOrder = NAME + " DESC";
+            // Sort the result Cursor
+            String sortOrder = NAME + " DESC";
 
-        Cursor cursor = readableDB.query(
-                TABLE_NAME,                               // The table to query
-                projection,                               // The columns to return
-                selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
-                null,                                     // Don't group the rows
-                null,                                     // Don't filter by row groups
-                sortOrder                                 // The sort order
-        );
+            Cursor cursor = readableDB.query(
+                    TABLE_NAME,                               // The table to query
+                    projection,                               // The columns to return
+                    selection,                                // The columns for the WHERE clause
+                    selectionArgs,                            // The values for the WHERE clause
+                    null,                                     // Don't group the rows
+                    null,                                     // Don't filter by row groups
+                    sortOrder                                 // The sort order
+            );
 
-        // Check the results
-        if (cursor.moveToNext()) {
-            String key = cursor.getString(cursor.getColumnIndexOrThrow(USER_KEY));
-            String facebookId = cursor.getString(cursor.getColumnIndexOrThrow(FACEBOOK_KEY));
-            String name = cursor.getString(cursor.getColumnIndexOrThrow(NAME));
+            // Check the results
+            if (cursor.moveToNext()) {
+                String key = cursor.getString(cursor.getColumnIndexOrThrow(USER_KEY));
+                String facebookId = cursor.getString(cursor.getColumnIndexOrThrow(FACEBOOK_KEY));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(NAME));
 
-            user = new User(key, facebookId, name);
+                user = new User(key, facebookId, name);
+            }
+            cursor.close();
         }
-        cursor.close();
 
         return user;
     }

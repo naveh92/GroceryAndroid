@@ -89,6 +89,11 @@ public class RequestsModel extends AbstractModel {
 
         // Handle each request individually
         for (GroceryRequest r : requestsFromLocal) {
+            // TODO:
+            if (r.getUserKey() == null) {
+                System.out.println();
+            }
+
             handler.onObjectReceived(r);
         }
     }

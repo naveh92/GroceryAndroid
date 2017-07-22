@@ -33,36 +33,37 @@ public class GroupMembersTable extends AbstractTable {
     }
 
     public List<String> getGroupMembers(String groupKey) {
-        // Define a projection that specifies which columns from the database
-        // we will actually use after this query.
-        String[] projection = { USER_KEY };
-
-        // Filter results WHERE USER_KEY = userKey
-        String selection = GROUP_KEY + " = ?";
-        String[] selectionArgs = { groupKey };
-
-        // Sort the result Cursor
-        String sortOrder = USER_KEY + " DESC";
-
-        Cursor cursor = readableDB.query(
-                TABLE_NAME,                               // The table to query
-                projection,                               // The columns to return
-                selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
-                null,                                     // Don't group the rows
-                null,                                     // Don't filter by row groups
-                sortOrder                                 // The sort order
-        );
-
-        // Add all the results to a list
         List<String> groupMembersKeys = new ArrayList<>();
 
-        while (cursor.moveToNext()) {
-            String currentMemberKey = cursor.getString(cursor.getColumnIndexOrThrow(USER_KEY));
-            groupMembersKeys.add(currentMemberKey);
-        }
+        if (groupKey != null) {
+            // Define a projection that specifies which columns from the database
+            // we will actually use after this query.
+            String[] projection = {USER_KEY};
 
-        cursor.close();
+            // Filter results WHERE USER_KEY = userKey
+            String selection = GROUP_KEY + " = ?";
+            String[] selectionArgs = {groupKey};
+
+            // Sort the result Cursor
+            String sortOrder = USER_KEY + " DESC";
+
+            Cursor cursor = readableDB.query(
+                    TABLE_NAME,                               // The table to query
+                    projection,                               // The columns to return
+                    selection,                                // The columns for the WHERE clause
+                    selectionArgs,                            // The values for the WHERE clause
+                    null,                                     // Don't group the rows
+                    null,                                     // Don't filter by row groups
+                    sortOrder                                 // The sort order
+            );
+
+            // Add all the results to a list
+            while (cursor.moveToNext()) {
+                String currentMemberKey = cursor.getString(cursor.getColumnIndexOrThrow(USER_KEY));
+                groupMembersKeys.add(currentMemberKey);
+            }
+            cursor.close();
+        }
 
         return groupMembersKeys;
     }
@@ -86,14 +87,16 @@ public class GroupMembersTable extends AbstractTable {
     }
 
     public void delete(String groupKey, String userKey) {
-        // Define 'where' part of query.
-        String selection = GROUP_KEY + " = ? and " + USER_KEY + " = ?";
+        if (groupKey != null && userKey != null) {
+            // Define 'where' part of query.
+            String selection = GROUP_KEY + " = ? and " + USER_KEY + " = ?";
 
-        // Specify arguments in placeholder order.
-        String[] selectionArgs = { groupKey, userKey };
+            // Specify arguments in placeholder order.
+            String[] selectionArgs = {groupKey, userKey};
 
-        // Issue SQL statement.
-        writableDB.delete(TABLE_NAME, selection, selectionArgs);
+            // Issue SQL statement.
+            writableDB.delete(TABLE_NAME, selection, selectionArgs);
+        }
     }
 
     @Override
@@ -102,13 +105,15 @@ public class GroupMembersTable extends AbstractTable {
     }
 
     public void deleteAllGroupMembers(String groupKey) {
-        // Define 'where' part of query.
-        String selection = GROUP_KEY + " = ?";
+        if (groupKey != null) {
+            // Define 'where' part of query.
+            String selection = GROUP_KEY + " = ?";
 
-        // Specify arguments in placeholder order.
-        String[] selectionArgs = { groupKey };
+            // Specify arguments in placeholder order.
+            String[] selectionArgs = {groupKey};
 
-        // Issue SQL statement.
-        writableDB.delete(TABLE_NAME, selection, selectionArgs);
+            // Issue SQL statement.
+            writableDB.delete(TABLE_NAME, selection, selectionArgs);
+        }
     }
 }

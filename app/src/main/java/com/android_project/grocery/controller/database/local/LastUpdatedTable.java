@@ -54,33 +54,35 @@ public class LastUpdatedTable extends AbstractTable {
     public Long getLastUpdateTime(String tableName, String key) {
         Long lastUpdateTime = 0L;
 
-        // Define a projection that specifies which columns from the database
-        // we will actually use after this query.
-        String[] projection = {LAST_UPDATE_TIME};
+        if (tableName != null && key != null) {
+            // Define a projection that specifies which columns from the database
+            // we will actually use after this query.
+            String[] projection = {LAST_UPDATE_TIME};
 
-        // Filter results WHERE TABLE = tableName
-        String selection = TABLE + " = ? and " + KEY + " = ?";
-        String[] selectionArgs = {tableName, key};
+            // Filter results WHERE TABLE = tableName
+            String selection = TABLE + " = ? and " + KEY + " = ?";
+            String[] selectionArgs = {tableName, key};
 
-        // Sort the result Cursor
-        String sortOrder = TABLE + " DESC";
+            // Sort the result Cursor
+            String sortOrder = TABLE + " DESC";
 
-        Cursor cursor = readableDB.query(
-                TABLE_NAME,                               // The table to query
-                projection,                               // The columns to return
-                selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
-                null,                                     // Don't group the rows
-                null,                                     // Don't filter by row groups
-                sortOrder                                 // The sort order
-        );
+            Cursor cursor = readableDB.query(
+                    TABLE_NAME,                               // The table to query
+                    projection,                               // The columns to return
+                    selection,                                // The columns for the WHERE clause
+                    selectionArgs,                            // The values for the WHERE clause
+                    null,                                     // Don't group the rows
+                    null,                                     // Don't filter by row groups
+                    sortOrder                                 // The sort order
+            );
 
-        // Check the results
-        if (cursor.moveToNext()) {
-            // Extract the data
-            lastUpdateTime = Long.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(LAST_UPDATE_TIME)));
+            // Check the results
+            if (cursor.moveToNext()) {
+                // Extract the data
+                lastUpdateTime = Long.valueOf(cursor.getString(cursor.getColumnIndexOrThrow(LAST_UPDATE_TIME)));
+            }
+            cursor.close();
         }
-        cursor.close();
 
         return lastUpdateTime;
 

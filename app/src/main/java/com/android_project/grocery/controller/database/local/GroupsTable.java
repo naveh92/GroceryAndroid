@@ -54,35 +54,37 @@ public class GroupsTable extends AbstractTable {
     public Group getGroupByKey(String groupKey) {
         Group group = null;
 
-        // Define a projection that specifies which columns from the database
-        // we will actually use after this query.
-        String[] projection = {GROUP_KEY, TITLE};
+        if (groupKey != null) {
+            // Define a projection that specifies which columns from the database
+            // we will actually use after this query.
+            String[] projection = {GROUP_KEY, TITLE};
 
-        // Filter results WHERE GROUP_KEY = groupKey
-        String selection = GROUP_KEY + " = ?";
-        String[] selectionArgs = {groupKey};
+            // Filter results WHERE GROUP_KEY = groupKey
+            String selection = GROUP_KEY + " = ?";
+            String[] selectionArgs = {groupKey};
 
-        // Sort the result Cursor
-        String sortOrder = TITLE + " DESC";
+            // Sort the result Cursor
+            String sortOrder = TITLE + " DESC";
 
-        Cursor cursor = readableDB.query(
-                TABLE_NAME,                               // The table to query
-                projection,                               // The columns to return
-                selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
-                null,                                     // Don't group the rows
-                null,                                     // Don't filter by row groups
-                sortOrder                                 // The sort order
-        );
+            Cursor cursor = readableDB.query(
+                    TABLE_NAME,                               // The table to query
+                    projection,                               // The columns to return
+                    selection,                                // The columns for the WHERE clause
+                    selectionArgs,                            // The values for the WHERE clause
+                    null,                                     // Don't group the rows
+                    null,                                     // Don't filter by row groups
+                    sortOrder                                 // The sort order
+            );
 
-        // Check the results
-        if (cursor.moveToNext()) {
-            String key = cursor.getString(cursor.getColumnIndexOrThrow(GROUP_KEY));
-            String title = cursor.getString(cursor.getColumnIndexOrThrow(TITLE));
+            // Check the results
+            if (cursor.moveToNext()) {
+                String key = cursor.getString(cursor.getColumnIndexOrThrow(GROUP_KEY));
+                String title = cursor.getString(cursor.getColumnIndexOrThrow(TITLE));
 
-            group = new Group(key, title);
+                group = new Group(key, title);
+            }
+            cursor.close();
         }
-        cursor.close();
 
         return group;
     }

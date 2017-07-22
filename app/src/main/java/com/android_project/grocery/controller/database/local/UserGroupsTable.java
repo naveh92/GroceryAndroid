@@ -35,34 +35,37 @@ public class UserGroupsTable extends AbstractTable {
     }
 
     public List<String> getUserGroupKeys(String userKey) {
-        // Define a projection that specifies which columns from the database
-        // we will actually use after this query.
-        String[] projection = { GROUP_KEY };
-
-        // Filter results WHERE USER_KEY = userKey
-        String selection = USER_KEY + " = ?";
-        String[] selectionArgs = { userKey };
-
-        // Sort the result Cursor
-        String sortOrder = GROUP_KEY + " DESC";
-
-        Cursor cursor = readableDB.query(
-                TABLE_NAME,                               // The table to query
-                projection,                               // The columns to return
-                selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
-                null,                                     // Don't group the rows
-                null,                                     // Don't filter by row groups
-                sortOrder                                 // The sort order
-        );
-
-        // Add all the results to a list
         List<String> groupKeys = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            String currentGroupKey = cursor.getString(cursor.getColumnIndexOrThrow(GROUP_KEY));
-            groupKeys.add(currentGroupKey);
+
+        if (userKey != null) {
+            // Define a projection that specifies which columns from the database
+            // we will actually use after this query.
+            String[] projection = {GROUP_KEY};
+
+            // Filter results WHERE USER_KEY = userKey
+            String selection = USER_KEY + " = ?";
+            String[] selectionArgs = {userKey};
+
+            // Sort the result Cursor
+            String sortOrder = GROUP_KEY + " DESC";
+
+            Cursor cursor = readableDB.query(
+                    TABLE_NAME,                               // The table to query
+                    projection,                               // The columns to return
+                    selection,                                // The columns for the WHERE clause
+                    selectionArgs,                            // The values for the WHERE clause
+                    null,                                     // Don't group the rows
+                    null,                                     // Don't filter by row groups
+                    sortOrder                                 // The sort order
+            );
+
+            // Add all the results to a list
+            while (cursor.moveToNext()) {
+                String currentGroupKey = cursor.getString(cursor.getColumnIndexOrThrow(GROUP_KEY));
+                groupKeys.add(currentGroupKey);
+            }
+            cursor.close();
         }
-        cursor.close();
 
         return groupKeys;
     }

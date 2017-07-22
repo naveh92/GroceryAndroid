@@ -41,6 +41,11 @@ public class RequestsTable extends AbstractTable {
     }
 
     public void addNewRequest(String listKey, GroceryRequest request) {
+        // TODO:
+        if (request.getUserKey() == null) {
+            System.out.println();
+        }
+
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(REQUEST_KEY, request.getKey());
@@ -55,68 +60,82 @@ public class RequestsTable extends AbstractTable {
     }
 
     public void togglePurchased(String requestKey, Boolean currentValue) {
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(PURCHASED, boolToInt(!currentValue));
+        if (requestKey != null) {
+            if (currentValue == null) {
+                currentValue = true;
+            }
 
-        // Filter results WHERE GROUP_KEY = groupKey
-        String selection = REQUEST_KEY + " = ?";
-        String[] selectionArgs = {requestKey};
+            // Create a new map of values, where column names are the keys
+            ContentValues values = new ContentValues();
+            values.put(PURCHASED, boolToInt(!currentValue));
 
-        // Update the existing row
-        writableDB.update(TABLE_NAME, values, selection, selectionArgs);
+            // Filter results WHERE GROUP_KEY = groupKey
+            String selection = REQUEST_KEY + " = ?";
+            String[] selectionArgs = {requestKey};
+
+            // Update the existing row
+            writableDB.update(TABLE_NAME, values, selection, selectionArgs);
+        }
     }
 
     public void updateItemName(String requestKey, String newItemName) {
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(ITEM_NAME, newItemName);
+        if (requestKey != null) {
+            if (newItemName == null) {
+                newItemName = "";
+            }
 
-        // Filter results WHERE GROUP_KEY = groupKey
-        String selection = REQUEST_KEY + " = ?";
-        String[] selectionArgs = {requestKey};
+            // Create a new map of values, where column names are the keys
+            ContentValues values = new ContentValues();
+            values.put(ITEM_NAME, newItemName);
 
-        // Update the existing row
-        writableDB.update(TABLE_NAME, values, selection, selectionArgs);
+            // Filter results WHERE GROUP_KEY = groupKey
+            String selection = REQUEST_KEY + " = ?";
+            String[] selectionArgs = {requestKey};
+
+            // Update the existing row
+            writableDB.update(TABLE_NAME, values, selection, selectionArgs);
+        }
     }
 
     public List<GroceryRequest> getRequestsByListKey(String listKey) {
         List<GroceryRequest> requests = new ArrayList<>();
 
-        // Define a projection that specifies which columns from the database
-        // we will actually use after this query.
-        String[] projection = {REQUEST_KEY, USER_KEY, ITEM_NAME, PURCHASED};
+        if (listKey != null) {
+            // Define a projection that specifies which columns from the database
+            // we will actually use after this query.
+            String[] projection = {REQUEST_KEY, USER_KEY, ITEM_NAME, PURCHASED};
 
-        // Filter results WHERE LIST_KEY = listKey
-        String selection = LIST_KEY + " = ?";
-        String[] selectionArgs = {listKey};
+            // Filter results WHERE LIST_KEY = listKey
+            String selection = LIST_KEY + " = ?";
+            String[] selectionArgs = {listKey};
 
-        // Sort the result Cursor
-        String sortOrder = ITEM_NAME + " DESC";
+            // Sort the result Cursor
+            String sortOrder = ITEM_NAME + " DESC";
 
-        Cursor cursor = readableDB.query(
-                TABLE_NAME,                               // The table to query
-                projection,                               // The columns to return
-                selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
-                null,                                     // Don't group the rows
-                null,                                     // Don't filter by row groups
-                sortOrder                                 // The sort order
-        );
+            Cursor cursor = readableDB.query(
+                    TABLE_NAME,                               // The table to query
+                    projection,                               // The columns to return
+                    selection,                                // The columns for the WHERE clause
+                    selectionArgs,                            // The values for the WHERE clause
+                    null,                                     // Don't group the rows
+                    null,                                     // Don't filter by row groups
+                    sortOrder                                 // The sort order
+            );
 
-        // Check the results
-        while (cursor.moveToNext()) {
-            // Extract the data
-            String key = cursor.getString(cursor.getColumnIndexOrThrow(REQUEST_KEY));
-            String userKey = cursor.getString(cursor.getColumnIndexOrThrow(USER_KEY));
-            String itemName = cursor.getString(cursor.getColumnIndexOrThrow(ITEM_NAME));
-            Boolean purchased = intToBool(cursor.getInt(cursor.getColumnIndexOrThrow(PURCHASED)));
+            // Check the results
+            while (cursor.moveToNext()) {
+                // Extract the data
+                String key = cursor.getString(cursor.getColumnIndexOrThrow(REQUEST_KEY));
+                String userKey = cursor.getString(cursor.getColumnIndexOrThrow(USER_KEY));
+                String itemName = cursor.getString(cursor.getColumnIndexOrThrow(ITEM_NAME));
+                Boolean purchased = intToBool(cursor.getInt(cursor.getColumnIndexOrThrow(PURCHASED)));
 
-            // Create a new GroceryRequest and add it.
-            GroceryRequest currentRequest = new GroceryRequest(key, userKey, itemName, purchased);
-            requests.add(currentRequest);
+                // Create a new GroceryRequest and add it.
+                GroceryRequest currentRequest = new GroceryRequest(key, userKey, itemName, purchased);
+                requests.add(currentRequest);
+            }
+            cursor.close();
         }
-        cursor.close();
 
         return requests;
     }
