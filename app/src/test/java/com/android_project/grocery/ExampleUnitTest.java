@@ -1,4 +1,4 @@
-package com.example.admin.grocery;
+package com.android_project.grocery;
 
 import org.junit.Test;
 
