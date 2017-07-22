@@ -58,7 +58,9 @@ public class GroupMembersTableAdapter extends ImageCellBaseAdapter {
 
         // Initialize the views
         super.initUserNameTextView(user.getKey(), (TextView)view.findViewById(R.id.userName));
-        super.initUserImageView(user.getKey(), view);
+        // We don't want to use cache - we want to re-fetch instead of init,
+        // because the views get mixed and when a member is added we get the wrong image.
+        super.initUserImageView(user.getKey(), view, false);
 
         return view;
     }

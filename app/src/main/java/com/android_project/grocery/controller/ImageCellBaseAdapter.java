@@ -26,12 +26,16 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
      * If we don't have the image we are looking for, we fetch it.
      * If we do, we return it from the cache.
      */
-//    private Map<String, Bitmap> images = new HashMap<>();
+    private Map<String, Bitmap> images = new HashMap<>();
 
     /**
-     * This function fetches the ImageView from ImageModel, and updates the UI accordingly.
+     * This function initializes the ImageView from ImageModel, and updates the UI accordingly.
+     * If the image exists in the cache (Map), we will get it from there.
+     * @param useCache - Whether or not to use the cache (Map).
+     *                   When useCache is false, this function doesn't call the cache (Map) at all,
+     *                   and fetches from ImageModel instead.
      */
-    protected void initUserImageView(final String userKey, View cell) {
+    protected void initUserImageView(final String userKey, View cell, final Boolean useCache) {
         final ImageView imageView = (ImageView)cell.findViewById(R.id.userImageView);
         final ProgressBar progressBar = (ProgressBar) cell.findViewById(R.id.pleaseWait);
 
@@ -50,29 +54,37 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
                     if (bitmap != null) {
                         imageView.setImageBitmap(bitmap);
 
-                        // Save this bitmap for later in case we try to get it again.
-//                        images.put(userKey, bitmap);
+                        if (useCache) {
+                            // Save this bitmap for later in case we try to get it again.
+                            images.put(userKey, bitmap);
+                        }
                     }
 
                     // Show the imageView and hide the progress-bar
                     imageView.setVisibility(View.VISIBLE);
+                }
+                if (progressBar != null) {
                     progressBar.setVisibility(View.INVISIBLE);
                 }
             }
         };
 
         // Check if this is the first time getting the relevant images.
-//        if (!images.containsKey(userKey)) {
-            // Retrieve the user image from storage.
-            ImageModel.getInstance().downloadImage(getContext(), userKey, receivedImageHandler);
+        if (!useCache || !images.containsKey(userKey)) {
+            fetchImage(userKey, receivedImageHandler);
+        }
+        else {
+            // Pass the image we previously received.
+            receivedImageHandler.onObjectReceived(images.get(userKey));
+        }
+    }
 
-            // Register this callback for when the image changes.
-            ImageModel.getInstance().registerCallback(receivedImageHandler);
-//        }
-//        else {
-//            // Pass the image we previously received.
-//            receivedImageHandler.onObjectReceived(images.get(userKey));
-//        }
+    private void fetchImage(String userKey, ObjectReceivedHandler<Bitmap> receivedImageHandler) {
+        // Retrieve the user image from storage.
+        ImageModel.getInstance().downloadImage(getContext(), userKey, receivedImageHandler);
+
+        // Register this callback for when the image changes.
+        ImageModel.getInstance().registerCallback(receivedImageHandler);
     }
 
     protected void initUserNameTextView(String userKey, final TextView userNameTV) {

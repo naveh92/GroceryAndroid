@@ -75,7 +75,8 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
 
         // Initialize the views
         super.initUserNameTextView(request.getUserKey(), (TextView)view.findViewById(R.id.userName));
-        super.initUserImageView(request.getUserKey(), view);
+        // Use cache to retrieve the image, if available.
+        super.initUserImageView(request.getUserKey(), view, true);
 
         return view;
     }
