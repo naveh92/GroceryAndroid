@@ -146,8 +146,8 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void showListPopup(View v) {
-        // Get the position of the list that has been clicked.
-        final int position = v.getId();
+        // Get the position of the row (list) that has been clicked.
+        final int position = ((View) v.getParent()).getId();
 
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();

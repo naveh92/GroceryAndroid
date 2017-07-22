@@ -24,26 +24,28 @@ import java.util.List;
  * Created by admin on 05/04/2017.
  */
 public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
+    private final Context mContext;
+    private final LayoutInflater inflater;
+    private static List<GroceryRequest> groceryRequests = new ArrayList<>();
+
     // Editing
     private String editingRequestKey = null;
     private String newItemName = null;
     private Boolean edited = false;
 
-    private static List<GroceryRequest> groceryRequests = new ArrayList<>();
-    private Context mContext;
-
     public GroceryRequestTableAdapter(Context c) {
         mContext = c;
+
+        // Get the LayoutInflater from the Context.
+        inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     public int getCount() {
         return groceryRequests.size();
     }
-
     public Object getItem(int position) {
         return null;
     }
-
     public long getItemId(int position) {
         return 0;
     }
@@ -53,9 +55,10 @@ public class GroceryRequestTableAdapter extends ImageCellBaseAdapter {
 
     // Create a new cell for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Get the LayoutInflater from the Context.
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        final View view = inflater.inflate(R.layout.grocery_request_table_cell, parent, false);
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.grocery_request_table_cell, parent, false);
+        }
+        final View view = convertView;
 
         // Get the relevant grocery-request
         GroceryRequest request = groceryRequests.get(position);

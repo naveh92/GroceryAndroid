@@ -40,14 +40,14 @@
     <string name="icon">Icon</string>
     <string name="menu">Menu</string>
     <string name="one_member">1 Member</string>
-    <string name="no_members">No Members</string>
+    <string name="no_members"/>
     <string name="members">Members</string>
     <string name="left_soger">(</string>
     <string name="right_soger">)</string>
     <string name="dot">.</string>
     <string name="description_limiter">,</string>
     <string name="three_dots">…</string>
-    <string name="empty_string"></string>
+    <string name="empty_string"/>
     <string name="done">Done</string>
     <string name="profile_user_name_tv_font_family">sans-serif-light</string>
 

@@ -22,21 +22,23 @@ import java.util.List;
  */
 public class GroupTableAdapter extends BaseAdapter {
     private static final int DESCRIPTION_MAX_CHAR_NUM = 25;
+    private static final String SPACE = " ";
     private static String ONE_MEMBER;
     private static String NO_MEMBERS;
     private static String MEMBERS;
     private static String LEFT_SOGER;
     private static String RIGHT_SOGER;
-    private static String DOT;
     private static String DELIMITER;
     private static String THREE_DOTS;
-    private static String SPACE = " ";
 
-    private Context mContext;
+    private final Context mContext;
+    private final LayoutInflater inflater;
     private UserGroupsModel db;
 
     public GroupTableAdapter(Context c, UserGroupsModel db) {
         mContext = c;
+        // Get the LayoutInflater from the Context.
+        inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.db = db;
 
         initStrings();
@@ -48,7 +50,6 @@ public class GroupTableAdapter extends BaseAdapter {
         MEMBERS = mContext.getString(R.string.members);
         LEFT_SOGER = mContext.getString(R.string.left_soger);
         RIGHT_SOGER = mContext.getString(R.string.right_soger);
-        DOT = mContext.getString(R.string.dot);
         DELIMITER = mContext.getString(R.string.description_limiter);
         THREE_DOTS = mContext.getString(R.string.three_dots);
     }
@@ -56,20 +57,19 @@ public class GroupTableAdapter extends BaseAdapter {
     public int getCount() {
         return db.getGroupsCount();
     }
-
     public Object getItem(int position) {
         return null;
     }
-
     public long getItemId(int position) {
         return 0;
     }
 
     // Create a new cell for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        // Get the LayoutInflater from the Context.
-        LayoutInflater inflater = LayoutInflater.from(mContext);
-        View view = inflater.inflate(R.layout.group_table_cell, parent, false);
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.group_table_cell, parent, false);
+        }
+        final View view = convertView;
 
         /**
          * -------------
@@ -87,8 +87,9 @@ public class GroupTableAdapter extends BaseAdapter {
          *  Description
          * -------------
          */
-        // Get the Description TextView, and set its text.
+        // Get the Description TextView, and reset its text.
         final TextView groupDescription = (TextView)view.findViewById(R.id.description);
+        groupDescription.setText("");
 
         // Create a list, holding the members of this group.
         final List<String> members = new ArrayList<>();
@@ -110,13 +111,14 @@ public class GroupTableAdapter extends BaseAdapter {
                     refreshDescription();
                 }
             }
+
             private void refreshDescription() {
                 String text = getDescriptionText(members);
                 groupDescription.setText(text);
             }
         };
-        new GroupMembersModel(currentGroup.getKey()).observeGroupMembers(memberReceivedHandler);
 
+        new GroupMembersModel(currentGroup.getKey()).observeGroupMembers(memberReceivedHandler);
         return view;
     }
 

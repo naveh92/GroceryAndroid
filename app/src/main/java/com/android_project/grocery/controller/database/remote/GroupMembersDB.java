@@ -34,7 +34,7 @@ public class GroupMembersDB {
         lastUpdatedRef = FirebaseDatabase.getInstance().getReference(GROUPS_NODE_URL).child(groupKey).child(LAST_UPDATED_NODE);
     }
 
-    public void fetchGroupMembers(final ObjectReceivedHandler<List<String>> handler) {
+    public void observeGroupMembers(final ObjectReceivedHandler<List<String>> handler) {
         // Read from the database
         databaseRef.addValueEventListener(new ValueEventListener() {
             @Override

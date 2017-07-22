@@ -26,7 +26,7 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
      * If we don't have the image we are looking for, we fetch it.
      * If we do, we return it from the cache.
      */
-    private Map<String, Bitmap> images = new HashMap<>();
+//    private Map<String, Bitmap> images = new HashMap<>();
 
     /**
      * This function fetches the ImageView from ImageModel, and updates the UI accordingly.
@@ -34,6 +34,15 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
     protected void initUserImageView(final String userKey, View cell) {
         final ImageView imageView = (ImageView)cell.findViewById(R.id.userImageView);
         final ProgressBar progressBar = (ProgressBar) cell.findViewById(R.id.pleaseWait);
+
+        // Reset the image & progressbar, because we will reload them.
+        if (imageView != null) {
+            imageView.setVisibility(View.INVISIBLE);
+        }
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
         final ObjectReceivedHandler<Bitmap> receivedImageHandler = new ObjectReceivedHandler<Bitmap>() {
             @Override
             public void onObjectReceived(Bitmap bitmap) {
@@ -42,7 +51,7 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
                         imageView.setImageBitmap(bitmap);
 
                         // Save this bitmap for later in case we try to get it again.
-                        images.put(userKey, bitmap);
+//                        images.put(userKey, bitmap);
                     }
 
                     // Show the imageView and hide the progress-bar
@@ -53,17 +62,17 @@ public abstract class ImageCellBaseAdapter extends BaseAdapter {
         };
 
         // Check if this is the first time getting the relevant images.
-        if (!images.containsKey(userKey)) {
+//        if (!images.containsKey(userKey)) {
             // Retrieve the user image from storage.
             ImageModel.getInstance().downloadImage(getContext(), userKey, receivedImageHandler);
 
             // Register this callback for when the image changes.
             ImageModel.getInstance().registerCallback(receivedImageHandler);
-        }
-        else {
-            // Pass the image we previously received.
-            receivedImageHandler.onObjectReceived(images.get(userKey));
-        }
+//        }
+//        else {
+//            // Pass the image we previously received.
+//            receivedImageHandler.onObjectReceived(images.get(userKey));
+//        }
     }
 
     protected void initUserNameTextView(String userKey, final TextView userNameTV) {
