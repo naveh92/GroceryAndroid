@@ -41,11 +41,6 @@ public class RequestsTable extends AbstractTable {
     }
 
     public void addNewRequest(String listKey, GroceryRequest request) {
-        // TODO:
-        if (request.getUserKey() == null) {
-            System.out.println();
-        }
-
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(REQUEST_KEY, request.getKey());

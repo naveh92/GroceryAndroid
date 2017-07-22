@@ -16,7 +16,7 @@ import java.util.List;
  * This Model's execution:
  * Fetch the RemoteUpdateTime (Every Group has it's own).
  * If it is after the localUpdateTime, observe all records from remote DB, and save to local DB.
- * If it is before localUpdateTime, fetch all records from local DB.
+ * If it is before localUpdateTime, fetch all records from local DB, and observe changes from remote DB..
  */
 public class GroupMembersModel extends AbstractModel {
     private final GroupMembersDB groupMembersDB;
@@ -88,6 +88,19 @@ public class GroupMembersModel extends AbstractModel {
      * This function fetches from Local (If up-to-date) or observes Remote (If not up-to-date).
      */
     public void observeGroupMembers(final ObjectHandler<User> handler) {
+        // We need to update, fetch from remote and merge with local.
+        final ObjectReceivedHandler<List<String>> remoteKeysHandler = new ObjectReceivedHandler<List<String>>() {
+            @Override
+            public void onObjectReceived(List<String> userKeys) {
+                // Clear the list - we are about to get a new value.
+                members.clear();
+                handler.removeAllObjects();
+
+                // Handle the received group members.
+                handleGroupMembers(userKeys, handler);
+            }
+        };
+
         final ObjectReceivedHandler<Long> remoteUpdateTimeHandler = new ObjectReceivedHandler<Long>() {
             @Override
             public void onObjectReceived(Long remoteLastUpdateTime) {
@@ -103,24 +116,13 @@ public class GroupMembersModel extends AbstractModel {
 
                     List<String> userKeysFromLocal = fetchGroupMembersFromLocalDB();
                     handleGroupMembersFromLocal(userKeysFromLocal, handler);
+
+                    // Observe RemoteDB for new incoming changes.
+                    groupMembersDB.observeGroupMembersChanges(remoteKeysHandler);
                 }
                 else {
-                    // We need to update, fetch from remote and merge with local.
-
-                    ObjectReceivedHandler<List<String>> remoteKeysHandler = new ObjectReceivedHandler<List<String>>() {
-                        @Override
-                        public void onObjectReceived(List<String> userKeys) {
-                            // Clear the list - we are about to get a new value.
-                            members.clear();
-                            handler.removeAllObjects();
-
-                            // Handle the received group members.
-                            handleGroupMembers(userKeys, handler);
-                        }
-                    };
-
                     // Fetch the keys from remote.
-                    groupMembersDB.fetchGroupMembers(remoteKeysHandler);
+                    groupMembersDB.observeGroupMembers(remoteKeysHandler);
                 }
             }
         };

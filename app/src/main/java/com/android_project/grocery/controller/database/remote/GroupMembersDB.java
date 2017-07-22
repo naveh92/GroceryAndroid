@@ -62,6 +62,25 @@ public class GroupMembersDB {
         });
     }
 
+    /**
+     * This function waits for a single update in the lastUpdatedTime of this group.
+     * Once the lastUpdatedTime value has changed, we start observing the members.
+     * That way, we can start observing only when there was an update, and everything will be overwritten with the new data from remote.
+     */
+    public void observeGroupMembersChanges(final ObjectReceivedHandler<List<String>> handler) {
+        // Read from the database
+        lastUpdatedRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // remote lastUpdatedTime value has changed ( = We received a change in members).
+                observeGroupMembers(handler);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {}
+        });
+    }
+
     public void getLastUpdatedTime(final ObjectReceivedHandler<Long> handler) {
         lastUpdatedRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -41,22 +41,26 @@ public class UsersModel extends AbstractModel {
             handler.onObjectReceived(user);
         }
         else {
-            final ObjectReceivedHandler<User> remoteUserReceivedHandler = new ObjectReceivedHandler<User>() {
-                @Override
-                public void onObjectReceived(User user) {
-                    if (user != null) {
-                        // Save the remote user to the local db.
-                        addNewUserToLocal(user);
-                    }
-
-                    // Pass it on.
-                    handler.onObjectReceived(user);
-                }
-            };
-
-            // If localDB failed, try to fetch from remote.
-            usersDB.findUserByKey(userKey, remoteUserReceivedHandler);
+            fetchUserByKeyFromRemote(userKey, handler);
         }
+    }
+
+    private void fetchUserByKeyFromRemote(final String userKey, final ObjectReceivedHandler<User> handler) {
+        final ObjectReceivedHandler<User> remoteUserReceivedHandler = new ObjectReceivedHandler<User>() {
+            @Override
+            public void onObjectReceived(User user) {
+                if (user != null) {
+                    // Save the remote user to the local db.
+                    addNewUserToLocal(user);
+                }
+
+                // Pass it on.
+                handler.onObjectReceived(user);
+            }
+        };
+
+        // If localDB failed, try to fetch from remote.
+        usersDB.findUserByKey(userKey, remoteUserReceivedHandler);
     }
 
     public void findUserByFacebookId(final String facebookId, final ObjectReceivedHandler<User> handler) {
