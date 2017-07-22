@@ -24,6 +24,7 @@ public class RequestsDB {
     private static final String REQUESTS_NODE_URL = "requests";
     private static final String LAST_UPDATED_STRING = "lastUpdated";
     private static final String DELIMITER = "/";
+    private ValueEventListener addRequesrsListener;
 
     public RequestsDB(String listKey) {
         requestsRef = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL + DELIMITER + listKey + DELIMITER + REQUESTS_NODE_URL);
@@ -54,7 +55,7 @@ public class RequestsDB {
 
     public void observeAllRequests(final ObjectHandler<GroceryRequest> handler) {
         // Read from the database
-        requestsRef.addValueEventListener(new ValueEventListener() {
+        addRequesrsListener = requestsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // No need to remove all requests and then add them back -
@@ -144,5 +145,10 @@ public class RequestsDB {
         };
 
         DatabaseDateManager.getTimestamp(timestampHandler);
+    }
+
+    public void Destroy(){
+        if (addRequesrsListener != null)
+            requestsRef.removeEventListener(addRequesrsListener);
     }
 }

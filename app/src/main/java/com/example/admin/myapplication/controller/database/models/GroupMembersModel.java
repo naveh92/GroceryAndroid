@@ -20,7 +20,6 @@ import java.util.List;
  */
 public class GroupMembersModel extends AbstractModel {
     private final GroupMembersDB groupMembersDB;
-    // TODO: Need to table.close() onDestroy()??
     private static GroupMembersTable table;
     private final String groupKey;
 
@@ -215,5 +214,9 @@ public class GroupMembersModel extends AbstractModel {
         private void deleteAllListsForGroup(String groupKey) {
             GroceryListsByGroupDB.deleteAllListsForGroup(groupKey);
         }
+    }
+
+    public void Desteoy(){
+        groupMembersDB.Destroy();
     }
 }

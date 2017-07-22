@@ -41,6 +41,7 @@ public class UserGroceryListsModel extends AbstractModel {
      * because we may login to a different user later.
      */
     public static void destroyInstance() {
+        //instance.Destroy();
         instance = null;
     }
 
@@ -188,6 +189,15 @@ public class UserGroceryListsModel extends AbstractModel {
 
     public List<Group> getAllGroups() {
         return groupsDBModel.getAllGroups();
+    }
+
+    public void Destroy(){
+        groupsDBModel.Destroy();
+
+        for (GroceryListsByGroupModel model:
+            listsDbs) {
+            model.Destroy();
+        }
     }
 
     // TODO: Remove group observer when leaving a group (Could be called from removeGroupLists maybe?)

@@ -210,4 +210,10 @@ public class GroupMembersTableActivity extends TableViewActivity {
             progressBar.setVisibility(View.INVISIBLE);
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        //db.Desteoy();
+        super.onDestroy();
+    }
 }

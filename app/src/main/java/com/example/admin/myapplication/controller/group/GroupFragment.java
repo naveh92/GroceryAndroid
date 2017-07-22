@@ -143,4 +143,10 @@ public class GroupFragment extends TableViewFragment {
             adapter.notifyDataSetChanged();
         }
     }
+
+    @Override
+    public void onDestroy() {
+        db.Destroy();
+        super.onDestroy();
+    }
 }

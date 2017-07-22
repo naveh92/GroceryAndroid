@@ -35,4 +35,8 @@ public class GroceryListsByGroupModel extends AbstractModel {
     public String getGroupKey() {
         return groupKey;
     }
+
+    public void Destroy(){
+        listsDb.Destroy();
+    }
 }

@@ -25,6 +25,7 @@ public class GroupMembersDB {
     private static final String LAST_UPDATED_NODE = "lastUpdateDate";
     private DatabaseReference databaseRef;
     private DatabaseReference lastUpdatedRef;
+    private ValueEventListener dataListener;
 
     public GroupMembersDB(String groupKey) {
         // This database reference will be used to fetch the members
@@ -36,7 +37,7 @@ public class GroupMembersDB {
 
     public void fetchGroupMembers(final ObjectReceivedHandler<List<String>> handler) {
         // Read from the database
-        databaseRef.addValueEventListener(new ValueEventListener() {
+        dataListener = databaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> userKeys = new ArrayList<>();
@@ -120,5 +121,10 @@ public class GroupMembersDB {
 
     private void updateLastUpdatedTime() {
         lastUpdatedRef.setValue(ServerValue.TIMESTAMP);
+    }
+
+    public void Destroy(){
+        if (dataListener != null)
+            databaseRef.removeEventListener(dataListener);
     }
 }

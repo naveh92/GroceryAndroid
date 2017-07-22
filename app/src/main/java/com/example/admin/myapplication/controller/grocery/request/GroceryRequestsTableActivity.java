@@ -173,4 +173,10 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
 
         dialog.show();
     }
+
+    @Override
+    protected void onDestroy() {
+        db.Destroy();
+        super.onDestroy();
+    }
 }

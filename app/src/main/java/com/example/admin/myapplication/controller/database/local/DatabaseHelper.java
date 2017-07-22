@@ -12,7 +12,7 @@ import com.example.admin.myapplication.controller.GroceryApp;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
     private static DatabaseHelper instance = null;
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "database.db";
 
     private DatabaseHelper(Context context) {

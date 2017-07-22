@@ -131,4 +131,8 @@ public class RequestsModel extends AbstractModel {
     private void updateLastUpdateTime() {
         updateLastUpdatedTable(table.getTableName(), listKey);
     }
+
+    public void Destroy(){
+        requestsDB.Destroy();
+    }
 }

@@ -265,4 +265,8 @@ public class UserGroupsModel extends AbstractModel {
 
         return false;
     }
+
+    public void Destroy() {
+        usersGroupDB.removeListeners();
+    }
 }
