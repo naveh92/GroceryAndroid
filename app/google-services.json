@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:340765195517:android:f515085f01f20f86",
         "android_client_info": {
-          "package_name": "com.example.admin.myapplication"
+          "package_name": "com.android_project.grocery"
         }
       },
       "oauth_client": [
