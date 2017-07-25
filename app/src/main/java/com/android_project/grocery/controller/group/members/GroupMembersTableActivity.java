@@ -213,7 +213,7 @@ public class GroupMembersTableActivity extends TableViewActivity {
 
     @Override
     protected void onDestroy() {
-        //db.Desteoy();
+        db.Desteoy();
         super.onDestroy();
     }
 }

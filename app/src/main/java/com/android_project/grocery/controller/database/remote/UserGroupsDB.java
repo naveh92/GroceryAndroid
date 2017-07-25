@@ -25,7 +25,7 @@ public class UserGroupsDB {
     private static final String DELIMITER = "/";
     private DatabaseReference userRef;
     private DatabaseReference userGroupsRef;
-    private ValueEventListener usergroupValueListen;
+    private ArrayList<ValueEventListener> userGroupValueListenList = new ArrayList<>();;
 
     public UserGroupsDB(String userKey) {
         userRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + DELIMITER + userKey);
@@ -59,7 +59,7 @@ public class UserGroupsDB {
      * This function observes (does NOT query) the remote DB for all Groups.
      */
     public void getAllUserGroups(final ObjectReceivedHandler<List<String>> handler) {
-        usergroupValueListen = userGroupsRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener userGroupValueListen = userGroupsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // If we got groups
@@ -75,6 +75,7 @@ public class UserGroupsDB {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+        userGroupValueListenList.add(userGroupValueListen);
     }
 
 
@@ -156,9 +157,14 @@ public class UserGroupsDB {
         return groupKeys;
     }
 
-    public void removeListeners(){
-        if (usergroupValueListen != null)
-            userGroupsRef.removeEventListener(usergroupValueListen);
+    public void Destroy(){
+        if (!userGroupValueListenList.isEmpty()){
+            for (ValueEventListener item:
+                    userGroupValueListenList) {
+                userGroupsRef.removeEventListener(item);
+
+            }
+        }
 
     }
 }

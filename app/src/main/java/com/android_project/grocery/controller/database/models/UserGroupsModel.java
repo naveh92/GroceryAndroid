@@ -267,6 +267,6 @@ public class UserGroupsModel extends AbstractModel {
     }
 
     public void Destroy() {
-        usersGroupDB.removeListeners();
+        usersGroupDB.Destroy();
     }
 }

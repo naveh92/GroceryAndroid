@@ -11,7 +11,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,7 +26,7 @@ public class RequestsDB {
     private static final String REQUESTS_NODE_URL = "requests";
     private static final String LAST_UPDATED_STRING = "lastUpdated";
     private static final String DELIMITER = "/";
-    private ValueEventListener addRequesrsListener;
+    private ArrayList<ValueEventListener> addRequestsListenerList = new ArrayList<>();;
 
     public RequestsDB(String listKey) {
         requestsRef = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL + DELIMITER + listKey + DELIMITER + REQUESTS_NODE_URL);
@@ -55,7 +57,7 @@ public class RequestsDB {
 
     public void observeAllRequests(final ObjectHandler<GroceryRequest> handler) {
         // Read from the database
-        addRequesrsListener = requestsRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener addRequestsListener = requestsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // No need to remove all requests and then add them back -
@@ -69,6 +71,7 @@ public class RequestsDB {
                 Log.w(TAG, "Failed to read grocery-lists value.", error.toException());
             }
         });
+        addRequestsListenerList.add(addRequestsListener);
     }
 
     private void handleDataSnapshot(DataSnapshot incomingSnapshot, ObjectHandler<GroceryRequest> handler) {
@@ -148,7 +151,12 @@ public class RequestsDB {
     }
 
     public void Destroy(){
-        if (addRequesrsListener != null)
-            requestsRef.removeEventListener(addRequesrsListener);
+        if (!addRequestsListenerList.isEmpty()){
+            for (ValueEventListener item:
+                addRequestsListenerList) {
+
+                requestsRef.removeEventListener(item);
+            }
+        }
     }
 }

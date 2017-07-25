@@ -26,7 +26,7 @@ public class GroceryListsByGroupDB {
     private static final String LISTS_NODE_URL = "grocery-lists";
     private static final String TAG = "GroceryListsByGroupDB";
     private Query query;
-    private ChildEventListener queryChiledListen;
+    private ArrayList<ChildEventListener> queryChildListenList = new ArrayList<>();
 
     public GroceryListsByGroupDB(String groupKey) {
         query = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL).orderByChild(GroceryList.GROUP_KEY_STRING).equalTo(groupKey);
@@ -37,7 +37,9 @@ public class GroceryListsByGroupDB {
      */
     public void observeLists(final ObjectReceivedHandler<GroceryList> listAddedHandler,
                              final ObjectReceivedHandler<GroceryList> listRemovedHandler) {
-        queryChiledListen = query.addChildEventListener(new ChildEventListener() {
+
+
+        ChildEventListener queryChildListen = query.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 receivedChildAdded(dataSnapshot, listAddedHandler);
@@ -56,6 +58,7 @@ public class GroceryListsByGroupDB {
                 Log.d(TAG, "Failed to retrieve Grocery-lists..");
             }
         });
+        queryChildListenList.add(queryChildListen);
     }
 
     public static void deleteAllListsForGroup(final String deletedGroupKey) {
@@ -113,8 +116,13 @@ public class GroceryListsByGroupDB {
     }
 
     public void Destroy(){
-        if (queryChiledListen != null)
-            query.removeEventListener(queryChiledListen);
+        if (!queryChildListenList.isEmpty()){
+            for (ChildEventListener item:
+                    queryChildListenList) {
+                query.removeEventListener(item);
+
+            }
+        }
     }
 
 }

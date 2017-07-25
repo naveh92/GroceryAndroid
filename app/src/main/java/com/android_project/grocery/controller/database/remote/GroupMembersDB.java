@@ -25,7 +25,7 @@ public class GroupMembersDB {
     private static final String LAST_UPDATED_NODE = "lastUpdateDate";
     private DatabaseReference databaseRef;
     private DatabaseReference lastUpdatedRef;
-    private ValueEventListener dataListener;
+    private ArrayList<ValueEventListener> dataListenerList = new ArrayList<>();;
 
     public GroupMembersDB(String groupKey) {
         // This database reference will be used to fetch the members
@@ -36,8 +36,9 @@ public class GroupMembersDB {
     }
 
     public void observeGroupMembers(final ObjectReceivedHandler<List<String>> handler) {
+
         // Read from the database
-        dataListener = databaseRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener dataListener = databaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> userKeys = new ArrayList<>();
@@ -61,6 +62,7 @@ public class GroupMembersDB {
                 Log.w(TAG, "Failed to read group members value.", error.toException());
             }
         });
+        dataListenerList.add(dataListener);
     }
 
     /**
@@ -143,7 +145,13 @@ public class GroupMembersDB {
     }
 
     public void Destroy(){
-        if (dataListener != null)
-            databaseRef.removeEventListener(dataListener);
+        if (!dataListenerList.isEmpty()) {
+
+            for (ValueEventListener item:
+                    dataListenerList) {
+
+                databaseRef.removeEventListener(item);
+            }
+        }
     }
 }
