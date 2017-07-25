@@ -18,14 +18,14 @@ import java.util.Map;
 /**
  * Created by admin on 06/04/2017.
  */
-public class GroupMembersDB {
+public class GroupMembersDB extends AbstractRemoteDB {
     private static final String TAG = "GroupMembersDB";
     private static final String GROUPS_NODE_URL = "groups";
     private static final String MEMBERS_NODE_URL = "members";
     private static final String LAST_UPDATED_NODE = "lastUpdateDate";
     private DatabaseReference databaseRef;
     private DatabaseReference lastUpdatedRef;
-    private ArrayList<ValueEventListener> dataListenerList = new ArrayList<>();;
+    private ArrayList<ValueEventListener> groupsListeners = new ArrayList<>();
 
     public GroupMembersDB(String groupKey) {
         // This database reference will be used to fetch the members
@@ -36,9 +36,7 @@ public class GroupMembersDB {
     }
 
     public void observeGroupMembers(final ObjectReceivedHandler<List<String>> handler) {
-
-        // Read from the database
-        ValueEventListener dataListener = databaseRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<String> userKeys = new ArrayList<>();
@@ -61,8 +59,11 @@ public class GroupMembersDB {
                 // Failed to read value
                 Log.w(TAG, "Failed to read group members value.", error.toException());
             }
-        });
-        dataListenerList.add(dataListener);
+        };
+
+        // Read from the database
+        databaseRef.addValueEventListener(listener);
+        groupsListeners.add(listener);
     }
 
     /**
@@ -144,14 +145,10 @@ public class GroupMembersDB {
         lastUpdatedRef.setValue(ServerValue.TIMESTAMP);
     }
 
-    public void Destroy(){
-        if (!dataListenerList.isEmpty()) {
-
-            for (ValueEventListener item:
-                    dataListenerList) {
-
-                databaseRef.removeEventListener(item);
-            }
+    @Override
+    public void removeListeners() {
+        for (ValueEventListener listener : groupsListeners) {
+            databaseRef.removeEventListener(listener);
         }
     }
 }

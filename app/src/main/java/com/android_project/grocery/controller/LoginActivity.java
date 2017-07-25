@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android_project.grocery.controller.database.local.DatabaseHelper;
 import com.android_project.grocery.controller.database.models.ImageModel;
 import com.android_project.grocery.model.entities.User;
 import com.android_project.grocery.R;
@@ -26,7 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.facebook.FacebookSdk;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends CustomActivity {
     private static final String TAG = "LoginActivity";
     private FirebaseAuth.AuthStateListener mAuthListener;
     private CallbackManager mCallbackManager;
@@ -169,6 +170,14 @@ public class LoginActivity extends Activity {
     public void onStop() {
         super.onStop();
         AuthenticationManager.getInstance().removeAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onDestroy() {
+        UsersModel.getInstance().destroy();
+        // ImageModel doesn't need to be destroyed because its not an AbstractModel (No observers)
+
+        super.onDestroy();
     }
 
     private void updateUI(FirebaseUser user) {

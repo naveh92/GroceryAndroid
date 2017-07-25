@@ -34,6 +34,8 @@ public class UsersTable extends AbstractTable {
     }
 
     public void addNewUser(User user) {
+        final SQLiteDatabase writableDB = getWritableDB();
+
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(USER_KEY, user.getKey());
@@ -46,6 +48,7 @@ public class UsersTable extends AbstractTable {
     }
 
     public User getUserByKey(String userKey) {
+        final SQLiteDatabase readableDB = getReadableDB();
         User user = null;
 
         if (userKey != null) {
@@ -85,6 +88,7 @@ public class UsersTable extends AbstractTable {
     }
 
     public User getUserByFacebookId(String facebookId) {
+        final SQLiteDatabase readableDB = getReadableDB();
         User user = null;
 
         // Define a projection that specifies which columns from the database

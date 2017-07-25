@@ -102,4 +102,10 @@ public class UsersModel extends AbstractModel {
         table.addNewUser(user);
         // No need to update LastUpdatedTable, because we won't use it.
     }
+
+    /**
+     * No need to destroy - UsersDB isn't even an AbstractRemoteDB, because it has no Listeners.
+     */
+    @Override
+    public void destroy() {}
 }

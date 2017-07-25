@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.PopupMenu;
 
 import com.android_project.grocery.controller.authentication.AuthenticationManager;
+import com.android_project.grocery.controller.database.local.DatabaseHelper;
 import com.android_project.grocery.controller.database.models.LastUpdatedModel;
 import com.android_project.grocery.controller.grocery.list.GroceryFragment;
 import com.android_project.grocery.R;
@@ -93,6 +94,15 @@ public class MainActivity extends FragmentActivity {
         super.onResume();
 
         refreshTab();
+    }
+
+    @Override
+    protected void onDestroy() {
+        DatabaseHelper.getInstance().close();
+        UserGroceryListsModel.getInstance().destroy();
+        // No need to destroy LastUpdatedModel because it's not an AbstractModel (No Listeners).
+
+        super.onDestroy();
     }
 
     private void refreshTab() {

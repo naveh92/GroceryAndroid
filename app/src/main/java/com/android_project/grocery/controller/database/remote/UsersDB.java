@@ -15,6 +15,8 @@ import java.util.Map;
 
 /**
  * Created by admin on 05/04/2017.
+ *
+ * No listeners to remove, because all we do in this DB is SingleValue observations.
  */
 public class UsersDB {
     private static final String TAG = "UsersDB";

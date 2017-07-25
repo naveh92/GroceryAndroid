@@ -40,6 +40,8 @@ public class LastUpdatedTable extends AbstractTable {
      *                  For GroupMembers - it will be the groupKey.
      */
     public void setLastUpdateTime(String tableName, String key, Long updateTime) {
+        final SQLiteDatabase writableDB = getWritableDB();
+
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(TABLE, tableName);
@@ -52,6 +54,7 @@ public class LastUpdatedTable extends AbstractTable {
     }
 
     public Long getLastUpdateTime(String tableName, String key) {
+        final SQLiteDatabase readableDB = getReadableDB();
         Long lastUpdateTime = 0L;
 
         if (tableName != null && key != null) {

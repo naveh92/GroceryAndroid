@@ -8,4 +8,6 @@ public abstract class AbstractModel {
         Long updateTime = System.currentTimeMillis();
         LastUpdatedModel.getInstance().setLastUpdateTime(tableName, entityKey, updateTime);
     }
+
+    public abstract void destroy();
 }

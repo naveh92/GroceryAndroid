@@ -218,7 +218,8 @@ public class GroupMembersModel extends AbstractModel {
         }
     }
 
-    public void Desteoy(){
-        groupMembersDB.Destroy();
+    @Override
+    public void destroy(){
+        groupMembersDB.removeListeners();
     }
 }

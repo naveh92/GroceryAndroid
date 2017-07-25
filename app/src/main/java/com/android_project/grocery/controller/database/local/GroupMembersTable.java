@@ -33,6 +33,7 @@ public class GroupMembersTable extends AbstractTable {
     }
 
     public List<String> getGroupMembers(String groupKey) {
+        final SQLiteDatabase readableDB = getReadableDB();
         List<String> groupMembersKeys = new ArrayList<>();
 
         if (groupKey != null) {
@@ -76,6 +77,8 @@ public class GroupMembersTable extends AbstractTable {
     }
 
     public void insert(String groupKey, String memberKey) {
+        final SQLiteDatabase writableDB = getWritableDB();
+
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(GROUP_KEY, groupKey);
@@ -88,6 +91,8 @@ public class GroupMembersTable extends AbstractTable {
 
     public void delete(String groupKey, String userKey) {
         if (groupKey != null && userKey != null) {
+            final SQLiteDatabase writableDB = getWritableDB();
+
             // Define 'where' part of query.
             String selection = GROUP_KEY + " = ? and " + USER_KEY + " = ?";
 
@@ -106,6 +111,8 @@ public class GroupMembersTable extends AbstractTable {
 
     public void deleteAllGroupMembers(String groupKey) {
         if (groupKey != null) {
+            final SQLiteDatabase writableDB = getWritableDB();
+
             // Define 'where' part of query.
             String selection = GROUP_KEY + " = ?";
 

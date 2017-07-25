@@ -113,6 +113,8 @@ public class GroupMembersTableActivity extends TableViewActivity {
                                 // Remove the group from the users list of groups.
                                 new UserGroupsModel(AuthenticationManager.getInstance().getCurrentUserId()).removeGroupFromUser(groupKey);
 
+                                // Note: No need to destroy these models, because we only remove and we don't use any Listeners.
+
                                 // Mock a back press so that we exit this activity and go back to the list of groups.
                                 GroupMembersTableActivity.this.onBackPressed();
                             }})
@@ -213,7 +215,7 @@ public class GroupMembersTableActivity extends TableViewActivity {
 
     @Override
     protected void onDestroy() {
-        db.Desteoy();
+        db.destroy();
         super.onDestroy();
     }
 }

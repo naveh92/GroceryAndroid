@@ -132,7 +132,8 @@ public class RequestsModel extends AbstractModel {
         updateLastUpdatedTable(table.getTableName(), listKey);
     }
 
-    public void Destroy(){
-        requestsDB.Destroy();
+    @Override
+    public void destroy(){
+        requestsDB.removeListeners();
     }
 }

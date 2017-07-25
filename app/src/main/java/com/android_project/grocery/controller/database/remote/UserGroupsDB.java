@@ -18,14 +18,19 @@ import java.util.Map;
  * It passes every received/deleted object directly to the Model, where the logic is.
  * (The only logic is extracting Group Keys from a DataSnapshot etc.)
  */
-public class UserGroupsDB {
+public class UserGroupsDB extends AbstractRemoteDB {
     private static final String USERS_NODE_URL = "users";
     private static final String GROUPS_NODE_URL = "groups";
     public static final String LAST_UPDATED_STRING = "lastUpdated";
     private static final String DELIMITER = "/";
     private DatabaseReference userRef;
     private DatabaseReference userGroupsRef;
-    private ArrayList<ValueEventListener> userGroupValueListenList = new ArrayList<>();;
+
+    /**
+     * The key is the reference, the value is the List of ValueEventListeners
+     */
+    private Map<DatabaseReference, List<ValueEventListener>> userRefListeners = new HashMap<>();
+    private ArrayList<ValueEventListener> userGroupsRefListeners = new ArrayList<>();
 
     public UserGroupsDB(String userKey) {
         userRef = FirebaseDatabase.getInstance().getReference(USERS_NODE_URL + DELIMITER + userKey);
@@ -36,8 +41,7 @@ public class UserGroupsDB {
      * This function executes a query in the remote DB, searching for records that were updated AFTER lastUpdated parameter.
      */
     public void getUserGroupsByLastUpdateDate(Long lastUpdated, final ObjectReceivedHandler<Map<String, Boolean>> handler) {
-        // Observe only if the remote update-time is after the the local
-        userRef.orderByChild(LAST_UPDATED_STRING).startAt(lastUpdated).addValueEventListener(new ValueEventListener() {
+        ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // If we got groups
@@ -52,14 +56,29 @@ public class UserGroupsDB {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {}
-        });
+        };
+
+        // Observe only if the remote update-time is after the the local
+        DatabaseReference ref = userRef.orderByChild(LAST_UPDATED_STRING).startAt(lastUpdated);
+        ref.addValueEventListener(listener);
+        addToListeners(ref, listener);
+    }
+
+    private void addToListeners(DatabaseReference ref, ValueEventListener listener) {
+        // If the map doesn't contain a list for this reference, create it.
+        if (!userRefListeners.containsKey(ref)) {
+            userRefListeners.put(ref, new ArrayList<ValueEventListener>());
+        }
+
+        // Add the listener to this references list
+        userRefListeners.get(ref).add(listener);
     }
 
     /**
      * This function observes (does NOT query) the remote DB for all Groups.
      */
     public void getAllUserGroups(final ObjectReceivedHandler<List<String>> handler) {
-        ValueEventListener userGroupValueListen = userGroupsRef.addValueEventListener(new ValueEventListener() {
+        ValueEventListener listener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // If we got groups
@@ -74,10 +93,11 @@ public class UserGroupsDB {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {}
-        });
-        userGroupValueListenList.add(userGroupValueListen);
-    }
+        };
 
+        userGroupsRef.addValueEventListener(listener);
+        userGroupsRefListeners.add(listener);
+    }
 
     /**
      * This function adds a group to the user's groups
@@ -157,14 +177,23 @@ public class UserGroupsDB {
         return groupKeys;
     }
 
-    public void Destroy(){
-        if (!userGroupValueListenList.isEmpty()){
-            for (ValueEventListener item:
-                    userGroupValueListenList) {
-                userGroupsRef.removeEventListener(item);
+    @Override
+    public void removeListeners() {
+        // Go over all entries in the userRef Listener map
+        for (DatabaseReference currentRef : userRefListeners.keySet()) {
+            List<ValueEventListener> currentRefListeners = userRefListeners.get(currentRef);
 
+            if (currentRefListeners != null) {
+                // Go over all the listeners we added to this reference
+                for (ValueEventListener currentListener : currentRefListeners) {
+                    currentRef.removeEventListener(currentListener);
+                }
             }
         }
 
+        // Remove all listeners from userGroups ref
+        for (ValueEventListener listener : userGroupsRefListeners) {
+            userGroupsRef.removeEventListener(listener);
+        }
     }
 }

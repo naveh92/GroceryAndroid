@@ -26,8 +26,6 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
     private RequestsModel db;
     private GroceryRequestTableAdapter adapter;
 
-    // TODO: REMOVE OBSERVERS ON onDestroy(). also in GroupMembers and any other activity.
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,7 +174,7 @@ public class GroceryRequestsTableActivity extends TableViewActivity {
 
     @Override
     protected void onDestroy() {
-        db.Destroy();
+        db.destroy();
         super.onDestroy();
     }
 }

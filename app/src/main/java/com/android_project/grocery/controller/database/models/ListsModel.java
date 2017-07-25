@@ -9,7 +9,6 @@ import com.android_project.grocery.controller.database.remote.ListsDB;
  *
  * This Model just passes arguments to the DBs.
  */
-
 public class ListsModel extends AbstractModel {
     private static ListsModel instance;
 
@@ -37,4 +36,10 @@ public class ListsModel extends AbstractModel {
         // Remote
         ListsDB.getInstance().deleteList(listKey);
     }
+
+    /**
+     * No need to destroy anything because we don't have any Listeners.
+     */
+    @Override
+    public void destroy() {}
 }

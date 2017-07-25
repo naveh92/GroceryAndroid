@@ -1,6 +1,5 @@
 package com.android_project.grocery.controller;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.view.MotionEvent;
@@ -13,7 +12,7 @@ import android.widget.ImageButton;
 /**
  * Created by admin on 05/04/2017.
  */
-public abstract class TableViewActivity extends Activity {
+public abstract class TableViewActivity extends CustomActivity {
     protected abstract void newObjectDialog(Context context);
 
     protected ImageButton addNewButton;
@@ -94,7 +93,6 @@ public abstract class TableViewActivity extends Activity {
     protected void hideNewObjectButton() {
         addNewButton.setVisibility(View.INVISIBLE);
     }
-
     protected void showNewObjectButton() {
         addNewButton.setVisibility(View.VISIBLE);
     }

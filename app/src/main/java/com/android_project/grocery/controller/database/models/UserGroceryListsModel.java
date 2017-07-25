@@ -41,7 +41,7 @@ public class UserGroceryListsModel extends AbstractModel {
      * because we may login to a different user later.
      */
     public static void destroyInstance() {
-        //instance.Destroy();
+        instance.destroy();
         instance = null;
     }
 
@@ -105,7 +105,7 @@ public class UserGroceryListsModel extends AbstractModel {
             public void onObjectReceived(Group addedGroup) {
                 // Make sure we didn't already add this group's grocery lists (Could happen when UserGroupsDB resets).
                 if (!containsListDb(addedGroup.getKey())) {
-                    // Create a db that manages the added group's lists
+                    // Create a db that manages the added group's lists (We destroy it when this model is destroyed).
                     GroceryListsByGroupModel groupListsDb = new GroceryListsByGroupModel(addedGroup.getKey());
                     listsDbs.add(groupListsDb);
 
@@ -162,7 +162,6 @@ public class UserGroceryListsModel extends AbstractModel {
         }
     }
 
-
     public int getListsCount() {
         int count;
 
@@ -191,27 +190,12 @@ public class UserGroceryListsModel extends AbstractModel {
         return groupsDBModel.getAllGroups();
     }
 
-    public void Destroy(){
-        groupsDBModel.Destroy();
+    @Override
+    public void destroy() {
+        groupsDBModel.destroy();
 
-        for (GroceryListsByGroupModel model:
-            listsDbs) {
-            model.Destroy();
+        for (GroceryListsByGroupModel model : listsDbs) {
+            model.destroy();
         }
     }
-
-    // TODO: Remove group observer when leaving a group (Could be called from removeGroupLists maybe?)
-//    private func removeGroupObserver(groupKey: NSString) {
-//        guard let dbIndex = listsDb.index(where: { $0.groupKey == groupKey }) else { return }
-//
-//        // Remove the observers and remove the db of the deleted group.
-//        listsDb[dbIndex].removeObservers()
-//        listsDb.remove(at: dbIndex)
-//    }
-//
-//
-//    func removeObservers() {
-//        groupsDb!.removeObservers()
-//        listsDb.forEach({ $0.removeObservers() })
-//    }
 }

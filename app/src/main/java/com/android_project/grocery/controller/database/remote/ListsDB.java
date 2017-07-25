@@ -12,11 +12,11 @@ import java.util.Map;
  * Created by admin on 04/04/2017.
  */
 public class ListsDB {
+    private static final String LISTS_NODE_URL = "grocery-lists";
     private static final String LAST_UPDATED_STRING = "lastUpdated";
     private static String TAG = "ListsDB";
     private static ListsDB instance;
-
-    private DatabaseReference listsRef; private static final String LISTS_NODE_URL = "grocery-lists";
+    private DatabaseReference listsRef;
 
     private ListsDB() {
         listsRef = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL);

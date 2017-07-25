@@ -1,6 +1,5 @@
 package com.android_project.grocery.controller.database.models;
 
-
 import com.android_project.grocery.controller.database.remote.GroceryListsByGroupDB;
 import com.android_project.grocery.controller.handlers.ObjectReceivedHandler;
 import com.android_project.grocery.model.entities.GroceryList;
@@ -36,7 +35,8 @@ public class GroceryListsByGroupModel extends AbstractModel {
         return groupKey;
     }
 
-    public void Destroy(){
-        listsDb.Destroy();
+    @Override
+    public void destroy(){
+        listsDb.removeListeners();
     }
 }

@@ -35,6 +35,7 @@ public class UserGroupsTable extends AbstractTable {
     }
 
     public List<String> getUserGroupKeys(String userKey) {
+        final SQLiteDatabase readableDB = getReadableDB();
         List<String> groupKeys = new ArrayList<>();
 
         if (userKey != null) {
@@ -78,6 +79,8 @@ public class UserGroupsTable extends AbstractTable {
     }
 
     public void insert(String userKey, String groupKey) {
+        final SQLiteDatabase writableDB = getWritableDB();
+
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(USER_KEY, userKey);
@@ -89,6 +92,8 @@ public class UserGroupsTable extends AbstractTable {
     }
 
     public void delete(String userKey, String groupKey) {
+        final SQLiteDatabase writableDB = getWritableDB();
+
         // Define 'where' part of query.
         String selection = USER_KEY + " = ? and " + GROUP_KEY + " = ?";
 

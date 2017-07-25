@@ -19,7 +19,6 @@ import java.util.Map;
 public class UserGroupsModel extends AbstractModel {
     private final String userKey;
     private UserGroupsDB usersGroupDB;
-    // TODO: Need to table.close() onDestroy()??
     private static UserGroupsTable table;
 
     // Data-models
@@ -266,7 +265,8 @@ public class UserGroupsModel extends AbstractModel {
         return false;
     }
 
-    public void Destroy() {
-        usersGroupDB.Destroy();
+    @Override
+    public void destroy() {
+        usersGroupDB.removeListeners();
     }
 }

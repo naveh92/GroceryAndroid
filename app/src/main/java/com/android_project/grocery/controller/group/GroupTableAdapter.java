@@ -34,8 +34,9 @@ public class GroupTableAdapter extends BaseAdapter {
     private final Context mContext;
     private final LayoutInflater inflater;
     private UserGroupsModel db;
+    private List<GroupMembersModel> groupMembersModels = new ArrayList<>();
 
-    public GroupTableAdapter(Context c, UserGroupsModel db) {
+    public GroupTableAdapter(Context c, UserGroupsModel db, GroupMembersModel groupMembersDB) {
         mContext = c;
         // Get the LayoutInflater from the Context.
         inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -118,7 +119,10 @@ public class GroupTableAdapter extends BaseAdapter {
             }
         };
 
-        new GroupMembersModel(currentGroup.getKey()).observeGroupMembers(memberReceivedHandler);
+        // TODO: Try a cached-like map so we don't create new every time?
+        GroupMembersModel currentGroupModel = new GroupMembersModel(currentGroup.getKey());
+        currentGroupModel.observeGroupMembers(memberReceivedHandler);
+        groupMembersModels.add(currentGroupModel);
         return view;
     }
 
@@ -172,5 +176,10 @@ public class GroupTableAdapter extends BaseAdapter {
 
     public void onGroupReceived() {
         notifyDataSetChanged();
+    }
+    public void onDestroy() {
+        for (GroupMembersModel model : groupMembersModels) {
+            model.destroy();
+        }
     }
 }

@@ -78,4 +78,10 @@ public class GroupsModel extends AbstractModel {
         table.addNewGroup(group);
         // No need to update LastUpdatedTable, because we won't check the update time.
     }
+
+    /**
+     * No need to destroy - GroupsDB isn't even an AbstractRemoteDB, because it has no Listeners.
+     */
+    @Override
+    public void destroy() {}
 }

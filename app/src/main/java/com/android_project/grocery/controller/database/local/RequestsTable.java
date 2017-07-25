@@ -41,6 +41,8 @@ public class RequestsTable extends AbstractTable {
     }
 
     public void addNewRequest(String listKey, GroceryRequest request) {
+        final SQLiteDatabase writableDB = getWritableDB();
+
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(REQUEST_KEY, request.getKey());
@@ -55,6 +57,7 @@ public class RequestsTable extends AbstractTable {
     }
 
     public void togglePurchased(String requestKey, Boolean currentValue) {
+        final SQLiteDatabase writableDB = getWritableDB();
         if (requestKey != null) {
             if (currentValue == null) {
                 currentValue = true;
@@ -74,6 +77,7 @@ public class RequestsTable extends AbstractTable {
     }
 
     public void updateItemName(String requestKey, String newItemName) {
+        final SQLiteDatabase writableDB = getWritableDB();
         if (requestKey != null) {
             if (newItemName == null) {
                 newItemName = "";
@@ -93,6 +97,7 @@ public class RequestsTable extends AbstractTable {
     }
 
     public List<GroceryRequest> getRequestsByListKey(String listKey) {
+        final SQLiteDatabase readableDB = getReadableDB();
         List<GroceryRequest> requests = new ArrayList<>();
 
         if (listKey != null) {

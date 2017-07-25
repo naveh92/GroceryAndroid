@@ -116,6 +116,7 @@ public class GroupFragment extends TableViewFragment {
                 String groupKey = GroupsModel.getInstance().addNewGroup(newGroup);
 
                 // Add the user as a group member
+                // NOTE: No need to destroy() this model, because it doesn't have any Listeners (We only added a member).
                 new GroupMembersModel(groupKey).addMember(userKey);
 
                 // Make sure db is not null
@@ -146,7 +147,8 @@ public class GroupFragment extends TableViewFragment {
 
     @Override
     public void onDestroy() {
-        db.Destroy();
+        adapter.onDestroy();
+        db.destroy();
         super.onDestroy();
     }
 }

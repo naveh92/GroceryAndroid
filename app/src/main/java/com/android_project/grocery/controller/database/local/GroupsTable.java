@@ -31,6 +31,8 @@ public class GroupsTable extends AbstractTable {
     }
 
     public void addNewGroup(Group group) {
+        final SQLiteDatabase writableDB = getWritableDB();
+
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(GROUP_KEY, group.getKey());
@@ -41,6 +43,8 @@ public class GroupsTable extends AbstractTable {
     }
 
     public void deleteGroup(String groupKey) {
+        final SQLiteDatabase writableDB = getWritableDB();
+
         // Define 'where' part of query.
         String selection = GROUP_KEY + " = ?";
 
@@ -52,6 +56,7 @@ public class GroupsTable extends AbstractTable {
     }
 
     public Group getGroupByKey(String groupKey) {
+        final SQLiteDatabase readableDB = getReadableDB();
         Group group = null;
 
         if (groupKey != null) {

@@ -22,11 +22,11 @@ import java.util.Map;
  * NOTE: We cannot create a query to fetch by updateTime, because Firebase doesn't allow 2 filters.
  *       Therefore, there is no "observeListsByLastUpdateTime()" function.
  */
-public class GroceryListsByGroupDB {
+public class GroceryListsByGroupDB extends AbstractRemoteDB {
     private static final String LISTS_NODE_URL = "grocery-lists";
     private static final String TAG = "GroceryListsByGroupDB";
     private Query query;
-    private ArrayList<ChildEventListener> queryChildListenList = new ArrayList<>();
+    private ArrayList<ChildEventListener> listeners = new ArrayList<>();
 
     public GroceryListsByGroupDB(String groupKey) {
         query = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL).orderByChild(GroceryList.GROUP_KEY_STRING).equalTo(groupKey);
@@ -37,9 +37,7 @@ public class GroceryListsByGroupDB {
      */
     public void observeLists(final ObjectReceivedHandler<GroceryList> listAddedHandler,
                              final ObjectReceivedHandler<GroceryList> listRemovedHandler) {
-
-
-        ChildEventListener queryChildListen = query.addChildEventListener(new ChildEventListener() {
+        ChildEventListener listener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 receivedChildAdded(dataSnapshot, listAddedHandler);
@@ -57,8 +55,10 @@ public class GroceryListsByGroupDB {
             public void onCancelled(DatabaseError databaseError) {
                 Log.d(TAG, "Failed to retrieve Grocery-lists..");
             }
-        });
-        queryChildListenList.add(queryChildListen);
+        };
+
+        query.addChildEventListener(listener);
+        listeners.add(listener);
     }
 
     public static void deleteAllListsForGroup(final String deletedGroupKey) {
@@ -115,14 +115,9 @@ public class GroceryListsByGroupDB {
         return new GroceryList(key, groupKey, title , relevant);
     }
 
-    public void Destroy(){
-        if (!queryChildListenList.isEmpty()){
-            for (ChildEventListener item:
-                    queryChildListenList) {
-                query.removeEventListener(item);
-
-            }
+    public void removeListeners() {
+        for (ChildEventListener listener : listeners) {
+                query.removeEventListener(listener);
         }
     }
-
 }
