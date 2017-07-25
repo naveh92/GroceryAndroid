@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,16 +25,12 @@ import com.android_project.grocery.controller.profile.ProfileFragment;
 import com.facebook.login.LoginManager;
 
 public class MainActivity extends FragmentActivity {
-    private static final String TAG = "MainActivity";
-
     private TabsPagerAdapter adapter;
     private ViewPager mViewPager;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Log.d(TAG, "onCreate called");
 
         // ViewPager and its adapters use support library
         // fragments, so use getSupportFragmentManager.

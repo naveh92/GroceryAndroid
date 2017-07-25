@@ -19,8 +19,9 @@ import java.util.List;
 
 /**
  * Created by admin on 04/04/2017.
+ * Adapter for groups table
  */
-public class GroupTableAdapter extends BaseAdapter {
+class GroupTableAdapter extends BaseAdapter {
     private static final int DESCRIPTION_MAX_CHAR_NUM = 25;
     private static final String SPACE = " ";
     private static String ONE_MEMBER;
@@ -36,7 +37,7 @@ public class GroupTableAdapter extends BaseAdapter {
     private UserGroupsModel db;
     private List<GroupMembersModel> groupMembersModels = new ArrayList<>();
 
-    public GroupTableAdapter(Context c, UserGroupsModel db, GroupMembersModel groupMembersDB) {
+    GroupTableAdapter(Context c, UserGroupsModel db) {
         mContext = c;
         // Get the LayoutInflater from the Context.
         inflater = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -72,7 +73,7 @@ public class GroupTableAdapter extends BaseAdapter {
         }
         final View view = convertView;
 
-        /**
+        /*
          * -------------
          *     Title
          * -------------
@@ -83,7 +84,7 @@ public class GroupTableAdapter extends BaseAdapter {
         TextView groupTitle = (TextView)view.findViewById(R.id.groupTitle);
         groupTitle.setText(currentGroup.getTitle());
 
-        /**
+        /*
          * -------------
          *  Description
          * -------------
@@ -174,10 +175,10 @@ public class GroupTableAdapter extends BaseAdapter {
         return fullName;
     }
 
-    public void onGroupReceived() {
+    void onGroupReceived() {
         notifyDataSetChanged();
     }
-    public void onDestroy() {
+    void onDestroy() {
         for (GroupMembersModel model : groupMembersModels) {
             model.destroy();
         }

@@ -24,10 +24,11 @@ import com.android_project.grocery.controller.handlers.ObjectReceivedHandler;
 
 /**
  * Created by admin on 04/04/2017.
+ * Groups fragment tab
  */
 public class GroupFragment extends TableViewFragment {
     private UserGroupsModel db;
-    private static GroupTableAdapter adapter;
+    private GroupTableAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

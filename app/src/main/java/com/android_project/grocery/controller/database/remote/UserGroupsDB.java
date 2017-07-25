@@ -5,6 +5,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -21,15 +22,15 @@ import java.util.Map;
 public class UserGroupsDB extends AbstractRemoteDB {
     private static final String USERS_NODE_URL = "users";
     private static final String GROUPS_NODE_URL = "groups";
-    public static final String LAST_UPDATED_STRING = "lastUpdated";
+    private static final String LAST_UPDATED_STRING = "lastUpdated";
     private static final String DELIMITER = "/";
     private DatabaseReference userRef;
     private DatabaseReference userGroupsRef;
 
     /**
-     * The key is the reference, the value is the List of ValueEventListeners
+     * The key is the Query reference, the value is the List of ValueEventListeners for that query
      */
-    private Map<DatabaseReference, List<ValueEventListener>> userRefListeners = new HashMap<>();
+    private Map<Query, List<ValueEventListener>> userRefListeners = new HashMap<>();
     private ArrayList<ValueEventListener> userGroupsRefListeners = new ArrayList<>();
 
     public UserGroupsDB(String userKey) {
@@ -59,19 +60,19 @@ public class UserGroupsDB extends AbstractRemoteDB {
         };
 
         // Observe only if the remote update-time is after the the local
-        DatabaseReference ref = userRef.orderByChild(LAST_UPDATED_STRING).startAt(lastUpdated);
-        ref.addValueEventListener(listener);
-        addToListeners(ref, listener);
+        Query query = userRef.orderByChild(LAST_UPDATED_STRING).startAt(lastUpdated);
+        query.addValueEventListener(listener);
+        addListenerToQuery(query, listener);
     }
 
-    private void addToListeners(DatabaseReference ref, ValueEventListener listener) {
+    private void addListenerToQuery(Query query, ValueEventListener listener) {
         // If the map doesn't contain a list for this reference, create it.
-        if (!userRefListeners.containsKey(ref)) {
-            userRefListeners.put(ref, new ArrayList<ValueEventListener>());
+        if (!userRefListeners.containsKey(query)) {
+            userRefListeners.put(query, new ArrayList<ValueEventListener>());
         }
 
         // Add the listener to this references list
-        userRefListeners.get(ref).add(listener);
+        userRefListeners.get(query).add(listener);
     }
 
     /**
@@ -180,13 +181,13 @@ public class UserGroupsDB extends AbstractRemoteDB {
     @Override
     public void removeListeners() {
         // Go over all entries in the userRef Listener map
-        for (DatabaseReference currentRef : userRefListeners.keySet()) {
-            List<ValueEventListener> currentRefListeners = userRefListeners.get(currentRef);
+        for (Query currentQuery : userRefListeners.keySet()) {
+            List<ValueEventListener> currentRefListeners = userRefListeners.get(currentQuery);
 
             if (currentRefListeners != null) {
                 // Go over all the listeners we added to this reference
                 for (ValueEventListener currentListener : currentRefListeners) {
-                    currentRef.removeEventListener(currentListener);
+                    currentQuery.removeEventListener(currentListener);
                 }
             }
         }

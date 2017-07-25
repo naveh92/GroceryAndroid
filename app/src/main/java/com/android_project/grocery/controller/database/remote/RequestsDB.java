@@ -9,6 +9,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 /**
  * Created by admin on 05/04/2017.
+ * Remote DB for Requests
  */
 public class RequestsDB extends AbstractRemoteDB {
     private static String TAG = "RequestsDB";
@@ -30,7 +32,8 @@ public class RequestsDB extends AbstractRemoteDB {
     /**
      * The key is the reference, the value is the List of ValueEventListeners
      */
-    private Map<DatabaseReference, List<ValueEventListener>> listeners = new HashMap<>();
+    private Map<Query, List<ValueEventListener>> queryListeners = new HashMap<>();
+    private List<ValueEventListener> listeners = new ArrayList<>();
 
     public RequestsDB(String listKey) {
         requestsRef = FirebaseDatabase.getInstance().getReference(LISTS_NODE_URL + DELIMITER + listKey + DELIMITER + REQUESTS_NODE_URL);
@@ -58,19 +61,19 @@ public class RequestsDB extends AbstractRemoteDB {
         };
 
         // Observe only if the remote update-time is after the the local
-        DatabaseReference ref = requestsRef.orderByChild(LAST_UPDATED_STRING).startAt(localUpdateTime);
-        ref.addValueEventListener(listener);
-        addToListeners(ref, listener);
+        Query query = requestsRef.orderByChild(LAST_UPDATED_STRING).startAt(localUpdateTime);
+        query.addValueEventListener(listener);
+        addListenerToQuery(query, listener);
     }
 
-    private void addToListeners(DatabaseReference ref, ValueEventListener listener) {
+    private void addListenerToQuery(Query query, ValueEventListener listener) {
         // If the map doesn't contain a list for this reference, create it.
-        if (!listeners.containsKey(ref)) {
-            listeners.put(ref, new ArrayList<ValueEventListener>());
+        if (!queryListeners.containsKey(query)) {
+            queryListeners.put(query, new ArrayList<ValueEventListener>());
         }
 
         // Add the listener to this references list
-        listeners.get(ref).add(listener);
+        queryListeners.get(query).add(listener);
     }
 
     public void observeAllRequests(final ObjectHandler<GroceryRequest> handler) {
@@ -91,7 +94,7 @@ public class RequestsDB extends AbstractRemoteDB {
 
         // Read from the database
         requestsRef.addValueEventListener(listener);
-        addToListeners(requestsRef, listener);
+        listeners.add(listener);
     }
 
     private void handleDataSnapshot(DataSnapshot incomingSnapshot, ObjectHandler<GroceryRequest> handler) {
@@ -171,16 +174,21 @@ public class RequestsDB extends AbstractRemoteDB {
     }
 
     public void removeListeners() {
-        // Go over all entries in the map
-        for (DatabaseReference currentRef : listeners.keySet()) {
-            List<ValueEventListener> currentRefListeners = listeners.get(currentRef);
+        // Go over all entries in the queryListeners map
+        for (Query currentQuery : queryListeners.keySet()) {
+            List<ValueEventListener> currentRefListeners = queryListeners.get(currentQuery);
 
             if (currentRefListeners != null) {
                 // Go over all the listeners we added to this reference
                 for (ValueEventListener currentListener : currentRefListeners) {
-                    currentRef.removeEventListener(currentListener);
+                    currentQuery.removeEventListener(currentListener);
                 }
             }
+        }
+
+        // Remove the regular reference Listeners
+        for (ValueEventListener currListener : listeners) {
+            requestsRef.removeEventListener(currListener);
         }
     }
 }
