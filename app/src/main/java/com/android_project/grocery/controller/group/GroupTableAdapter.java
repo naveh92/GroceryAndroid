@@ -15,7 +15,9 @@ import com.android_project.grocery.model.entities.User;
 import com.android_project.grocery.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by admin on 04/04/2017.
@@ -35,7 +37,10 @@ class GroupTableAdapter extends BaseAdapter {
     private final Context mContext;
     private final LayoutInflater inflater;
     private UserGroupsModel db;
-    private List<GroupMembersModel> groupMembersModels = new ArrayList<>();
+    /**
+     * Key is groupKey, value is the Model itself.
+     */
+    private Map<String, GroupMembersModel> groupMembersModels = new HashMap<>();
 
     GroupTableAdapter(Context c, UserGroupsModel db) {
         mContext = c;
@@ -120,10 +125,19 @@ class GroupTableAdapter extends BaseAdapter {
             }
         };
 
-        // TODO: Try a cached-like map so we don't create new every time?
-        GroupMembersModel currentGroupModel = new GroupMembersModel(currentGroup.getKey());
+        String currentGroupKey = currentGroup.getKey();
+
+        // Cached-like map so we don't create a new instance every time
+        if (!groupMembersModels.containsKey(currentGroupKey)) {
+            GroupMembersModel currentGroupModel = new GroupMembersModel(currentGroupKey);
+            groupMembersModels.put(currentGroupKey, currentGroupModel);
+
+            currentGroupModel.observeGroupMembers(memberReceivedHandler);
+        }
+
+        GroupMembersModel currentGroupModel = groupMembersModels.get(currentGroupKey);
         currentGroupModel.observeGroupMembers(memberReceivedHandler);
-        groupMembersModels.add(currentGroupModel);
+
         return view;
     }
 
@@ -179,7 +193,7 @@ class GroupTableAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
     void onDestroy() {
-        for (GroupMembersModel model : groupMembersModels) {
+        for (GroupMembersModel model : groupMembersModels.values()) {
             model.destroy();
         }
     }

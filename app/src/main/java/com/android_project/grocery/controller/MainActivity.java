@@ -94,7 +94,10 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onDestroy() {
         DatabaseHelper.getInstance().close();
-        UserGroceryListsModel.getInstance().destroy();
+        // Destroy the instance instead of calling getInstance().destroy(),
+        // because this creates an instance with null UserKey.
+        UserGroceryListsModel.destroyInstance();
+
         // No need to destroy LastUpdatedModel because it's not an AbstractModel (No Listeners).
 
         super.onDestroy();

@@ -41,8 +41,10 @@ public class UserGroceryListsModel extends AbstractModel {
      * because we may login to a different user later.
      */
     public static void destroyInstance() {
-        instance.destroy();
-        instance = null;
+        if (instance != null) {
+            instance.destroy();
+            instance = null;
+        }
     }
 
     public void observeLists(final ObjectReceivedHandler<GroceryList> listAdded, final ObjectReceivedHandler<GroceryList> listDeleted) {
