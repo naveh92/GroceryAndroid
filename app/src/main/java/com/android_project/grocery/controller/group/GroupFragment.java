@@ -38,9 +38,8 @@ public class GroupFragment extends TableViewFragment {
         // Save the add button for animations later
         addNewButton = (ImageButton) view.findViewById(R.id.add_new_object_button);
 
-        if (db == null) {
-            db = new UserGroupsModel(AuthenticationManager.getInstance().getCurrentUserId());
-        }
+        // Make sure the DB is not null & it's this users instance
+        manageDBInstance();
 
         GridView gridview = (GridView) view.findViewById(R.id.gridview);
         adapter = new GroupTableAdapter(getActivity(), db);
@@ -67,6 +66,19 @@ public class GroupFragment extends TableViewFragment {
         return view;
     }
 
+    /**
+     * This function makes sure that the DB instance is not null,
+     * and that the instance is the correct instance for the current user
+     * (In case we logged-off and logged-in to a different user)
+     */
+    private void manageDBInstance() {
+        String currentUserKey = AuthenticationManager.getInstance().getCurrentUserId();
+
+        if (db == null || db.getUserKey() == null || !db.getUserKey().equals(currentUserKey)) {
+            db = new UserGroupsModel(currentUserKey);
+        }
+    }
+
     private void fetchGroups() {
         ObjectReceivedHandler<Group> groupReceivedHandler = new ObjectReceivedHandler<Group>() {
             @Override
@@ -78,10 +90,8 @@ public class GroupFragment extends TableViewFragment {
             }
         };
 
-        if (db == null) {
-            db = new UserGroupsModel(AuthenticationManager.getInstance().getCurrentUserId());
-        }
-
+        // Make sure the DB is not null & it's this users instance
+        manageDBInstance();
         db.observeUserGroupsAddition(groupReceivedHandler);
     }
 
@@ -120,10 +130,8 @@ public class GroupFragment extends TableViewFragment {
                 // NOTE: No need to destroy() this model, because it doesn't have any Listeners (We only added a member).
                 new GroupMembersModel(groupKey).addMember(userKey);
 
-                // Make sure db is not null
-                if (db == null) {
-                    db = new UserGroupsModel(AuthenticationManager.getInstance().getCurrentUserId());
-                }
+                // Make sure the DB is not null & it's this users instance
+                manageDBInstance();
 
                 // Add the group to the users list of groups
                 db.addGroupToUser(groupKey);

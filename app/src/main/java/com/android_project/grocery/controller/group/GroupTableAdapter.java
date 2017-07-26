@@ -131,8 +131,6 @@ class GroupTableAdapter extends BaseAdapter {
         if (!groupMembersModels.containsKey(currentGroupKey)) {
             GroupMembersModel currentGroupModel = new GroupMembersModel(currentGroupKey);
             groupMembersModels.put(currentGroupKey, currentGroupModel);
-
-            currentGroupModel.observeGroupMembers(memberReceivedHandler);
         }
 
         GroupMembersModel currentGroupModel = groupMembersModels.get(currentGroupKey);

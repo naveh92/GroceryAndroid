@@ -35,6 +35,10 @@ public class UserGroupsModel extends AbstractModel {
         }
     }
 
+    public String getUserKey() {
+        return this.userKey;
+    }
+
     public void addGroupToUser(String groupKey) {
         // Local
         table.insert(userKey, groupKey);
@@ -138,7 +142,7 @@ public class UserGroupsModel extends AbstractModel {
         GroupsModel.getInstance().findGroupByKey(groupKey, receivedGroupHandler);
     }
 
-    /**
+    /*
      * -----------------------
      *     Side-functions
      * -----------------------
@@ -248,7 +252,7 @@ public class UserGroupsModel extends AbstractModel {
         return null;
     }
 
-    public List<Group> getAllGroups() {
+    List<Group> getAllGroups() {
         // Create a read-only copy of the list of groups.
         return Collections.unmodifiableList(groups);
     }
